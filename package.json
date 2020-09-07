@@ -1,0 +1,40 @@
+{
+  "name": "@anderjason/koji-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:anderjason/koji-frontend.git"
+  },
+  "author": "Jason Anderson",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf dist && rm -rf test",
+    "test": "tsc -p tsconfig.test.json && node test/index.test && rm -rf test"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "dependencies": {
+    "@anderjason/color": "^1.0.0",
+    "@anderjason/geometry": "^1.0.1",
+    "@anderjason/observable": "^1.0.0",
+    "@anderjason/tests": "^1.0.0",
+    "@anderjason/time": "^1.0.0",
+    "@anderjason/util": "^1.0.0",
+    "@anderjason/web": "^1.0.0",
+    "@withkoji/vcc": "^1.1.30",
+    "skytree": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.6.4",
+    "typescript": "^4.0.2"
+  },
+  "bugs": {
+    "url": "https://github.com/anderjason/koji-frontend/issues"
+  },
+  "homepage": "https://github.com/anderjason/koji-frontend#readme"
+}

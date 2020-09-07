@@ -1,0 +1,1 @@
+{"version":3,"file":"RequestError.js","sourceRoot":"","sources":["../../src/KojiNetworkUtil/RequestError.ts"],"names":[],"mappings":";;;AAAA,MAAa,YAAa,SAAQ,KAAK;IACrC,YAAY,OAAgB;QAC1B,KAAK,CAAC,OAAO,IAAI,oCAAoC,CAAC,CAAC;QAEvD,MAAM,CAAC,cAAc,CAAC,IAAI,EAAE,YAAY,CAAC,SAAS,CAAC,CAAC;IACtD,CAAC;CACF;AAND,oCAMC"}
