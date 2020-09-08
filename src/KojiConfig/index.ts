@@ -68,12 +68,18 @@ export class KojiConfig extends ManagedObject {
         this.onValueChanged(path, newValue);
       });
 
+      let previousEditMode: KojiMode = undefined;
+
       this._instantRemixing.onSetRemixing((isRemixing) => {
         if (isRemixing === false) {
+          if (this.mode.value !== "view") {
+            previousEditMode = this.mode.value;
+          }
+
           this._selectedPath.setValue(undefined);
           this.mode.setValue("view");
         } else {
-          this.mode.setValue("template");
+          this.mode.setValue(previousEditMode || "template");
         }
       });
 
