@@ -59,7 +59,7 @@ export class RemixTarget extends ManagedObject {
           this._activeRemixTarget = undefined;
         }
 
-        if (mode === "template") {
+        if (mode !== "view") {
           this._activeRemixTarget = this.addManagedObject(
             ActiveRemixTarget.givenPoints(this._points, this._definition)
           );
