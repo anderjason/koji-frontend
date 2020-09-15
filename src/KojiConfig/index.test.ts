@@ -2,6 +2,7 @@ import { Test } from "@anderjason/tests";
 import { ValuePath, ObjectUtil } from "@anderjason/util";
 import { PathBinding, ManagedObject } from "skytree";
 import { KojiConfig } from ".";
+import "./UndoManager.test";
 
 Test.define(
   "KojiConfig updates its internal data when passed a new value",

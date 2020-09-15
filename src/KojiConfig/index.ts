@@ -1,8 +1,13 @@
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { ManagedObject, PathBinding } from "skytree";
-import { Observable, Receipt } from "@anderjason/observable";
+import {
+  Observable,
+  ReadOnlyObservable,
+  Receipt,
+} from "@anderjason/observable";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { Duration, RateLimitedFunction } from "@anderjason/time";
+import { UndoManager } from "./UndoManager";
 
 export type KojiMode = "view" | "generator" | "template";
 type PathPart = string | number;
@@ -25,11 +30,12 @@ export class KojiConfig extends ManagedObject {
   );
 
   private _internalData = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
-
+  private _undoManager: UndoManager;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
   private _updateKojiLater: RateLimitedFunction<void>;
+  private _createUndoStepThrottled: RateLimitedFunction<void>;
   private _pathBindings = new Set<PathBinding>();
 
   private constructor() {
@@ -44,7 +50,15 @@ export class KojiConfig extends ManagedObject {
       fn: async () => {
         this.sendPendingUpdates();
       },
-      duration: Duration.givenSeconds(0.5),
+      duration: Duration.givenSeconds(0.25),
+    });
+
+    this._createUndoStepThrottled = RateLimitedFunction.givenDefinition({
+      fn: async () => {
+        this.createUndoStep();
+      },
+      mode: "leading",
+      duration: Duration.givenMilliseconds(100),
     });
   }
 
@@ -60,10 +74,26 @@ export class KojiConfig extends ManagedObject {
     return this._feedSdk;
   }
 
-  initManagedObject() {
-    if (this._instantRemixing != null) {
-      this._internalData.setValue(this._instantRemixing.get(["general"]) || {});
+  get canUndo(): ReadOnlyObservable<boolean> {
+    return this._undoManager.canUndo;
+  }
 
+  get canRedo(): ReadOnlyObservable<boolean> {
+    return this._undoManager.canRedo;
+  }
+
+  initManagedObject() {
+    this._undoManager = new UndoManager<unknown>(
+      this._instantRemixing?.get(["general"]) || {},
+      10
+    );
+
+    this._undoManager.currentStep.didChange.subscribe((undoStep) => {
+      this._internalData.setValue(undoStep);
+      this.sendPendingUpdates();
+    });
+
+    if (this._instantRemixing != null) {
       this._instantRemixing.onValueChanged((path, newValue) => {
         this.onValueChanged(path, newValue);
       });
@@ -113,6 +143,14 @@ export class KojiConfig extends ManagedObject {
     });
   }
 
+  undo(): void {
+    this._undoManager.undo();
+  }
+
+  redo(): void {
+    this._undoManager.redo();
+  }
+
   subscribe(
     vccPath: ValuePath,
     fn: (value: any) => void,
@@ -150,6 +188,8 @@ export class KojiConfig extends ManagedObject {
   }
 
   update(path: ValuePath, newValue: any, immediate = false): void {
+    this._createUndoStepThrottled.invoke();
+
     const obj = ObjectUtil.objectWithValueAtPath(
       this._internalData.value,
       path,
@@ -174,6 +214,10 @@ export class KojiConfig extends ManagedObject {
         true
       );
     }
+  }
+
+  private createUndoStep(): void {
+    this._undoManager.addStep(this._internalData.value);
   }
 
   private onValueChanged = (path: PathPart[], newValue: any): void => {
