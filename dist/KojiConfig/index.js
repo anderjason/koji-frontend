@@ -11,11 +11,13 @@ class KojiConfig extends skytree_1.ManagedObject {
     constructor() {
         super({});
         this.mode = observable_1.Observable.givenValue("view", observable_1.Observable.isStrictEqual);
+        this.willReceiveExternalData = new observable_1.TypedEvent();
         this._internalData = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
         this._pathBindings = new Set();
         this.onValueChanged = (path, newValue) => {
-            this._createUndoStepThrottled.invoke();
+            const valuePath = util_1.ValuePath.givenParts(path);
+            this.willReceiveExternalData.emit(valuePath);
             const internalPath = path.slice(1);
             let internalData = this._internalData.value;
             if (internalPath.length === 0) {
@@ -31,12 +33,6 @@ class KojiConfig extends skytree_1.ManagedObject {
             this._instantRemixing = new vcc_1.InstantRemixing();
             this._feedSdk = new vcc_1.FeedSdk();
         }
-        this._createUndoStepThrottled = new time_1.Throttle({
-            fn: () => {
-                this.createUndoStep();
-            },
-            duration: time_1.Duration.givenSeconds(0.25),
-        });
         this._updateKojiLater = new time_1.Debounce({
             fn: () => {
                 this.sendPendingUpdates();

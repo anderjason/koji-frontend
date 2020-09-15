@@ -1,4 +1,4 @@
-import { Observable, ReadOnlyObservable, Receipt } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable, Receipt, TypedEvent } from "@anderjason/observable";
 import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { ManagedObject } from "skytree";
@@ -7,13 +7,13 @@ export declare class KojiConfig extends ManagedObject {
     private static _instance;
     static get instance(): KojiConfig;
     readonly mode: Observable<KojiMode>;
+    readonly willReceiveExternalData: TypedEvent<ValuePath>;
     private _internalData;
     private _undoManager;
     private _selectedPath;
     private _instantRemixing;
     private _feedSdk;
     private _updateKojiLater;
-    private _createUndoStepThrottled;
     private _pathBindings;
     private constructor();
     get selectedPath(): Observable<ValuePath>;

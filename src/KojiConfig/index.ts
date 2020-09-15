@@ -2,6 +2,7 @@ import {
   Observable,
   ReadOnlyObservable,
   Receipt,
+  TypedEvent,
 } from "@anderjason/observable";
 import { Debounce, Duration, Throttle } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
@@ -29,13 +30,14 @@ export class KojiConfig extends ManagedObject {
     Observable.isStrictEqual
   );
 
+  readonly willReceiveExternalData = new TypedEvent<ValuePath>();
+
   private _internalData = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
   private _undoManager: UndoManager;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
   private _updateKojiLater: Debounce<void>;
-  private _createUndoStepThrottled: Throttle<void>;
   private _pathBindings = new Set<PathBinding>();
 
   private constructor() {
@@ -45,13 +47,6 @@ export class KojiConfig extends ManagedObject {
       this._instantRemixing = new InstantRemixing();
       this._feedSdk = new FeedSdk();
     }
-
-    this._createUndoStepThrottled = new Throttle({
-      fn: () => {
-        this.createUndoStep();
-      },
-      duration: Duration.givenSeconds(0.25),
-    });
 
     this._updateKojiLater = new Debounce({
       fn: () => {
@@ -221,7 +216,9 @@ export class KojiConfig extends ManagedObject {
   }
 
   private onValueChanged = (path: PathPart[], newValue: any): void => {
-    this._createUndoStepThrottled.invoke();
+    const valuePath = ValuePath.givenParts(path);
+
+    this.willReceiveExternalData.emit(valuePath);
 
     const internalPath = path.slice(1);
     let internalData: any = this._internalData.value;
