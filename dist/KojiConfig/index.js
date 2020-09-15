@@ -37,13 +37,6 @@ class KojiConfig extends skytree_1.ManagedObject {
             },
             duration: time_1.Duration.givenSeconds(0.25),
         });
-        this._createUndoStepThrottled = time_1.RateLimitedFunction.givenDefinition({
-            fn: async () => {
-                this.createUndoStep();
-            },
-            mode: "leading",
-            duration: time_1.Duration.givenMilliseconds(100),
-        });
     }
     static get instance() {
         if (KojiConfig._instance == null) {
@@ -72,8 +65,7 @@ class KojiConfig extends skytree_1.ManagedObject {
         this._undoManager = new UndoManager_1.UndoManager(((_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"])) || {}, 10);
         this._undoManager.currentStep.didChange.subscribe((undoStep) => {
             this._internalData.setValue(undoStep);
-            this.sendPendingUpdates();
-        });
+        }, true);
         if (this._instantRemixing != null) {
             this._instantRemixing.onValueChanged((path, newValue) => {
                 this.onValueChanged(path, newValue);
@@ -118,11 +110,18 @@ class KojiConfig extends skytree_1.ManagedObject {
             }
         });
     }
+    addUndoStep() {
+        this._undoManager.addStep(this._internalData.value);
+    }
     undo() {
-        this._undoManager.undo();
+        if (this._undoManager.undo()) {
+            this._updateKojiLater.invoke();
+        }
     }
     redo() {
-        this._undoManager.redo();
+        if (this._undoManager.redo()) {
+            this._updateKojiLater.invoke();
+        }
     }
     subscribe(vccPath, fn, includeLast = false) {
         const binding = this.addManagedObject(skytree_1.PathBinding.givenDefinition({
@@ -144,7 +143,6 @@ class KojiConfig extends skytree_1.ManagedObject {
         return util_1.ObjectUtil.optionalValueAtPathGivenObject(this._internalData.value, path);
     }
     update(path, newValue, immediate = false) {
-        this._createUndoStepThrottled.invoke();
         const obj = util_1.ObjectUtil.objectWithValueAtPath(this._internalData.value, path, newValue);
         this._internalData.setValue(obj);
         if (immediate == true) {
@@ -159,9 +157,6 @@ class KojiConfig extends skytree_1.ManagedObject {
         if (this._instantRemixing != null) {
             this._instantRemixing.onSetValue(["general"], this._internalData.value, true);
         }
-    }
-    createUndoStep() {
-        this._undoManager.addStep(this._internalData.value);
     }
 }
 exports.KojiConfig = KojiConfig;

@@ -52,14 +52,6 @@ export class KojiConfig extends ManagedObject {
       },
       duration: Duration.givenSeconds(0.25),
     });
-
-    this._createUndoStepThrottled = RateLimitedFunction.givenDefinition({
-      fn: async () => {
-        this.createUndoStep();
-      },
-      mode: "leading",
-      duration: Duration.givenMilliseconds(100),
-    });
   }
 
   get selectedPath(): Observable<ValuePath> {
@@ -90,8 +82,7 @@ export class KojiConfig extends ManagedObject {
 
     this._undoManager.currentStep.didChange.subscribe((undoStep) => {
       this._internalData.setValue(undoStep);
-      this.sendPendingUpdates();
-    });
+    }, true);
 
     if (this._instantRemixing != null) {
       this._instantRemixing.onValueChanged((path, newValue) => {
@@ -143,12 +134,20 @@ export class KojiConfig extends ManagedObject {
     });
   }
 
+  addUndoStep(): void {
+    this._undoManager.addStep(this._internalData.value);
+  }
+
   undo(): void {
-    this._undoManager.undo();
+    if (this._undoManager.undo()) {
+      this._updateKojiLater.invoke();
+    }
   }
 
   redo(): void {
-    this._undoManager.redo();
+    if (this._undoManager.redo()) {
+      this._updateKojiLater.invoke();
+    }
   }
 
   subscribe(
@@ -188,8 +187,6 @@ export class KojiConfig extends ManagedObject {
   }
 
   update(path: ValuePath, newValue: any, immediate = false): void {
-    this._createUndoStepThrottled.invoke();
-
     const obj = ObjectUtil.objectWithValueAtPath(
       this._internalData.value,
       path,
@@ -214,10 +211,6 @@ export class KojiConfig extends ManagedObject {
         true
       );
     }
-  }
-
-  private createUndoStep(): void {
-    this._undoManager.addStep(this._internalData.value);
   }
 
   private onValueChanged = (path: PathPart[], newValue: any): void => {
