@@ -221,6 +221,8 @@ export class KojiConfig extends ManagedObject {
   }
 
   private onValueChanged = (path: PathPart[], newValue: any): void => {
+    this._createUndoStepThrottled.invoke();
+
     const internalPath = path.slice(1);
     let internalData: any = this._internalData.value;
 

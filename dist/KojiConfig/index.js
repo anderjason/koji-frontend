@@ -15,6 +15,7 @@ class KojiConfig extends skytree_1.ManagedObject {
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
         this._pathBindings = new Set();
         this.onValueChanged = (path, newValue) => {
+            this._createUndoStepThrottled.invoke();
             const internalPath = path.slice(1);
             let internalData = this._internalData.value;
             if (internalPath.length === 0) {
