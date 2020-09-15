@@ -6,27 +6,16 @@ const time_1 = require("@anderjason/time");
 const color_1 = require("@anderjason/color");
 const web_1 = require("@anderjason/web");
 class LoadingIndicator extends skytree_1.ManagedObject {
-    constructor(parentElement, options = {}) {
-        super();
-        this._parentElement = parentElement;
-        this._waitDuration = options.waitDuration || time_1.Duration.givenSeconds(0.5);
-        this._color = options.color || color_1.Color.givenHexString("#FFFFFF");
-    }
-    static ofDocument(options) {
-        return new LoadingIndicator(document.body, options);
-    }
-    static givenParent(parentElement, options) {
-        return new LoadingIndicator(parentElement, options);
-    }
-    initManagedObject() {
+    onActivate() {
         const managedLoader = this.addManagedObject(exports.LoaderStyle.toManagedElement({
             tagName: "div",
-            parentElement: this._parentElement,
+            parentElement: this.props.parentElement,
         }));
-        if (this._parentElement === document.body) {
+        if (this.props.parentElement === document.body) {
             managedLoader.addModifier("isCentered");
         }
-        const hexColor = this._color.toHexString();
+        const color = this.props.color || color_1.Color.givenHexString("#FFFFFF");
+        const hexColor = color.toHexString();
         managedLoader.element.innerHTML = `
       <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -44,11 +33,11 @@ class LoadingIndicator extends skytree_1.ManagedObject {
         </g>
       </svg>
     `;
-        this.addManagedObject(skytree_1.Timer.givenDefinition({
+        this.addManagedObject(new skytree_1.Timer({
             fn: () => {
                 managedLoader.style.opacity = "1";
             },
-            duration: this._waitDuration,
+            duration: this.props.waitDuration || time_1.Duration.givenSeconds(0.5),
         }));
     }
 }

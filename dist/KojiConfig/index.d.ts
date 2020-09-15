@@ -1,7 +1,7 @@
-import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
-import { ManagedObject } from "skytree";
 import { Observable, ReadOnlyObservable, Receipt } from "@anderjason/observable";
 import { ValuePath } from "@anderjason/util";
+import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
+import { ManagedObject } from "skytree";
 export declare type KojiMode = "view" | "generator" | "template";
 export declare class KojiConfig extends ManagedObject {
     private static _instance;
@@ -21,8 +21,8 @@ export declare class KojiConfig extends ManagedObject {
     get feedSdk(): FeedSdk;
     get canUndo(): ReadOnlyObservable<boolean>;
     get canRedo(): ReadOnlyObservable<boolean>;
-    initManagedObject(): void;
-    addUndoStep(): void;
+    onActivate(): void;
+    createUndoStep(): void;
     undo(): void;
     redo(): void;
     subscribe(vccPath: ValuePath, fn: (value: any) => void, includeLast?: boolean): Receipt;

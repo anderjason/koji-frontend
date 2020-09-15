@@ -10,6 +10,7 @@ import { Polygon } from "./_internal/Polygon";
 import { svgStyleGivenStrokeWidth } from "./_internal/svgStyleGivenStrokeWidth";
 
 export interface RemixTargetDefinition {
+  points: Observable<Point2[]>;
   onClick?: (point: Point2) => void;
   valuePath?: ValuePath;
   expansion?: number;
@@ -21,38 +22,11 @@ export interface RemixTargetDefinition {
   isEnabled?: Observable<boolean>;
 }
 
-export class RemixTarget extends ManagedObject {
-  static givenPoints(
-    points: Observable<Point2[]>,
-    definition: RemixTargetDefinition
-  ): RemixTarget {
-    if (points == null) {
-      throw new Error("Points are required");
-    }
-
-    if (definition == null) {
-      throw new Error("Definition is required");
-    }
-
-    return new RemixTarget(points, definition);
-  }
-
-  private _points: Observable<Point2[]>;
-  private _definition: RemixTargetDefinition;
+export class RemixTarget extends ManagedObject<RemixTargetDefinition> {
   private _activeRemixTarget: ActiveRemixTarget | undefined;
 
-  private constructor(
-    points: Observable<Point2[]>,
-    definition: RemixTargetDefinition
-  ) {
-    super();
-
-    this._points = points;
-    this._definition = definition;
-  }
-
-  initManagedObject() {
-    this.addReceipt(
+  onActivate() {
+    this.cancelOnDeactivate(
       KojiConfig.instance.mode.didChange.subscribe((mode) => {
         if (this._activeRemixTarget != null) {
           this.removeManagedObject(this._activeRemixTarget);
@@ -61,7 +35,7 @@ export class RemixTarget extends ManagedObject {
 
         if (mode !== "view") {
           this._activeRemixTarget = this.addManagedObject(
-            ActiveRemixTarget.givenPoints(this._points, this._definition)
+            new ActiveRemixTarget(this.props)
           );
         }
       }, true)
@@ -69,7 +43,7 @@ export class RemixTarget extends ManagedObject {
   }
 }
 
-class ActiveRemixTarget extends ManagedObject {
+class ActiveRemixTarget extends ManagedObject<RemixTargetDefinition> {
   private static allTargets = new Set<ActiveRemixTarget>();
   private static hoveredTarget = Observable.ofEmpty<ActiveRemixTarget>();
 
@@ -77,7 +51,7 @@ class ActiveRemixTarget extends ManagedObject {
     const orderedTargets = ArrayUtil.arrayWithOrderFromValue(
       Array.from(ActiveRemixTarget.allTargets),
       (target) => {
-        if (target == null || target._points == null) {
+        if (target == null || target.props.points == null) {
           return 0;
         }
 
@@ -86,7 +60,7 @@ class ActiveRemixTarget extends ManagedObject {
         let top: number | undefined;
         let bottom: number | undefined;
 
-        target._points.value.forEach((point) => {
+        target.props.points.value.forEach((point) => {
           if (left == null || point.x < left) {
             left = point.x;
           }
@@ -118,60 +92,29 @@ class ActiveRemixTarget extends ManagedObject {
     });
   }
 
-  static givenPoints(
-    points: Observable<Point2[]>,
-    definition: RemixTargetDefinition
-  ): ActiveRemixTarget {
-    return new ActiveRemixTarget(points, definition);
-  }
-
-  readonly valuePath: ValuePath | undefined;
   readonly polygon = Observable.givenValue<Polygon>(Polygon.ofPoints([]));
   readonly zIndex = Observable.givenValue(500);
 
   private _svg: ManagedSvg | undefined;
-  private _onClick?: (point: Point2) => void;
-  private _points: Observable<Point2[]>;
-  private _expansion: number;
-  private _color: Color;
-  private _cornerRadius: number;
-  private _strokeWidth: number;
-  private _parentElement: HTMLElement;
   private _isSelectable: Observable<boolean>;
   private _isEnabled: Observable<boolean>;
   private _wrapper: ManagedElement<HTMLDivElement>;
   private _className = Observable.ofEmpty<string>();
   private _dynamicSvgStyle: ElementStyle;
 
-  private constructor(
-    points: Observable<Point2[]>,
-    definition: RemixTargetDefinition
-  ) {
-    super();
+  constructor(props: RemixTargetDefinition) {
+    super(props);
 
-    this.valuePath = definition.valuePath;
-
-    this._onClick = definition.onClick;
-    this._points = points;
-    this._expansion = definition.expansion != null ? definition.expansion : -10;
-    this._color = definition.color || Color.givenHexString("#FFFFFF");
-    this._parentElement = definition.parentElement || document.body;
-    this._isEnabled = definition.isEnabled || Observable.givenValue(true);
-    this._isSelectable = definition.isSelectable || Observable.givenValue(true);
-
-    this._cornerRadius =
-      definition.cornerRadius != null ? definition.cornerRadius : 15;
-
-    this._strokeWidth =
-      definition.strokeWidth != null ? definition.strokeWidth : 3;
+    this._isEnabled = props.isEnabled || Observable.givenValue(true);
+    this._isSelectable = props.isSelectable || Observable.givenValue(true);
   }
 
-  initManagedObject() {
-    this.addReceipt(
-      this._points.didChange.subscribe((points) => {
+  onActivate() {
+    this.cancelOnDeactivate(
+      this.props.points.didChange.subscribe((points) => {
         if (points != null) {
           this.polygon.setValue(
-            Polygon.ofPoints(points).withExpansion(this._expansion)
+            Polygon.ofPoints(points).withExpansion(this.props.expansion || -10)
           );
         }
 
@@ -182,19 +125,23 @@ class ActiveRemixTarget extends ManagedObject {
     this._wrapper = this.addManagedObject(
       ManagedElement.givenDefinition({
         tagName: "div",
-        parentElement: this._parentElement,
+        parentElement: this.props.parentElement || document.body,
       })
     );
-    this._wrapper.style.color = this._color.toHexString();
 
-    this._dynamicSvgStyle = svgStyleGivenStrokeWidth(this._strokeWidth);
+    const color = this.props.color || Color.givenHexString("#FFFFFF");
+    this._wrapper.style.color = color.toHexString();
+
+    this._dynamicSvgStyle = svgStyleGivenStrokeWidth(
+      this.props.strokeWidth || 3
+    );
     this._className.setValue(this._dynamicSvgStyle.toCombinedClassName());
 
     this._svg = this.addManagedObject(
-      ManagedSvg.ofDefinition({
+      new ManagedSvg({
         parentElement: this._wrapper.element,
         polygon: this.polygon,
-        radius: this._cornerRadius,
+        radius: this.props.cornerRadius || 15,
         className: this._className,
         onClick: (point) => {
           this.onClick(point);
@@ -208,7 +155,7 @@ class ActiveRemixTarget extends ManagedObject {
       })
     );
 
-    this.addReceipt(
+    this.cancelOnDeactivate(
       this.zIndex.didChange.subscribe((zIndex) => {
         if (this._svg != null) {
           this._svg.style.zIndex = `${zIndex}`;
@@ -216,17 +163,17 @@ class ActiveRemixTarget extends ManagedObject {
       }, true)
     );
 
-    this.addReceipt(
+    this.cancelOnDeactivate(
       this._isEnabled.didChange.subscribe(() => {
         this.recalculateOpacity();
       })
     );
-    this.addReceipt(
+    this.cancelOnDeactivate(
       this._isSelectable.didChange.subscribe(() => {
         this.recalculateOpacity();
       })
     );
-    this.addReceipt(
+    this.cancelOnDeactivate(
       ActiveRemixTarget.hoveredTarget.didChange.subscribe(() => {
         this.recalculateOpacity();
       })
@@ -236,8 +183,8 @@ class ActiveRemixTarget extends ManagedObject {
     ActiveRemixTarget.allTargets.add(this);
     ActiveRemixTarget.reorderAllTargets();
 
-    this.addReceipt(
-      Receipt.givenCancelFunction(() => {
+    this.cancelOnDeactivate(
+      new Receipt(() => {
         ActiveRemixTarget.allTargets.delete(this);
         ActiveRemixTarget.reorderAllTargets();
 
@@ -288,16 +235,16 @@ class ActiveRemixTarget extends ManagedObject {
   }
 
   private onClick(point: Point2) {
-    if (this._onClick != null) {
+    if (this.props.onClick != null) {
       try {
-        this._onClick(point);
+        this.props.onClick(point);
       } catch (err) {
         console.warn(err);
       }
     }
 
-    if (this.valuePath != null) {
-      KojiConfig.instance.selectedPath.setValue(this.valuePath);
+    if (this.props.valuePath != null) {
+      KojiConfig.instance.selectedPath.setValue(this.props.valuePath);
     }
   }
 }

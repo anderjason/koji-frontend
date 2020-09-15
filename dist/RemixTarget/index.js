@@ -11,62 +11,38 @@ const ManagedSvg_1 = require("./_internal/ManagedSvg");
 const Polygon_1 = require("./_internal/Polygon");
 const svgStyleGivenStrokeWidth_1 = require("./_internal/svgStyleGivenStrokeWidth");
 class RemixTarget extends skytree_1.ManagedObject {
-    constructor(points, definition) {
-        super();
-        this._points = points;
-        this._definition = definition;
-    }
-    static givenPoints(points, definition) {
-        if (points == null) {
-            throw new Error("Points are required");
-        }
-        if (definition == null) {
-            throw new Error("Definition is required");
-        }
-        return new RemixTarget(points, definition);
-    }
-    initManagedObject() {
-        this.addReceipt(KojiConfig_1.KojiConfig.instance.mode.didChange.subscribe((mode) => {
+    onActivate() {
+        this.cancelOnDeactivate(KojiConfig_1.KojiConfig.instance.mode.didChange.subscribe((mode) => {
             if (this._activeRemixTarget != null) {
                 this.removeManagedObject(this._activeRemixTarget);
                 this._activeRemixTarget = undefined;
             }
             if (mode !== "view") {
-                this._activeRemixTarget = this.addManagedObject(ActiveRemixTarget.givenPoints(this._points, this._definition));
+                this._activeRemixTarget = this.addManagedObject(new ActiveRemixTarget(this.props));
             }
         }, true));
     }
 }
 exports.RemixTarget = RemixTarget;
 class ActiveRemixTarget extends skytree_1.ManagedObject {
-    constructor(points, definition) {
-        super();
+    constructor(props) {
+        super(props);
         this.polygon = observable_1.Observable.givenValue(Polygon_1.Polygon.ofPoints([]));
         this.zIndex = observable_1.Observable.givenValue(500);
         this._className = observable_1.Observable.ofEmpty();
-        this.valuePath = definition.valuePath;
-        this._onClick = definition.onClick;
-        this._points = points;
-        this._expansion = definition.expansion != null ? definition.expansion : -10;
-        this._color = definition.color || color_1.Color.givenHexString("#FFFFFF");
-        this._parentElement = definition.parentElement || document.body;
-        this._isEnabled = definition.isEnabled || observable_1.Observable.givenValue(true);
-        this._isSelectable = definition.isSelectable || observable_1.Observable.givenValue(true);
-        this._cornerRadius =
-            definition.cornerRadius != null ? definition.cornerRadius : 15;
-        this._strokeWidth =
-            definition.strokeWidth != null ? definition.strokeWidth : 3;
+        this._isEnabled = props.isEnabled || observable_1.Observable.givenValue(true);
+        this._isSelectable = props.isSelectable || observable_1.Observable.givenValue(true);
     }
     static reorderAllTargets() {
         const orderedTargets = util_1.ArrayUtil.arrayWithOrderFromValue(Array.from(ActiveRemixTarget.allTargets), (target) => {
-            if (target == null || target._points == null) {
+            if (target == null || target.props.points == null) {
                 return 0;
             }
             let left;
             let right;
             let top;
             let bottom;
-            target._points.value.forEach((point) => {
+            target.props.points.value.forEach((point) => {
                 if (left == null || point.x < left) {
                     left = point.x;
                 }
@@ -89,27 +65,25 @@ class ActiveRemixTarget extends skytree_1.ManagedObject {
             target.zIndex.setValue(500 + idx);
         });
     }
-    static givenPoints(points, definition) {
-        return new ActiveRemixTarget(points, definition);
-    }
-    initManagedObject() {
-        this.addReceipt(this._points.didChange.subscribe((points) => {
+    onActivate() {
+        this.cancelOnDeactivate(this.props.points.didChange.subscribe((points) => {
             if (points != null) {
-                this.polygon.setValue(Polygon_1.Polygon.ofPoints(points).withExpansion(this._expansion));
+                this.polygon.setValue(Polygon_1.Polygon.ofPoints(points).withExpansion(this.props.expansion || -10));
             }
             ActiveRemixTarget.reorderAllTargets();
         }, true));
         this._wrapper = this.addManagedObject(web_1.ManagedElement.givenDefinition({
             tagName: "div",
-            parentElement: this._parentElement,
+            parentElement: this.props.parentElement || document.body,
         }));
-        this._wrapper.style.color = this._color.toHexString();
-        this._dynamicSvgStyle = svgStyleGivenStrokeWidth_1.svgStyleGivenStrokeWidth(this._strokeWidth);
+        const color = this.props.color || color_1.Color.givenHexString("#FFFFFF");
+        this._wrapper.style.color = color.toHexString();
+        this._dynamicSvgStyle = svgStyleGivenStrokeWidth_1.svgStyleGivenStrokeWidth(this.props.strokeWidth || 3);
         this._className.setValue(this._dynamicSvgStyle.toCombinedClassName());
-        this._svg = this.addManagedObject(ManagedSvg_1.ManagedSvg.ofDefinition({
+        this._svg = this.addManagedObject(new ManagedSvg_1.ManagedSvg({
             parentElement: this._wrapper.element,
             polygon: this.polygon,
-            radius: this._cornerRadius,
+            radius: this.props.cornerRadius || 15,
             className: this._className,
             onClick: (point) => {
                 this.onClick(point);
@@ -121,24 +95,24 @@ class ActiveRemixTarget extends skytree_1.ManagedObject {
                 this.onLeave();
             },
         }));
-        this.addReceipt(this.zIndex.didChange.subscribe((zIndex) => {
+        this.cancelOnDeactivate(this.zIndex.didChange.subscribe((zIndex) => {
             if (this._svg != null) {
                 this._svg.style.zIndex = `${zIndex}`;
             }
         }, true));
-        this.addReceipt(this._isEnabled.didChange.subscribe(() => {
+        this.cancelOnDeactivate(this._isEnabled.didChange.subscribe(() => {
             this.recalculateOpacity();
         }));
-        this.addReceipt(this._isSelectable.didChange.subscribe(() => {
+        this.cancelOnDeactivate(this._isSelectable.didChange.subscribe(() => {
             this.recalculateOpacity();
         }));
-        this.addReceipt(ActiveRemixTarget.hoveredTarget.didChange.subscribe(() => {
+        this.cancelOnDeactivate(ActiveRemixTarget.hoveredTarget.didChange.subscribe(() => {
             this.recalculateOpacity();
         }));
         this.recalculateOpacity();
         ActiveRemixTarget.allTargets.add(this);
         ActiveRemixTarget.reorderAllTargets();
-        this.addReceipt(observable_1.Receipt.givenCancelFunction(() => {
+        this.cancelOnDeactivate(new observable_1.Receipt(() => {
             ActiveRemixTarget.allTargets.delete(this);
             ActiveRemixTarget.reorderAllTargets();
             if (ActiveRemixTarget.hoveredTarget.value === this) {
@@ -180,16 +154,16 @@ class ActiveRemixTarget extends skytree_1.ManagedObject {
         }
     }
     onClick(point) {
-        if (this._onClick != null) {
+        if (this.props.onClick != null) {
             try {
-                this._onClick(point);
+                this.props.onClick(point);
             }
             catch (err) {
                 console.warn(err);
             }
         }
-        if (this.valuePath != null) {
-            KojiConfig_1.KojiConfig.instance.selectedPath.setValue(this.valuePath);
+        if (this.props.valuePath != null) {
+            KojiConfig_1.KojiConfig.instance.selectedPath.setValue(this.props.valuePath);
         }
     }
 }

@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KojiConfig = void 0;
+const observable_1 = require("@anderjason/observable");
+const time_1 = require("@anderjason/time");
+const util_1 = require("@anderjason/util");
+const web_1 = require("@anderjason/web");
 const vcc_1 = require("@withkoji/vcc");
 const skytree_1 = require("skytree");
-const observable_1 = require("@anderjason/observable");
-const util_1 = require("@anderjason/util");
-const time_1 = require("@anderjason/time");
-const UndoManager_1 = require("./UndoManager");
 class KojiConfig extends skytree_1.ManagedObject {
     constructor() {
-        super();
+        super({});
         this.mode = observable_1.Observable.givenValue("view", observable_1.Observable.isStrictEqual);
         this._internalData = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
@@ -31,8 +31,14 @@ class KojiConfig extends skytree_1.ManagedObject {
             this._instantRemixing = new vcc_1.InstantRemixing();
             this._feedSdk = new vcc_1.FeedSdk();
         }
-        this._updateKojiLater = time_1.RateLimitedFunction.givenDefinition({
-            fn: async () => {
+        this._createUndoStepThrottled = new time_1.Throttle({
+            fn: () => {
+                this.createUndoStep();
+            },
+            duration: time_1.Duration.givenSeconds(0.25),
+        });
+        this._updateKojiLater = new time_1.Debounce({
+            fn: () => {
                 this.sendPendingUpdates();
             },
             duration: time_1.Duration.givenSeconds(0.25),
@@ -41,7 +47,7 @@ class KojiConfig extends skytree_1.ManagedObject {
     static get instance() {
         if (KojiConfig._instance == null) {
             KojiConfig._instance = new KojiConfig();
-            KojiConfig._instance.init();
+            KojiConfig._instance.activate();
         }
         return KojiConfig._instance;
     }
@@ -60,9 +66,9 @@ class KojiConfig extends skytree_1.ManagedObject {
     get canRedo() {
         return this._undoManager.canRedo;
     }
-    initManagedObject() {
+    onActivate() {
         var _a;
-        this._undoManager = new UndoManager_1.UndoManager(((_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"])) || {}, 10);
+        this._undoManager = new web_1.UndoManager(((_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"])) || {}, 10);
         this._undoManager.currentStep.didChange.subscribe((undoStep) => {
             this._internalData.setValue(undoStep);
         }, true);
@@ -110,7 +116,7 @@ class KojiConfig extends skytree_1.ManagedObject {
             }
         });
     }
-    addUndoStep() {
+    createUndoStep() {
         this._undoManager.addStep(this._internalData.value);
     }
     undo() {
@@ -124,18 +130,18 @@ class KojiConfig extends skytree_1.ManagedObject {
         }
     }
     subscribe(vccPath, fn, includeLast = false) {
-        const binding = this.addManagedObject(skytree_1.PathBinding.givenDefinition({
+        const binding = this.addManagedObject(new skytree_1.PathBinding({
             input: this._internalData,
             path: vccPath,
         }));
         this._pathBindings.add(binding);
-        const innerHandle = this.addReceipt(binding.output.didChange.subscribe((value) => {
+        const innerHandle = this.cancelOnDeactivate(binding.output.didChange.subscribe((value) => {
             fn(value);
         }, includeLast));
-        return observable_1.Receipt.givenCancelFunction(() => {
+        return new observable_1.Receipt(() => {
             this._pathBindings.delete(binding);
             innerHandle.cancel();
-            this.removeReceipt(innerHandle);
+            this.removeCancelOnDeactivate(innerHandle);
             this.removeManagedObject(binding);
         });
     }

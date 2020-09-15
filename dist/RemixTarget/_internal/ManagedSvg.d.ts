@@ -2,7 +2,7 @@ import { Point2 } from "@anderjason/geometry";
 import { Observable } from "@anderjason/observable";
 import { ManagedObject } from "skytree";
 import { Polygon } from "./Polygon";
-interface ManagedSvgDefinition {
+interface ManagedSvgProps {
     parentElement: HTMLElement;
     polygon: Observable<Polygon>;
     radius: number;
@@ -11,18 +11,9 @@ interface ManagedSvgDefinition {
     onHover: () => void;
     onLeave: () => void;
 }
-export declare class ManagedSvg extends ManagedObject {
-    static ofDefinition(definition: ManagedSvgDefinition): ManagedSvg;
-    private _parentElement;
-    private _polygon;
-    private _radius;
-    private _className;
-    private _onClick;
-    private _onHover;
-    private _onLeave;
+export declare class ManagedSvg extends ManagedObject<ManagedSvgProps> {
     private _svg;
-    private constructor();
     get style(): CSSStyleDeclaration | undefined;
-    initManagedObject(): void;
+    onActivate(): void;
 }
 export {};

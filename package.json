@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/koji-frontend",
-  "version": "1.3.1",
+  "version": "2.0.0",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -21,16 +21,16 @@
   "dependencies": {
     "@anderjason/color": "^1.0.0",
     "@anderjason/geometry": "^1.1.0",
-    "@anderjason/observable": "^1.0.0",
+    "@anderjason/observable": "^2.0.0",
     "@anderjason/tests": "^1.0.0",
-    "@anderjason/time": "^1.0.0",
+    "@anderjason/time": "^2.0.0",
     "@anderjason/util": "^1.0.0",
-    "@anderjason/web": "^1.0.0",
+    "@anderjason/web": "git+https://github.com/anderjason/web.git#dev",
     "@withkoji/vcc": "^1.1.30",
-    "skytree": "^7.0.0"
+    "skytree": "^8.0.0"
   },
   "devDependencies": {
-    "@types/node": "^14.10.0",
+    "@types/node": "^14.10.2",
     "typescript": "^4.0.2"
   },
   "bugs": {

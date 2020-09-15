@@ -5,6 +5,7 @@ import { ValuePath } from "@anderjason/util";
 import { ElementStyle } from "@anderjason/web";
 import { ManagedObject } from "skytree";
 export interface RemixTargetDefinition {
+    points: Observable<Point2[]>;
     onClick?: (point: Point2) => void;
     valuePath?: ValuePath;
     expansion?: number;
@@ -15,12 +16,8 @@ export interface RemixTargetDefinition {
     isSelectable?: Observable<boolean>;
     isEnabled?: Observable<boolean>;
 }
-export declare class RemixTarget extends ManagedObject {
-    static givenPoints(points: Observable<Point2[]>, definition: RemixTargetDefinition): RemixTarget;
-    private _points;
-    private _definition;
+export declare class RemixTarget extends ManagedObject<RemixTargetDefinition> {
     private _activeRemixTarget;
-    private constructor();
-    initManagedObject(): void;
+    onActivate(): void;
 }
 export declare const Container: ElementStyle;

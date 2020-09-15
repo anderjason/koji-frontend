@@ -5,26 +5,13 @@ const geometry_1 = require("@anderjason/geometry");
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
 class ManagedSvg extends skytree_1.ManagedObject {
-    constructor(definition) {
-        super();
-        this._parentElement = definition.parentElement;
-        this._polygon = definition.polygon;
-        this._radius = definition.radius;
-        this._className = definition.className;
-        this._onClick = definition.onClick;
-        this._onLeave = definition.onLeave;
-        this._onHover = definition.onHover;
-    }
-    static ofDefinition(definition) {
-        return new ManagedSvg(definition);
-    }
     get style() {
         if (this._svg == null) {
             return undefined;
         }
         return this._svg.style;
     }
-    initManagedObject() {
+    onActivate() {
         this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         const solidPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
         solidPath.setAttributeNS(null, "class", "solid");
@@ -33,22 +20,22 @@ class ManagedSvg extends skytree_1.ManagedObject {
         this._svg.setAttribute("aria-hidden", "true");
         this._svg.setAttribute("width", "100%");
         this._svg.setAttribute("height", "100%");
-        this.addReceipt(this._className.didChange.subscribe((className) => {
+        this.cancelOnDeactivate(this.props.className.didChange.subscribe((className) => {
             this._svg.setAttributeNS(null, "class", className || "");
         }, true));
         const onClick = (e) => {
             const point = geometry_1.Point2.givenXY(e.clientX, e.clientY);
-            this._onClick(point);
+            this.props.onClick(point);
         };
         const onTouch = (e) => {
             const point = geometry_1.Point2.givenXY(e.touches[0].clientX, e.touches[0].clientY);
-            this._onClick(point);
+            this.props.onClick(point);
         };
         const onHover = () => {
-            this._onHover();
+            this.props.onHover();
         };
         const onLeave = () => {
-            this._onLeave();
+            this.props.onLeave();
         };
         dashedPath.addEventListener("click", onClick);
         dashedPath.addEventListener("touch", onTouch);
@@ -56,17 +43,17 @@ class ManagedSvg extends skytree_1.ManagedObject {
         dashedPath.addEventListener("mouseout", onLeave);
         this._svg.appendChild(solidPath);
         this._svg.appendChild(dashedPath);
-        this._parentElement.appendChild(this._svg);
-        this.addReceipt(this._polygon.didChange.subscribe((polygon) => {
+        this.props.parentElement.appendChild(this._svg);
+        this.cancelOnDeactivate(this.props.polygon.didChange.subscribe((polygon) => {
             if (polygon == null || polygon.points.length < 3) {
                 return;
             }
-            const pathString = polygon.toPathString(this._radius);
+            const pathString = polygon.toPathString(this.props.radius);
             dashedPath.setAttribute("d", pathString);
             solidPath.setAttribute("d", pathString);
         }, true));
-        this.addReceipt(observable_1.Receipt.givenCancelFunction(() => {
-            this._parentElement.removeChild(this._svg);
+        this.cancelOnDeactivate(new observable_1.Receipt(() => {
+            this.props.parentElement.removeChild(this._svg);
             this._svg = undefined;
         }));
     }

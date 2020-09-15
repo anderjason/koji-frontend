@@ -3,51 +3,27 @@ import { Duration } from "@anderjason/time";
 import { Color } from "@anderjason/color";
 import { ElementStyle } from "@anderjason/web";
 
-export interface LoadingIndicatorOptions {
+export interface LoadingIndicatorProps {
+  parentElement: HTMLElement;
   waitDuration?: Duration;
   color?: Color;
 }
 
-export class LoadingIndicator extends ManagedObject {
-  static ofDocument(options?: LoadingIndicatorOptions): LoadingIndicator {
-    return new LoadingIndicator(document.body, options);
-  }
-
-  static givenParent(
-    parentElement: HTMLElement,
-    options?: LoadingIndicatorOptions
-  ): LoadingIndicator {
-    return new LoadingIndicator(parentElement, options);
-  }
-
-  private _parentElement: HTMLElement;
-  private _waitDuration: Duration;
-  private _color: Color;
-
-  private constructor(
-    parentElement: HTMLElement,
-    options: LoadingIndicatorOptions = {}
-  ) {
-    super();
-
-    this._parentElement = parentElement;
-    this._waitDuration = options.waitDuration || Duration.givenSeconds(0.5);
-    this._color = options.color || Color.givenHexString("#FFFFFF");
-  }
-
-  initManagedObject() {
+export class LoadingIndicator extends ManagedObject<LoadingIndicatorProps> {
+  onActivate() {
     const managedLoader = this.addManagedObject(
       LoaderStyle.toManagedElement({
         tagName: "div",
-        parentElement: this._parentElement,
+        parentElement: this.props.parentElement,
       })
     );
 
-    if (this._parentElement === document.body) {
+    if (this.props.parentElement === document.body) {
       managedLoader.addModifier("isCentered");
     }
 
-    const hexColor = this._color.toHexString();
+    const color = this.props.color || Color.givenHexString("#FFFFFF");
+    const hexColor = color.toHexString();
 
     managedLoader.element.innerHTML = `
       <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
@@ -68,11 +44,11 @@ export class LoadingIndicator extends ManagedObject {
     `;
 
     this.addManagedObject(
-      Timer.givenDefinition({
+      new Timer({
         fn: () => {
           managedLoader.style.opacity = "1";
         },
-        duration: this._waitDuration,
+        duration: this.props.waitDuration || Duration.givenSeconds(0.5),
       })
     );
   }
