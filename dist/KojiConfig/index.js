@@ -115,6 +115,9 @@ class KojiConfig extends skytree_1.ManagedObject {
     createUndoStep() {
         this._undoManager.addStep(this._internalData.value);
     }
+    clearUndoSteps() {
+        this._undoManager.clearSteps();
+    }
     undo() {
         if (this._undoManager.undo()) {
             this._updateKojiLater.invoke();

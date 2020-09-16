@@ -4,7 +4,7 @@ import {
   Receipt,
   TypedEvent,
 } from "@anderjason/observable";
-import { Debounce, Duration, Throttle } from "@anderjason/time";
+import { Debounce, Duration } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { UndoManager } from "@anderjason/web";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
@@ -138,6 +138,10 @@ export class KojiConfig extends ManagedObject {
 
   createUndoStep(): void {
     this._undoManager.addStep(this._internalData.value);
+  }
+
+  clearUndoSteps(): void {
+    this._undoManager.clearSteps();
   }
 
   undo(): void {

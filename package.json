@@ -27,7 +27,7 @@
     "@anderjason/util": "^1.0.0",
     "@anderjason/web": "git+https://github.com/anderjason/web.git#dev",
     "@withkoji/vcc": "^1.1.30",
-    "skytree": "^8.0.0"
+    "skytree": "^8.0.1"
   },
   "devDependencies": {
     "@types/node": "^14.10.2",

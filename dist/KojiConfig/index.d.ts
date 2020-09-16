@@ -23,6 +23,7 @@ export declare class KojiConfig extends ManagedObject {
     get canRedo(): ReadOnlyObservable<boolean>;
     onActivate(): void;
     createUndoStep(): void;
+    clearUndoSteps(): void;
     undo(): void;
     redo(): void;
     subscribe(vccPath: ValuePath, fn: (value: any) => void, includeLast?: boolean): Receipt;
