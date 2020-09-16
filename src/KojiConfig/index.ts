@@ -68,13 +68,13 @@ export class KojiConfig extends ManagedObject {
     return this._feedSdk;
   }
 
-  get canUndo(): ReadOnlyObservable<boolean> {
-    return this._undoManager.canUndo;
-  }
+  // get canUndo(): ReadOnlyObservable<boolean> {
+  //   return this._undoManager.canUndo;
+  // }
 
-  get canRedo(): ReadOnlyObservable<boolean> {
-    return this._undoManager.canRedo;
-  }
+  // get canRedo(): ReadOnlyObservable<boolean> {
+  //   return this._undoManager.canRedo;
+  // }
 
   onActivate() {
     this._undoManager = new UndoManager<unknown>(
@@ -136,25 +136,25 @@ export class KojiConfig extends ManagedObject {
     });
   }
 
-  createUndoStep(): void {
-    this._undoManager.addStep(this._internalData.value);
-  }
+  // createUndoStep(): void {
+  //   this._undoManager.addStep(this._internalData.value);
+  // }
 
-  clearUndoSteps(): void {
-    this._undoManager.clearSteps();
-  }
+  // clearUndoSteps(): void {
+  //   this._undoManager.clearSteps();
+  // }
 
-  undo(): void {
-    if (this._undoManager.undo()) {
-      this._updateKojiLater.invoke();
-    }
-  }
+  // undo(): void {
+  //   if (this._undoManager.undo()) {
+  //     this._updateKojiLater.invoke();
+  //   }
+  // }
 
-  redo(): void {
-    if (this._undoManager.redo()) {
-      this._updateKojiLater.invoke();
-    }
-  }
+  // redo(): void {
+  //   if (this._undoManager.redo()) {
+  //     this._updateKojiLater.invoke();
+  //   }
+  // }
 
   subscribe(
     vccPath: ValuePath,

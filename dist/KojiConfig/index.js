@@ -56,12 +56,12 @@ class KojiConfig extends skytree_1.ManagedObject {
     get feedSdk() {
         return this._feedSdk;
     }
-    get canUndo() {
-        return this._undoManager.canUndo;
-    }
-    get canRedo() {
-        return this._undoManager.canRedo;
-    }
+    // get canUndo(): ReadOnlyObservable<boolean> {
+    //   return this._undoManager.canUndo;
+    // }
+    // get canRedo(): ReadOnlyObservable<boolean> {
+    //   return this._undoManager.canRedo;
+    // }
     onActivate() {
         var _a;
         this._undoManager = new web_1.UndoManager(((_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"])) || {}, 10);
@@ -112,22 +112,22 @@ class KojiConfig extends skytree_1.ManagedObject {
             }
         });
     }
-    createUndoStep() {
-        this._undoManager.addStep(this._internalData.value);
-    }
-    clearUndoSteps() {
-        this._undoManager.clearSteps();
-    }
-    undo() {
-        if (this._undoManager.undo()) {
-            this._updateKojiLater.invoke();
-        }
-    }
-    redo() {
-        if (this._undoManager.redo()) {
-            this._updateKojiLater.invoke();
-        }
-    }
+    // createUndoStep(): void {
+    //   this._undoManager.addStep(this._internalData.value);
+    // }
+    // clearUndoSteps(): void {
+    //   this._undoManager.clearSteps();
+    // }
+    // undo(): void {
+    //   if (this._undoManager.undo()) {
+    //     this._updateKojiLater.invoke();
+    //   }
+    // }
+    // redo(): void {
+    //   if (this._undoManager.redo()) {
+    //     this._updateKojiLater.invoke();
+    //   }
+    // }
     subscribe(vccPath, fn, includeLast = false) {
         const binding = this.addManagedObject(new skytree_1.PathBinding({
             input: this._internalData,
