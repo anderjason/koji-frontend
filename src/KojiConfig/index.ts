@@ -1,9 +1,4 @@
-import {
-  Observable,
-  ReadOnlyObservable,
-  Receipt,
-  TypedEvent,
-} from "@anderjason/observable";
+import { Observable, Receipt, TypedEvent } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { UndoManager } from "@anderjason/web";
