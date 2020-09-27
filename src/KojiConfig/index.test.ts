@@ -25,7 +25,7 @@ Test.define("KojiConfig supports PathBinding", () => {
   KojiConfig.instance.update(path, "file.jpg");
 
   const pathBinding = new PathBinding({
-    input: (KojiConfig.instance as any)._internalData.value,
+    input: (KojiConfig.instance as any)._internalData,
     path: path,
   });
   pathBinding.activate();

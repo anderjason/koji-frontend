@@ -33,7 +33,7 @@ export class KojiConfig extends ManagedObject {
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
   private _updateKojiLater: Debounce<void>;
-  private _pathBindings = new Set<PathBinding>();
+  private _pathBindings = new Set<PathBinding<unknown, unknown>>();
 
   private constructor() {
     super({});

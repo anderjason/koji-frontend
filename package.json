@@ -23,15 +23,15 @@
     "@anderjason/geometry": "git+https://github.com/anderjason/geometry.git#dev",
     "@anderjason/observable": "^2.0.0",
     "@anderjason/tests": "^1.0.0",
-    "@anderjason/time": "^2.0.0",
+    "@anderjason/time": "^2.0.1",
     "@anderjason/util": "^1.0.0",
-    "@anderjason/web": "^2.0.0",
+    "@anderjason/web": "git+https://github.com/anderjason/web.git#dev",
     "@withkoji/vcc": "^1.1.30",
-    "skytree": "^8.0.2"
+    "skytree": "git+https://github.com/anderjason/skytree.git#dev"
   },
   "devDependencies": {
-    "@types/node": "^14.10.2",
-    "typescript": "^4.0.2"
+    "@types/node": "^14.11.2",
+    "typescript": "^4.0.3"
   },
   "bugs": {
     "url": "https://github.com/anderjason/koji-frontend/issues"
