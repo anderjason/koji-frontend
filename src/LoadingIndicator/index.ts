@@ -48,6 +48,7 @@ export class LoadingIndicator extends ManagedObject<LoadingIndicatorProps> {
         fn: () => {
           managedLoader.style.opacity = "1";
         },
+        isRepeating: false,
         duration: this.props.waitDuration || Duration.givenSeconds(0.5),
       })
     );

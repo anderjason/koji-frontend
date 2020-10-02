@@ -37,6 +37,7 @@ class LoadingIndicator extends skytree_1.ManagedObject {
             fn: () => {
                 managedLoader.style.opacity = "1";
             },
+            isRepeating: false,
             duration: this.props.waitDuration || time_1.Duration.givenSeconds(0.5),
         }));
     }
