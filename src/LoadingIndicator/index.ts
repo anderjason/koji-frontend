@@ -1,4 +1,4 @@
-import { ManagedObject, Timer } from "skytree";
+import { Actor, Timer } from "skytree";
 import { Duration } from "@anderjason/time";
 import { Color } from "@anderjason/color";
 import { ElementStyle } from "@anderjason/web";
@@ -9,9 +9,9 @@ export interface LoadingIndicatorProps {
   color?: Color;
 }
 
-export class LoadingIndicator extends ManagedObject<LoadingIndicatorProps> {
+export class LoadingIndicator extends Actor<LoadingIndicatorProps> {
   onActivate() {
-    const managedLoader = this.addManagedObject(
+    const managedLoader = this.addActor(
       LoaderStyle.toManagedElement({
         tagName: "div",
         parentElement: this.props.parentElement,
@@ -43,7 +43,7 @@ export class LoadingIndicator extends ManagedObject<LoadingIndicatorProps> {
       </svg>
     `;
 
-    this.addManagedObject(
+    this.addActor(
       new Timer({
         fn: () => {
           managedLoader.style.opacity = "1";

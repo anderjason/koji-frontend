@@ -4,7 +4,7 @@ exports.ManagedSvg = void 0;
 const geometry_1 = require("@anderjason/geometry");
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
-class ManagedSvg extends skytree_1.ManagedObject {
+class ManagedSvg extends skytree_1.Actor {
     get style() {
         if (this._svg == null) {
             return undefined;

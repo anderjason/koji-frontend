@@ -1,6 +1,5 @@
 import { Test } from "@anderjason/tests";
-import "./KojiConfig/index.test";
-import "./KojiUtil/index.test";
+import "./Vcc/index.test";
 
 Test.runAll()
   .then(() => {

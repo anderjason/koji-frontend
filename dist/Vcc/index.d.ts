@@ -1,11 +1,11 @@
 import { Observable, Receipt, TypedEvent } from "@anderjason/observable";
 import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 export declare type KojiMode = "view" | "generator" | "template";
-export declare class KojiConfig extends ManagedObject {
+export declare class Vcc extends Actor<void> {
     private static _instance;
-    static get instance(): KojiConfig;
+    static get instance(): Vcc;
     readonly mode: Observable<KojiMode>;
     readonly willReceiveExternalData: TypedEvent<ValuePath>;
     private _internalData;

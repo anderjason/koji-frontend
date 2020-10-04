@@ -1,7 +1,6 @@
-import { KojiConfig } from "./KojiConfig";
-import { KojiUtil } from "./KojiUtil";
+import { Vcc } from "./Vcc";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { KojiNetworkUtil } from "./KojiNetworkUtil";
 import { RemixTarget } from "./RemixTarget";
 
-export { KojiConfig, KojiUtil, LoadingIndicator, KojiNetworkUtil, RemixTarget };
+export { Vcc, LoadingIndicator, KojiNetworkUtil, RemixTarget };

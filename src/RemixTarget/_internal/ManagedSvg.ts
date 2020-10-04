@@ -1,6 +1,6 @@
 import { Point2 } from "@anderjason/geometry";
 import { Observable, Receipt } from "@anderjason/observable";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 import { Polygon } from "./Polygon";
 
 interface ManagedSvgProps {
@@ -13,7 +13,7 @@ interface ManagedSvgProps {
   onLeave: () => void;
 }
 
-export class ManagedSvg extends ManagedObject<ManagedSvgProps> {
+export class ManagedSvg extends Actor<ManagedSvgProps> {
   private _svg: SVGElement;
 
   get style(): CSSStyleDeclaration | undefined {

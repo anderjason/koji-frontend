@@ -3,7 +3,7 @@ import { Point2 } from "@anderjason/geometry";
 import { Observable } from "@anderjason/observable";
 import { ValuePath } from "@anderjason/util";
 import { ElementStyle } from "@anderjason/web";
-import { ManagedObject } from "skytree";
+import { Actor } from "skytree";
 export interface RemixTargetDefinition {
     points: Observable<Point2[]>;
     onClick?: (point: Point2) => void;
@@ -16,7 +16,7 @@ export interface RemixTargetDefinition {
     isSelectable?: Observable<boolean>;
     isEnabled?: Observable<boolean>;
 }
-export declare class RemixTarget extends ManagedObject<RemixTargetDefinition> {
+export declare class RemixTarget extends Actor<RemixTargetDefinition> {
     private _activeRemixTarget;
     onActivate(): void;
 }

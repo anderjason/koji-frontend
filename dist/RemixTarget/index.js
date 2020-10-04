@@ -6,25 +6,25 @@ const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const KojiConfig_1 = require("../KojiConfig");
+const Vcc_1 = require("../Vcc");
 const ManagedSvg_1 = require("./_internal/ManagedSvg");
 const Polygon_1 = require("./_internal/Polygon");
 const svgStyleGivenStrokeWidth_1 = require("./_internal/svgStyleGivenStrokeWidth");
-class RemixTarget extends skytree_1.ManagedObject {
+class RemixTarget extends skytree_1.Actor {
     onActivate() {
-        this.cancelOnDeactivate(KojiConfig_1.KojiConfig.instance.mode.didChange.subscribe((mode) => {
+        this.cancelOnDeactivate(Vcc_1.Vcc.instance.mode.didChange.subscribe((mode) => {
             if (this._activeRemixTarget != null) {
-                this.removeManagedObject(this._activeRemixTarget);
+                this.removeActor(this._activeRemixTarget);
                 this._activeRemixTarget = undefined;
             }
             if (mode !== "view") {
-                this._activeRemixTarget = this.addManagedObject(new ActiveRemixTarget(this.props));
+                this._activeRemixTarget = this.addActor(new ActiveRemixTarget(this.props));
             }
         }, true));
     }
 }
 exports.RemixTarget = RemixTarget;
-class ActiveRemixTarget extends skytree_1.ManagedObject {
+class ActiveRemixTarget extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this.polygon = observable_1.Observable.givenValue(Polygon_1.Polygon.ofPoints([]));
@@ -72,7 +72,7 @@ class ActiveRemixTarget extends skytree_1.ManagedObject {
             }
             ActiveRemixTarget.reorderAllTargets();
         }, true));
-        this._wrapper = this.addManagedObject(web_1.ManagedElement.givenDefinition({
+        this._wrapper = this.addActor(web_1.ManagedElement.givenDefinition({
             tagName: "div",
             parentElement: this.props.parentElement || document.body,
         }));
@@ -80,7 +80,7 @@ class ActiveRemixTarget extends skytree_1.ManagedObject {
         this._wrapper.style.color = color.toHexString();
         this._dynamicSvgStyle = svgStyleGivenStrokeWidth_1.svgStyleGivenStrokeWidth(this.props.strokeWidth || 3);
         this._className.setValue(this._dynamicSvgStyle.toCombinedClassName());
-        this._svg = this.addManagedObject(new ManagedSvg_1.ManagedSvg({
+        this._svg = this.addActor(new ManagedSvg_1.ManagedSvg({
             parentElement: this._wrapper.element,
             polygon: this.polygon,
             radius: this.props.cornerRadius || 15,
@@ -163,7 +163,7 @@ class ActiveRemixTarget extends skytree_1.ManagedObject {
             }
         }
         if (this.props.valuePath != null) {
-            KojiConfig_1.KojiConfig.instance.selectedPath.setValue(this.props.valuePath);
+            Vcc_1.Vcc.instance.selectedPath.setValue(this.props.valuePath);
         }
     }
 }

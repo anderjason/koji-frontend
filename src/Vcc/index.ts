@@ -3,21 +3,21 @@ import { Debounce, Duration } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { UndoManager } from "@anderjason/web";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
-import { ManagedObject, PathBinding } from "skytree";
+import { Actor, PathBinding } from "skytree";
 
 export type KojiMode = "view" | "generator" | "template";
 type PathPart = string | number;
 
-export class KojiConfig extends ManagedObject {
-  private static _instance: KojiConfig;
+export class Vcc extends Actor<void> {
+  private static _instance: Vcc;
 
-  static get instance(): KojiConfig {
-    if (KojiConfig._instance == null) {
-      KojiConfig._instance = new KojiConfig();
-      KojiConfig._instance.activate();
+  static get instance(): Vcc {
+    if (Vcc._instance == null) {
+      Vcc._instance = new Vcc();
+      Vcc._instance.activate();
     }
 
-    return KojiConfig._instance;
+    return Vcc._instance;
   }
 
   readonly mode = Observable.givenValue<KojiMode>(
@@ -36,7 +36,7 @@ export class KojiConfig extends ManagedObject {
   private _pathBindings = new Set<PathBinding<unknown, unknown>>();
 
   private constructor() {
-    super({});
+    super();
 
     if (typeof window !== "undefined") {
       this._instantRemixing = new InstantRemixing();
@@ -156,7 +156,7 @@ export class KojiConfig extends ManagedObject {
     fn: (value: any) => void,
     includeLast = false
   ): Receipt {
-    const binding = this.addManagedObject(
+    const binding = this.addActor(
       new PathBinding({
         input: this._internalData,
         path: vccPath,
@@ -176,7 +176,7 @@ export class KojiConfig extends ManagedObject {
 
       innerHandle.cancel();
       this.removeCancelOnDeactivate(innerHandle);
-      this.removeManagedObject(binding);
+      this.removeActor(binding);
     });
   }
 

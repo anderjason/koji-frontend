@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.KojiConfig = void 0;
+exports.Vcc = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const vcc_1 = require("@withkoji/vcc");
 const skytree_1 = require("skytree");
-class KojiConfig extends skytree_1.ManagedObject {
+class Vcc extends skytree_1.Actor {
     constructor() {
-        super({});
+        super();
         this.mode = observable_1.Observable.givenValue("view", observable_1.Observable.isStrictEqual);
         this.willReceiveExternalData = new observable_1.TypedEvent();
         this._internalData = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
@@ -41,11 +41,11 @@ class KojiConfig extends skytree_1.ManagedObject {
         });
     }
     static get instance() {
-        if (KojiConfig._instance == null) {
-            KojiConfig._instance = new KojiConfig();
-            KojiConfig._instance.activate();
+        if (Vcc._instance == null) {
+            Vcc._instance = new Vcc();
+            Vcc._instance.activate();
         }
-        return KojiConfig._instance;
+        return Vcc._instance;
     }
     get selectedPath() {
         return this._selectedPath;
@@ -129,7 +129,7 @@ class KojiConfig extends skytree_1.ManagedObject {
     //   }
     // }
     subscribe(vccPath, fn, includeLast = false) {
-        const binding = this.addManagedObject(new skytree_1.PathBinding({
+        const binding = this.addActor(new skytree_1.PathBinding({
             input: this._internalData,
             path: vccPath,
         }));
@@ -141,7 +141,7 @@ class KojiConfig extends skytree_1.ManagedObject {
             this._pathBindings.delete(binding);
             innerHandle.cancel();
             this.removeCancelOnDeactivate(innerHandle);
-            this.removeManagedObject(binding);
+            this.removeActor(binding);
         });
     }
     toOptionalValueGivenPath(path) {
@@ -164,5 +164,5 @@ class KojiConfig extends skytree_1.ManagedObject {
         }
     }
 }
-exports.KojiConfig = KojiConfig;
+exports.Vcc = Vcc;
 //# sourceMappingURL=index.js.map

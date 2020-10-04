@@ -5,9 +5,9 @@ const skytree_1 = require("skytree");
 const time_1 = require("@anderjason/time");
 const color_1 = require("@anderjason/color");
 const web_1 = require("@anderjason/web");
-class LoadingIndicator extends skytree_1.ManagedObject {
+class LoadingIndicator extends skytree_1.Actor {
     onActivate() {
-        const managedLoader = this.addManagedObject(exports.LoaderStyle.toManagedElement({
+        const managedLoader = this.addActor(exports.LoaderStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
@@ -33,7 +33,7 @@ class LoadingIndicator extends skytree_1.ManagedObject {
         </g>
       </svg>
     `;
-        this.addManagedObject(new skytree_1.Timer({
+        this.addActor(new skytree_1.Timer({
             fn: () => {
                 managedLoader.style.opacity = "1";
             },

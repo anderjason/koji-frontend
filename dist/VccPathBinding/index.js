@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VccPathBinding = void 0;
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
-const KojiConfig_1 = require("../KojiConfig");
-class VccPathBinding extends skytree_1.ManagedObject {
+const Vcc_1 = require("../Vcc");
+class VccPathBinding extends skytree_1.Actor {
     constructor(props) {
         super(props);
         if (props.output != null) {
@@ -15,7 +15,7 @@ class VccPathBinding extends skytree_1.ManagedObject {
         }
     }
     onActivate() {
-        this.cancelOnDeactivate(KojiConfig_1.KojiConfig.instance.subscribe(this.props.vccPath, (vccValue) => {
+        this.cancelOnDeactivate(Vcc_1.Vcc.instance.subscribe(this.props.vccPath, (vccValue) => {
             let result = vccValue;
             if (this.props.convertFromVcc != null) {
                 result = this.props.convertFromVcc(result);
@@ -27,7 +27,7 @@ class VccPathBinding extends skytree_1.ManagedObject {
             if (this.props.convertToVcc != null) {
                 result = this.props.convertFromVcc(result);
             }
-            KojiConfig_1.KojiConfig.instance.update(this.props.vccPath, result);
+            Vcc_1.Vcc.instance.update(this.props.vccPath, result);
         }));
     }
 }

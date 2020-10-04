@@ -3,8 +3,8 @@ import { Point2 } from "@anderjason/geometry";
 import { Observable, Receipt } from "@anderjason/observable";
 import { ArrayUtil, ValuePath } from "@anderjason/util";
 import { ElementStyle, ManagedElement } from "@anderjason/web";
-import { ManagedObject } from "skytree";
-import { KojiConfig } from "../KojiConfig";
+import { Actor } from "skytree";
+import { Vcc } from "../Vcc";
 import { ManagedSvg } from "./_internal/ManagedSvg";
 import { Polygon } from "./_internal/Polygon";
 import { svgStyleGivenStrokeWidth } from "./_internal/svgStyleGivenStrokeWidth";
@@ -22,19 +22,19 @@ export interface RemixTargetDefinition {
   isEnabled?: Observable<boolean>;
 }
 
-export class RemixTarget extends ManagedObject<RemixTargetDefinition> {
+export class RemixTarget extends Actor<RemixTargetDefinition> {
   private _activeRemixTarget: ActiveRemixTarget | undefined;
 
   onActivate() {
     this.cancelOnDeactivate(
-      KojiConfig.instance.mode.didChange.subscribe((mode) => {
+      Vcc.instance.mode.didChange.subscribe((mode) => {
         if (this._activeRemixTarget != null) {
-          this.removeManagedObject(this._activeRemixTarget);
+          this.removeActor(this._activeRemixTarget);
           this._activeRemixTarget = undefined;
         }
 
         if (mode !== "view") {
-          this._activeRemixTarget = this.addManagedObject(
+          this._activeRemixTarget = this.addActor(
             new ActiveRemixTarget(this.props)
           );
         }
@@ -43,7 +43,7 @@ export class RemixTarget extends ManagedObject<RemixTargetDefinition> {
   }
 }
 
-class ActiveRemixTarget extends ManagedObject<RemixTargetDefinition> {
+class ActiveRemixTarget extends Actor<RemixTargetDefinition> {
   private static allTargets = new Set<ActiveRemixTarget>();
   private static hoveredTarget = Observable.ofEmpty<ActiveRemixTarget>();
 
@@ -122,7 +122,7 @@ class ActiveRemixTarget extends ManagedObject<RemixTargetDefinition> {
       }, true)
     );
 
-    this._wrapper = this.addManagedObject(
+    this._wrapper = this.addActor(
       ManagedElement.givenDefinition({
         tagName: "div",
         parentElement: this.props.parentElement || document.body,
@@ -137,7 +137,7 @@ class ActiveRemixTarget extends ManagedObject<RemixTargetDefinition> {
     );
     this._className.setValue(this._dynamicSvgStyle.toCombinedClassName());
 
-    this._svg = this.addManagedObject(
+    this._svg = this.addActor(
       new ManagedSvg({
         parentElement: this._wrapper.element,
         polygon: this.polygon,
@@ -244,7 +244,7 @@ class ActiveRemixTarget extends ManagedObject<RemixTargetDefinition> {
     }
 
     if (this.props.valuePath != null) {
-      KojiConfig.instance.selectedPath.setValue(this.props.valuePath);
+      Vcc.instance.selectedPath.setValue(this.props.valuePath);
     }
   }
 }

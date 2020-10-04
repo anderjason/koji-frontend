@@ -1,7 +1,7 @@
 import { Observable } from "@anderjason/observable";
 import { ValuePath } from "@anderjason/util";
-import { ManagedObject } from "skytree";
-import { KojiConfig } from "../KojiConfig";
+import { Actor } from "skytree";
+import { Vcc } from "../Vcc";
 
 export interface VccPathBindingProps<T> {
   vccPath: ValuePath;
@@ -11,7 +11,7 @@ export interface VccPathBindingProps<T> {
   convertFromVcc?: (value: any) => T;
 }
 
-export class VccPathBinding<T> extends ManagedObject<VccPathBindingProps<T>> {
+export class VccPathBinding<T> extends Actor<VccPathBindingProps<T>> {
   readonly output: Observable<T>;
 
   constructor(props: VccPathBindingProps<T>) {
@@ -26,7 +26,7 @@ export class VccPathBinding<T> extends ManagedObject<VccPathBindingProps<T>> {
 
   onActivate() {
     this.cancelOnDeactivate(
-      KojiConfig.instance.subscribe(
+      Vcc.instance.subscribe(
         this.props.vccPath,
         (vccValue) => {
           let result = vccValue;
@@ -47,7 +47,7 @@ export class VccPathBinding<T> extends ManagedObject<VccPathBindingProps<T>> {
           result = this.props.convertFromVcc(result);
         }
 
-        KojiConfig.instance.update(this.props.vccPath, result);
+        Vcc.instance.update(this.props.vccPath, result);
       })
     );
   }
