@@ -64,8 +64,8 @@ class Vcc extends skytree_1.Actor {
     // }
     onActivate() {
         var _a;
-        this._undoManager = new web_1.UndoManager(((_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"])) || {}, 10);
-        this._undoManager.currentStep.didChange.subscribe((undoStep) => {
+        this._undoContext = new web_1.UndoContext(((_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"])) || {}, 10);
+        this._undoContext.currentStep.didChange.subscribe((undoStep) => {
             this._internalData.setValue(undoStep);
         }, true);
         if (this._instantRemixing != null) {

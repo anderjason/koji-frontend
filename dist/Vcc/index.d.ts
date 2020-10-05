@@ -9,7 +9,7 @@ export declare class Vcc extends Actor<void> {
     readonly mode: Observable<KojiMode>;
     readonly willReceiveExternalData: TypedEvent<ValuePath>;
     private _internalData;
-    private _undoManager;
+    private _undoContext;
     private _selectedPath;
     private _instantRemixing;
     private _feedSdk;

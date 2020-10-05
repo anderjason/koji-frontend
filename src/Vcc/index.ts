@@ -1,7 +1,7 @@
 import { Observable, Receipt, TypedEvent } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
-import { UndoManager } from "@anderjason/web";
+import { UndoContext } from "@anderjason/web";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { Actor, PathBinding } from "skytree";
 
@@ -28,7 +28,7 @@ export class Vcc extends Actor<void> {
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
 
   private _internalData = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
-  private _undoManager: UndoManager;
+  private _undoContext: UndoContext;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
@@ -72,12 +72,12 @@ export class Vcc extends Actor<void> {
   // }
 
   onActivate() {
-    this._undoManager = new UndoManager<unknown>(
+    this._undoContext = new UndoContext<unknown>(
       this._instantRemixing?.get(["general"]) || {},
       10
     );
 
-    this._undoManager.currentStep.didChange.subscribe((undoStep) => {
+    this._undoContext.currentStep.didChange.subscribe((undoStep) => {
       this._internalData.setValue(undoStep);
     }, true);
 
