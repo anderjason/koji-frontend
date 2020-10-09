@@ -42,7 +42,7 @@ class PriceInput extends skytree_1.Actor {
                 if (e.displayText == "") {
                     return "$";
                 }
-                if (e.displayText === "$.") {
+                if (e.displayText === "$." || e.displayText === ".") {
                     return "$0.";
                 }
                 if (e.displayText === "$00") {

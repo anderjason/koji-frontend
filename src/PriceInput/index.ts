@@ -55,7 +55,7 @@ export class PriceInput extends Actor<PriceInputProps> {
             return "$";
           }
 
-          if (e.displayText === "$.") {
+          if (e.displayText === "$." || e.displayText === ".") {
             return "$0.";
           }
 
