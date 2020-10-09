@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RemixTarget = exports.KojiNetworkUtil = exports.LoadingIndicator = exports.Vcc = void 0;
+exports.VccPathBinding = exports.RemixTarget = exports.KojiNetworkUtil = exports.LoadingIndicator = exports.Vcc = void 0;
 const Vcc_1 = require("./Vcc");
 Object.defineProperty(exports, "Vcc", { enumerable: true, get: function () { return Vcc_1.Vcc; } });
 const LoadingIndicator_1 = require("./LoadingIndicator");
@@ -9,4 +9,6 @@ const KojiNetworkUtil_1 = require("./KojiNetworkUtil");
 Object.defineProperty(exports, "KojiNetworkUtil", { enumerable: true, get: function () { return KojiNetworkUtil_1.KojiNetworkUtil; } });
 const RemixTarget_1 = require("./RemixTarget");
 Object.defineProperty(exports, "RemixTarget", { enumerable: true, get: function () { return RemixTarget_1.RemixTarget; } });
+const VccPathBinding_1 = require("./VccPathBinding");
+Object.defineProperty(exports, "VccPathBinding", { enumerable: true, get: function () { return VccPathBinding_1.VccPathBinding; } });
 //# sourceMappingURL=index.js.map
