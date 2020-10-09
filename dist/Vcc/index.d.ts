@@ -8,6 +8,7 @@ export declare class Vcc extends Actor<void> {
     static get instance(): Vcc;
     readonly mode: Observable<KojiMode>;
     readonly willReceiveExternalData: TypedEvent<ValuePath>;
+    readonly allPlaybackShouldStop: TypedEvent<void>;
     private _internalData;
     private _undoContext;
     private _selectedPath;

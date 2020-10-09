@@ -12,6 +12,7 @@ class Vcc extends skytree_1.Actor {
         super();
         this.mode = observable_1.Observable.givenValue("view", observable_1.Observable.isStrictEqual);
         this.willReceiveExternalData = new observable_1.TypedEvent();
+        this.allPlaybackShouldStop = new observable_1.TypedEvent();
         this._internalData = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
         this._pathBindings = new Set();
@@ -98,6 +99,11 @@ class Vcc extends skytree_1.Actor {
         }
         if (this._feedSdk != null) {
             this._feedSdk.load();
+            this._feedSdk.onPlaybackStateChanged((isPlaying) => {
+                if (!isPlaying) {
+                    this.allPlaybackShouldStop.emit();
+                }
+            });
         }
         this._selectedPath.didChange.subscribe((path) => {
             if (path != null) {

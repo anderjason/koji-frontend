@@ -26,6 +26,7 @@ export class Vcc extends Actor<void> {
   );
 
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
+  readonly allPlaybackShouldStop = new TypedEvent();
 
   private _internalData = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
   private _undoContext: UndoContext;
@@ -115,6 +116,12 @@ export class Vcc extends Actor<void> {
 
     if (this._feedSdk != null) {
       this._feedSdk.load();
+
+      this._feedSdk.onPlaybackStateChanged((isPlaying) => {
+        if (!isPlaying) {
+          this.allPlaybackShouldStop.emit();
+        }
+      });
     }
 
     this._selectedPath.didChange.subscribe((path) => {
