@@ -5,7 +5,7 @@ import { StringUtil } from "@anderjason/util";
 import { ElementStyle, Pointer, ScreenSize } from "@anderjason/web";
 import { Actor, ConditionalActivator, DelayActivator } from "skytree";
 import { Callout } from "../Callout";
-import { Vcc } from "../Vcc";
+import { Koji } from "../Koji";
 
 export interface RemixModeButtonDefinition {
   parentElement: HTMLElement;
@@ -127,7 +127,7 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
     );
 
     this.cancelOnDeactivate(
-      Vcc.instance.mode.didChange.subscribe((mode) => {
+      Koji.instance.mode.didChange.subscribe((mode) => {
         switch (mode) {
           case "view":
             shouldShowCallout.setValue(false);
@@ -151,7 +151,7 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
   }
 
   private onClick(): void {
-    const mode = Vcc.instance.mode;
+    const mode = Koji.instance.mode;
     switch (mode.value) {
       case "generator":
         mode.setValue("template");

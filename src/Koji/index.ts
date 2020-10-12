@@ -2,22 +2,23 @@ import { Observable, TypedEvent } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
 import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
+import { ObservableState } from "@anderjason/web";
 import { Actor } from "skytree";
-import { ObservableState } from "../ObservableState";
 
 export type KojiMode = "view" | "generator" | "template";
+
 type PathPart = string | number;
 
-export class Vcc extends Actor<void> {
-  private static _instance: Vcc;
+export class Koji extends Actor<void> {
+  private static _instance: Koji;
 
-  static get instance(): Vcc {
-    if (Vcc._instance == null) {
-      Vcc._instance = new Vcc();
-      Vcc._instance.activate();
+  static get instance(): Koji {
+    if (Koji._instance == null) {
+      Koji._instance = new Koji();
+      Koji._instance.activate();
     }
 
-    return Vcc._instance;
+    return Koji._instance;
   }
 
   readonly mode = Observable.givenValue<KojiMode>(
@@ -28,7 +29,7 @@ export class Vcc extends Actor<void> {
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
   readonly allPlaybackShouldStop = new TypedEvent();
 
-  private _observableState: ObservableState;
+  private _vccData: ObservableState;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
@@ -50,8 +51,8 @@ export class Vcc extends Actor<void> {
     });
   }
 
-  get observableState(): ObservableState {
-    return this._observableState;
+  get vccData(): ObservableState {
+    return this._vccData;
   }
 
   get selectedPath(): Observable<ValuePath> {
@@ -67,14 +68,14 @@ export class Vcc extends Actor<void> {
   }
 
   onActivate() {
-    this._observableState = this.addActor(
+    this._vccData = this.addActor(
       new ObservableState({
         initialState: this._instantRemixing?.get(["general"]),
       })
     );
 
     this.cancelOnDeactivate(
-      this._observableState.state.didChange.subscribe((value) => {
+      this._vccData.state.didChange.subscribe(() => {
         this._updateKojiLater.invoke();
       })
     );
@@ -141,7 +142,7 @@ export class Vcc extends Actor<void> {
     if (this._instantRemixing != null) {
       (this._instantRemixing as any).onSetValue(
         ["general"],
-        this._observableState.state.value,
+        this._vccData.state.value,
         true
       );
     }
@@ -152,6 +153,6 @@ export class Vcc extends Actor<void> {
 
     this.willReceiveExternalData.emit(valuePath);
 
-    this._observableState.update(valuePath, newValue);
+    this._vccData.update(valuePath, newValue);
   };
 }

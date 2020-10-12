@@ -8,7 +8,7 @@ const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const Callout_1 = require("../Callout");
-const Vcc_1 = require("../Vcc");
+const Koji_1 = require("../Koji");
 function createToggleSwitchSvg() {
     const filterId = util_1.StringUtil.stringOfRandomCharacters(8);
     return `
@@ -103,7 +103,7 @@ class RemixModeButton extends skytree_1.Actor {
             }
             calloutPoint.setValue(geometry_1.Point2.givenXY(86, size.height - 39));
         }, true));
-        this.cancelOnDeactivate(Vcc_1.Vcc.instance.mode.didChange.subscribe((mode) => {
+        this.cancelOnDeactivate(Koji_1.Koji.instance.mode.didChange.subscribe((mode) => {
             switch (mode) {
                 case "view":
                     shouldShowCallout.setValue(false);
@@ -125,7 +125,7 @@ class RemixModeButton extends skytree_1.Actor {
         }, true));
     }
     onClick() {
-        const mode = Vcc_1.Vcc.instance.mode;
+        const mode = Koji_1.Koji.instance.mode;
         switch (mode.value) {
             case "generator":
                 mode.setValue("template");

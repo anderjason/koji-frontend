@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vcc = void 0;
+exports.Koji = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
 const vcc_1 = require("@withkoji/vcc");
+const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const ObservableState_1 = require("../ObservableState");
-class Vcc extends skytree_1.Actor {
+class Koji extends skytree_1.Actor {
     constructor() {
         super();
         this.mode = observable_1.Observable.givenValue("view", observable_1.Observable.isStrictEqual);
@@ -17,7 +17,7 @@ class Vcc extends skytree_1.Actor {
         this.onValueChanged = (path, newValue) => {
             const valuePath = util_1.ValuePath.givenParts(path.slice(1));
             this.willReceiveExternalData.emit(valuePath);
-            this._observableState.update(valuePath, newValue);
+            this._vccData.update(valuePath, newValue);
         };
         if (typeof window !== "undefined") {
             this._instantRemixing = new vcc_1.InstantRemixing();
@@ -31,14 +31,14 @@ class Vcc extends skytree_1.Actor {
         });
     }
     static get instance() {
-        if (Vcc._instance == null) {
-            Vcc._instance = new Vcc();
-            Vcc._instance.activate();
+        if (Koji._instance == null) {
+            Koji._instance = new Koji();
+            Koji._instance.activate();
         }
-        return Vcc._instance;
+        return Koji._instance;
     }
-    get observableState() {
-        return this._observableState;
+    get vccData() {
+        return this._vccData;
     }
     get selectedPath() {
         return this._selectedPath;
@@ -51,10 +51,10 @@ class Vcc extends skytree_1.Actor {
     }
     onActivate() {
         var _a;
-        this._observableState = this.addActor(new ObservableState_1.ObservableState({
+        this._vccData = this.addActor(new web_1.ObservableState({
             initialState: (_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"]),
         }));
-        this.cancelOnDeactivate(this._observableState.state.didChange.subscribe((value) => {
+        this.cancelOnDeactivate(this._vccData.state.didChange.subscribe(() => {
             this._updateKojiLater.invoke();
         }));
         if (this._instantRemixing != null) {
@@ -109,9 +109,9 @@ class Vcc extends skytree_1.Actor {
     sendPendingUpdates() {
         this._updateKojiLater.clear();
         if (this._instantRemixing != null) {
-            this._instantRemixing.onSetValue(["general"], this._observableState.state.value, true);
+            this._instantRemixing.onSetValue(["general"], this._vccData.state.value, true);
         }
     }
 }
-exports.Vcc = Vcc;
+exports.Koji = Koji;
 //# sourceMappingURL=index.js.map

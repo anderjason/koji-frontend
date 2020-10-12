@@ -1,6 +1,6 @@
 import { StringUtil, ValuePath } from "@anderjason/util";
 import { Actor } from "skytree";
-import { Vcc } from "..";
+import { Koji } from "../Koji";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
 
 export interface PriceInputProps {
@@ -12,9 +12,9 @@ export interface PriceInputProps {
 export class PriceInput extends Actor<PriceInputProps> {
   onActivate() {
     const priceVccPathBinding = this.addActor(
-      Vcc.instance.observableState.toBindingGivenPath<number>(
-        this.props.vccPath
-      )
+      Koji.instance.vccData.toBinding<number>({
+        valuePath: this.props.vccPath,
+      })
     );
 
     this.addActor(

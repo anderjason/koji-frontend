@@ -4,7 +4,7 @@ import { Observable, Receipt } from "@anderjason/observable";
 import { ArrayUtil, ValuePath } from "@anderjason/util";
 import { ElementStyle, ManagedElement } from "@anderjason/web";
 import { Actor } from "skytree";
-import { Vcc } from "../Vcc";
+import { Koji } from "../Koji";
 import { ManagedSvg } from "./_internal/ManagedSvg";
 import { Polygon } from "./_internal/Polygon";
 import { svgStyleGivenStrokeWidth } from "./_internal/svgStyleGivenStrokeWidth";
@@ -27,7 +27,7 @@ export class RemixTarget extends Actor<RemixTargetDefinition> {
 
   onActivate() {
     this.cancelOnDeactivate(
-      Vcc.instance.mode.didChange.subscribe((mode) => {
+      Koji.instance.mode.didChange.subscribe((mode) => {
         if (this._activeRemixTarget != null) {
           this.removeActor(this._activeRemixTarget);
           this._activeRemixTarget = undefined;
@@ -244,7 +244,7 @@ class ActiveRemixTarget extends Actor<RemixTargetDefinition> {
     }
 
     if (this.props.valuePath != null) {
-      Vcc.instance.selectedPath.setValue(this.props.valuePath);
+      Koji.instance.selectedPath.setValue(this.props.valuePath);
     }
   }
 }

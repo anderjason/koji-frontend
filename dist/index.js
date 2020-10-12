@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vcc = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiTypography = exports.KojiNetworkUtil = exports.FloatLabelTextInput = exports.Callout = void 0;
+exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiTypography = exports.KojiNetworkUtil = exports.Koji = exports.FloatLabelTextInput = exports.Callout = void 0;
 const Callout_1 = require("./Callout");
 Object.defineProperty(exports, "Callout", { enumerable: true, get: function () { return Callout_1.Callout; } });
 const FloatLabelTextInput_1 = require("./FloatLabelTextInput");
 Object.defineProperty(exports, "FloatLabelTextInput", { enumerable: true, get: function () { return FloatLabelTextInput_1.FloatLabelTextInput; } });
+const Koji_1 = require("./Koji");
+Object.defineProperty(exports, "Koji", { enumerable: true, get: function () { return Koji_1.Koji; } });
 const KojiNetworkUtil_1 = require("./KojiNetworkUtil");
 Object.defineProperty(exports, "KojiNetworkUtil", { enumerable: true, get: function () { return KojiNetworkUtil_1.KojiNetworkUtil; } });
 const KojiTypography_1 = require("./KojiTypography");
@@ -17,6 +19,4 @@ const RemixModeButton_1 = require("./RemixModeButton");
 Object.defineProperty(exports, "RemixModeButton", { enumerable: true, get: function () { return RemixModeButton_1.RemixModeButton; } });
 const RemixTarget_1 = require("./RemixTarget");
 Object.defineProperty(exports, "RemixTarget", { enumerable: true, get: function () { return RemixTarget_1.RemixTarget; } });
-const Vcc_1 = require("./Vcc");
-Object.defineProperty(exports, "Vcc", { enumerable: true, get: function () { return Vcc_1.Vcc; } });
 //# sourceMappingURL=index.js.map

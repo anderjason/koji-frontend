@@ -6,13 +6,13 @@ const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const Vcc_1 = require("../Vcc");
+const Koji_1 = require("../Koji");
 const ManagedSvg_1 = require("./_internal/ManagedSvg");
 const Polygon_1 = require("./_internal/Polygon");
 const svgStyleGivenStrokeWidth_1 = require("./_internal/svgStyleGivenStrokeWidth");
 class RemixTarget extends skytree_1.Actor {
     onActivate() {
-        this.cancelOnDeactivate(Vcc_1.Vcc.instance.mode.didChange.subscribe((mode) => {
+        this.cancelOnDeactivate(Koji_1.Koji.instance.mode.didChange.subscribe((mode) => {
             if (this._activeRemixTarget != null) {
                 this.removeActor(this._activeRemixTarget);
                 this._activeRemixTarget = undefined;
@@ -163,7 +163,7 @@ class ActiveRemixTarget extends skytree_1.Actor {
             }
         }
         if (this.props.valuePath != null) {
-            Vcc_1.Vcc.instance.selectedPath.setValue(this.props.valuePath);
+            Koji_1.Koji.instance.selectedPath.setValue(this.props.valuePath);
         }
     }
 }
