@@ -1,9 +1,9 @@
 import { Observable, Receipt, TypedEvent } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
-import { ObjectUtil, ValuePath } from "@anderjason/util";
-import { UndoContext } from "@anderjason/web";
+import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
-import { Actor, PathBinding } from "skytree";
+import { Actor } from "skytree";
+import { ObservableState } from "../ObservableState";
 
 export type KojiMode = "view" | "generator" | "template";
 type PathPart = string | number;
@@ -28,13 +28,11 @@ export class Vcc extends Actor<void> {
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
   readonly allPlaybackShouldStop = new TypedEvent();
 
-  private _internalData = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
-  private _undoContext: UndoContext;
+  private _observableState: ObservableState;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
   private _updateKojiLater: Debounce<void>;
-  private _pathBindings = new Set<PathBinding<unknown, unknown>>();
 
   private constructor() {
     super();
@@ -52,6 +50,10 @@ export class Vcc extends Actor<void> {
     });
   }
 
+  get observableState(): ObservableState {
+    return this._observableState;
+  }
+
   get selectedPath(): Observable<ValuePath> {
     return this._selectedPath;
   }
@@ -64,23 +66,12 @@ export class Vcc extends Actor<void> {
     return this._feedSdk;
   }
 
-  // get canUndo(): ReadOnlyObservable<boolean> {
-  //   return this._undoManager.canUndo;
-  // }
-
-  // get canRedo(): ReadOnlyObservable<boolean> {
-  //   return this._undoManager.canRedo;
-  // }
-
   onActivate() {
-    this._undoContext = new UndoContext<unknown>(
-      this._instantRemixing?.get(["general"]) || {},
-      10
+    this._observableState = this.addActor(
+      new ObservableState({
+        initialValue: this._instantRemixing?.get(["general"]),
+      })
     );
-
-    this._undoContext.currentStep.didChange.subscribe((undoStep) => {
-      this._internalData.setValue(undoStep);
-    }, true);
 
     if (this._instantRemixing != null) {
       this._instantRemixing.onValueChanged((path, newValue) => {
@@ -138,69 +129,20 @@ export class Vcc extends Actor<void> {
     });
   }
 
-  // createUndoStep(): void {
-  //   this._undoManager.addStep(this._internalData.value);
-  // }
-
-  // clearUndoSteps(): void {
-  //   this._undoManager.clearSteps();
-  // }
-
-  // undo(): void {
-  //   if (this._undoManager.undo()) {
-  //     this._updateKojiLater.invoke();
-  //   }
-  // }
-
-  // redo(): void {
-  //   if (this._undoManager.redo()) {
-  //     this._updateKojiLater.invoke();
-  //   }
-  // }
-
   subscribe(
     vccPath: ValuePath,
     fn: (value: any) => void,
     includeLast = false
   ): Receipt {
-    const binding = this.addActor(
-      new PathBinding({
-        input: this._internalData,
-        path: vccPath,
-      })
-    );
-
-    this._pathBindings.add(binding);
-
-    const innerHandle = this.cancelOnDeactivate(
-      binding.output.didChange.subscribe((value) => {
-        fn(value);
-      }, includeLast)
-    );
-
-    return new Receipt(() => {
-      this._pathBindings.delete(binding);
-
-      innerHandle.cancel();
-      this.removeCancelOnDeactivate(innerHandle);
-      this.removeActor(binding);
-    });
+    return this._observableState.subscribe(vccPath, fn, includeLast);
   }
 
   toOptionalValueGivenPath(path: ValuePath): any {
-    return ObjectUtil.optionalValueAtPathGivenObject(
-      this._internalData.value,
-      path
-    );
+    return this._observableState.toOptionalValueGivenPath(path);
   }
 
   update(path: ValuePath, newValue: any, immediate = false): void {
-    const obj = ObjectUtil.objectWithValueAtPath(
-      this._internalData.value,
-      path,
-      newValue
-    );
-    this._internalData.setValue(obj);
+    this._observableState.update(path, newValue);
 
     if (immediate == true) {
       this.sendPendingUpdates();
@@ -215,34 +157,19 @@ export class Vcc extends Actor<void> {
     if (this._instantRemixing != null) {
       (this._instantRemixing as any).onSetValue(
         ["general"],
-        this._internalData.value,
+        this._observableState.toOptionalValueGivenPath(
+          ValuePath.givenParts([])
+        ),
         true
       );
     }
   }
 
   private onValueChanged = (path: PathPart[], newValue: any): void => {
-    const valuePath = ValuePath.givenParts(path);
+    const valuePath = ValuePath.givenParts(path.slice(1));
 
     this.willReceiveExternalData.emit(valuePath);
 
-    const internalPath = path.slice(1);
-    let internalData: any = this._internalData.value;
-
-    if (internalPath.length === 0) {
-      internalData = newValue;
-    } else {
-      internalData = ObjectUtil.objectWithValueAtPath(
-        internalData,
-        internalPath,
-        newValue
-      );
-    }
-
-    const newInternalData = {
-      ...internalData,
-    };
-
-    this._internalData.setValue(newInternalData);
+    this._observableState.update(valuePath, newValue);
   };
 }

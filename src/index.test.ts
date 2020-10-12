@@ -1,4 +1,5 @@
 import { Test } from "@anderjason/tests";
+import "./ObservableState/index.test";
 import "./Vcc/index.test";
 
 Test.runAll()
