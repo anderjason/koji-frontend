@@ -8,13 +8,14 @@ const skytree_1 = require("skytree");
 class ObservableState extends skytree_1.Actor {
     constructor() {
         super(...arguments);
-        this._internalData = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this._state = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this.state = observable_1.ReadOnlyObservable.givenObservable(this._state);
         this._pathBindings = new Set();
     }
     onActivate() {
-        this._undoContext = new web_1.UndoContext(this.props.initialValue || {}, 10);
+        this._undoContext = new web_1.UndoContext(this.props.initialState || {}, 10);
         this.cancelOnDeactivate(this._undoContext.currentStep.didChange.subscribe((undoStep) => {
-            this._internalData.setValue(undoStep);
+            this._state.setValue(undoStep);
         }, true));
     }
     get undoContext() {
@@ -22,7 +23,7 @@ class ObservableState extends skytree_1.Actor {
     }
     subscribe(valuePath, fn, includeLast = false) {
         const binding = this.addActor(new skytree_1.PathBinding({
-            input: this._internalData,
+            input: this._state,
             path: valuePath,
         }));
         this._pathBindings.add(binding);
@@ -37,11 +38,11 @@ class ObservableState extends skytree_1.Actor {
         });
     }
     toOptionalValueGivenPath(path) {
-        return util_1.ObjectUtil.optionalValueAtPathGivenObject(this._internalData.value, path);
+        return util_1.ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
     }
     update(path, newValue) {
-        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._internalData.value, path, newValue);
-        this._internalData.setValue(obj);
+        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._state.value, path, newValue);
+        this._state.setValue(obj);
     }
 }
 exports.ObservableState = ObservableState;

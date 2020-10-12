@@ -69,12 +69,12 @@ export class Vcc extends Actor<void> {
   onActivate() {
     this._observableState = this.addActor(
       new ObservableState({
-        initialValue: this._instantRemixing?.get(["general"]),
+        initialState: this._instantRemixing?.get(["general"]),
       })
     );
 
     this.cancelOnDeactivate(
-      this._observableState.subscribe(ValuePath.givenParts([]), (root) => {
+      this._observableState.state.didChange.subscribe((value) => {
         this._updateKojiLater.invoke();
       })
     );
@@ -141,9 +141,7 @@ export class Vcc extends Actor<void> {
     if (this._instantRemixing != null) {
       (this._instantRemixing as any).onSetValue(
         ["general"],
-        this._observableState.toOptionalValueGivenPath(
-          ValuePath.givenParts([])
-        ),
+        this._observableState.state.value,
         true
       );
     }

@@ -1,26 +1,32 @@
-import { Observable, Receipt } from "@anderjason/observable";
+import {
+  Observable,
+  ReadOnlyObservable,
+  Receipt,
+} from "@anderjason/observable";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { UndoContext } from "@anderjason/web";
 import { Actor, PathBinding } from "skytree";
 
 export interface ObservableStateProps {
-  initialValue?: any;
+  initialState?: any;
 }
 
 export class ObservableState extends Actor<ObservableStateProps> {
-  private _internalData = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
+  private _state = Observable.ofEmpty<unknown>(Observable.isStrictEqual);
+  readonly state = ReadOnlyObservable.givenObservable(this._state);
+
   private _undoContext: UndoContext;
   private _pathBindings = new Set<PathBinding<unknown, unknown>>();
 
   onActivate() {
     this._undoContext = new UndoContext<unknown>(
-      this.props.initialValue || {},
+      this.props.initialState || {},
       10
     );
 
     this.cancelOnDeactivate(
       this._undoContext.currentStep.didChange.subscribe((undoStep) => {
-        this._internalData.setValue(undoStep);
+        this._state.setValue(undoStep);
       }, true)
     );
   }
@@ -36,7 +42,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
   ): Receipt {
     const binding = this.addActor(
       new PathBinding({
-        input: this._internalData,
+        input: this._state,
         path: valuePath,
       })
     );
@@ -59,18 +65,15 @@ export class ObservableState extends Actor<ObservableStateProps> {
   }
 
   toOptionalValueGivenPath(path: ValuePath): any {
-    return ObjectUtil.optionalValueAtPathGivenObject(
-      this._internalData.value,
-      path
-    );
+    return ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
   }
 
   update(path: ValuePath, newValue: any): void {
     const obj = ObjectUtil.objectWithValueAtPath(
-      this._internalData.value,
+      this._state.value,
       path,
       newValue
     );
-    this._internalData.setValue(obj);
+    this._state.setValue(obj);
   }
 }

@@ -52,9 +52,9 @@ class Vcc extends skytree_1.Actor {
     onActivate() {
         var _a;
         this._observableState = this.addActor(new ObservableState_1.ObservableState({
-            initialValue: (_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"]),
+            initialState: (_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"]),
         }));
-        this.cancelOnDeactivate(this._observableState.subscribe(util_1.ValuePath.givenParts([]), (root) => {
+        this.cancelOnDeactivate(this._observableState.state.didChange.subscribe((value) => {
             this._updateKojiLater.invoke();
         }));
         if (this._instantRemixing != null) {
@@ -109,7 +109,7 @@ class Vcc extends skytree_1.Actor {
     sendPendingUpdates() {
         this._updateKojiLater.clear();
         if (this._instantRemixing != null) {
-            this._instantRemixing.onSetValue(["general"], this._observableState.toOptionalValueGivenPath(util_1.ValuePath.givenParts([])), true);
+            this._instantRemixing.onSetValue(["general"], this._observableState.state.value, true);
         }
     }
 }
