@@ -1,4 +1,4 @@
-import { Observable, Receipt, TypedEvent } from "@anderjason/observable";
+import { Observable, TypedEvent } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
 import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
@@ -73,6 +73,12 @@ export class Vcc extends Actor<void> {
       })
     );
 
+    this.cancelOnDeactivate(
+      this._observableState.subscribe(ValuePath.givenParts([]), (root) => {
+        this._updateKojiLater.invoke();
+      })
+    );
+
     if (this._instantRemixing != null) {
       this._instantRemixing.onValueChanged((path, newValue) => {
         this.onValueChanged(path, newValue);
@@ -127,28 +133,6 @@ export class Vcc extends Actor<void> {
         (this._instantRemixing as any).onPresentControl(undefined);
       }
     });
-  }
-
-  subscribe(
-    vccPath: ValuePath,
-    fn: (value: any) => void,
-    includeLast = false
-  ): Receipt {
-    return this._observableState.subscribe(vccPath, fn, includeLast);
-  }
-
-  toOptionalValueGivenPath(path: ValuePath): any {
-    return this._observableState.toOptionalValueGivenPath(path);
-  }
-
-  update(path: ValuePath, newValue: any, immediate = false): void {
-    this._observableState.update(path, newValue);
-
-    if (immediate == true) {
-      this.sendPendingUpdates();
-    } else {
-      this._updateKojiLater.invoke();
-    }
   }
 
   sendPendingUpdates() {

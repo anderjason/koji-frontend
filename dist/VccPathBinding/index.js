@@ -15,7 +15,7 @@ class VccPathBinding extends skytree_1.Actor {
         }
     }
     onActivate() {
-        this.cancelOnDeactivate(Vcc_1.Vcc.instance.subscribe(this.props.vccPath, (vccValue) => {
+        this.cancelOnDeactivate(Vcc_1.Vcc.instance.observableState.subscribe(this.props.vccPath, (vccValue) => {
             let result = vccValue;
             if (this.props.convertFromVcc != null) {
                 result = this.props.convertFromVcc(result);
@@ -27,7 +27,7 @@ class VccPathBinding extends skytree_1.Actor {
             if (this.props.convertToVcc != null) {
                 result = this.props.convertFromVcc(result);
             }
-            Vcc_1.Vcc.instance.update(this.props.vccPath, result);
+            Vcc_1.Vcc.instance.observableState.update(this.props.vccPath, result);
         }));
     }
 }

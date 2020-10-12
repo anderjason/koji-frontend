@@ -4,31 +4,20 @@ exports.Vcc = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
-const web_1 = require("@anderjason/web");
 const vcc_1 = require("@withkoji/vcc");
 const skytree_1 = require("skytree");
+const ObservableState_1 = require("../ObservableState");
 class Vcc extends skytree_1.Actor {
     constructor() {
         super();
         this.mode = observable_1.Observable.givenValue("view", observable_1.Observable.isStrictEqual);
         this.willReceiveExternalData = new observable_1.TypedEvent();
         this.allPlaybackShouldStop = new observable_1.TypedEvent();
-        this._internalData = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
-        this._pathBindings = new Set();
         this.onValueChanged = (path, newValue) => {
-            const valuePath = util_1.ValuePath.givenParts(path);
+            const valuePath = util_1.ValuePath.givenParts(path.slice(1));
             this.willReceiveExternalData.emit(valuePath);
-            const internalPath = path.slice(1);
-            let internalData = this._internalData.value;
-            if (internalPath.length === 0) {
-                internalData = newValue;
-            }
-            else {
-                internalData = util_1.ObjectUtil.objectWithValueAtPath(internalData, internalPath, newValue);
-            }
-            const newInternalData = Object.assign({}, internalData);
-            this._internalData.setValue(newInternalData);
+            this._observableState.update(valuePath, newValue);
         };
         if (typeof window !== "undefined") {
             this._instantRemixing = new vcc_1.InstantRemixing();
@@ -48,6 +37,9 @@ class Vcc extends skytree_1.Actor {
         }
         return Vcc._instance;
     }
+    get observableState() {
+        return this._observableState;
+    }
     get selectedPath() {
         return this._selectedPath;
     }
@@ -57,18 +49,14 @@ class Vcc extends skytree_1.Actor {
     get feedSdk() {
         return this._feedSdk;
     }
-    // get canUndo(): ReadOnlyObservable<boolean> {
-    //   return this._undoManager.canUndo;
-    // }
-    // get canRedo(): ReadOnlyObservable<boolean> {
-    //   return this._undoManager.canRedo;
-    // }
     onActivate() {
         var _a;
-        this._undoContext = new web_1.UndoContext(((_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"])) || {}, 10);
-        this._undoContext.currentStep.didChange.subscribe((undoStep) => {
-            this._internalData.setValue(undoStep);
-        }, true);
+        this._observableState = this.addActor(new ObservableState_1.ObservableState({
+            initialValue: (_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"]),
+        }));
+        this.cancelOnDeactivate(this._observableState.subscribe(util_1.ValuePath.givenParts([]), (root) => {
+            this._updateKojiLater.invoke();
+        }));
         if (this._instantRemixing != null) {
             this._instantRemixing.onValueChanged((path, newValue) => {
                 this.onValueChanged(path, newValue);
@@ -118,55 +106,10 @@ class Vcc extends skytree_1.Actor {
             }
         });
     }
-    // createUndoStep(): void {
-    //   this._undoManager.addStep(this._internalData.value);
-    // }
-    // clearUndoSteps(): void {
-    //   this._undoManager.clearSteps();
-    // }
-    // undo(): void {
-    //   if (this._undoManager.undo()) {
-    //     this._updateKojiLater.invoke();
-    //   }
-    // }
-    // redo(): void {
-    //   if (this._undoManager.redo()) {
-    //     this._updateKojiLater.invoke();
-    //   }
-    // }
-    subscribe(vccPath, fn, includeLast = false) {
-        const binding = this.addActor(new skytree_1.PathBinding({
-            input: this._internalData,
-            path: vccPath,
-        }));
-        this._pathBindings.add(binding);
-        const innerHandle = this.cancelOnDeactivate(binding.output.didChange.subscribe((value) => {
-            fn(value);
-        }, includeLast));
-        return new observable_1.Receipt(() => {
-            this._pathBindings.delete(binding);
-            innerHandle.cancel();
-            this.removeCancelOnDeactivate(innerHandle);
-            this.removeActor(binding);
-        });
-    }
-    toOptionalValueGivenPath(path) {
-        return util_1.ObjectUtil.optionalValueAtPathGivenObject(this._internalData.value, path);
-    }
-    update(path, newValue, immediate = false) {
-        const obj = util_1.ObjectUtil.objectWithValueAtPath(this._internalData.value, path, newValue);
-        this._internalData.setValue(obj);
-        if (immediate == true) {
-            this.sendPendingUpdates();
-        }
-        else {
-            this._updateKojiLater.invoke();
-        }
-    }
     sendPendingUpdates() {
         this._updateKojiLater.clear();
         if (this._instantRemixing != null) {
-            this._instantRemixing.onSetValue(["general"], this._internalData.value, true);
+            this._instantRemixing.onSetValue(["general"], this._observableState.toOptionalValueGivenPath(util_1.ValuePath.givenParts([])), true);
         }
     }
 }

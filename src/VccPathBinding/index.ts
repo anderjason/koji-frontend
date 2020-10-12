@@ -26,7 +26,7 @@ export class VccPathBinding<T> extends Actor<VccPathBindingProps<T>> {
 
   onActivate() {
     this.cancelOnDeactivate(
-      Vcc.instance.subscribe(
+      Vcc.instance.observableState.subscribe(
         this.props.vccPath,
         (vccValue) => {
           let result = vccValue;
@@ -47,7 +47,7 @@ export class VccPathBinding<T> extends Actor<VccPathBindingProps<T>> {
           result = this.props.convertFromVcc(result);
         }
 
-        Vcc.instance.update(this.props.vccPath, result);
+        Vcc.instance.observableState.update(this.props.vccPath, result);
       })
     );
   }
