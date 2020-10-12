@@ -5,6 +5,7 @@ const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
+const ObservableStateBinding_1 = require("./_internal/ObservableStateBinding");
 class ObservableState extends skytree_1.Actor {
     constructor() {
         super(...arguments);
@@ -35,6 +36,12 @@ class ObservableState extends skytree_1.Actor {
             innerHandle.cancel();
             this.removeCancelOnDeactivate(innerHandle);
             this.removeActor(binding);
+        });
+    }
+    toBindingGivenPath(valuePath) {
+        return new ObservableStateBinding_1.ObservableStateBinding({
+            observableState: this,
+            valuePath,
         });
     }
     toOptionalValueGivenPath(path) {

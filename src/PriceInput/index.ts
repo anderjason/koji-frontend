@@ -1,7 +1,7 @@
 import { StringUtil, ValuePath } from "@anderjason/util";
 import { Actor } from "skytree";
+import { Vcc } from "..";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
-import { VccPathBinding } from "../VccPathBinding";
 
 export interface PriceInputProps {
   parentElement: HTMLElement;
@@ -12,9 +12,9 @@ export interface PriceInputProps {
 export class PriceInput extends Actor<PriceInputProps> {
   onActivate() {
     const priceVccPathBinding = this.addActor(
-      new VccPathBinding<number>({
-        vccPath: this.props.vccPath,
-      })
+      Vcc.instance.observableState.toBindingGivenPath<number>(
+        this.props.vccPath
+      )
     );
 
     this.addActor(

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VccPathBinding = exports.Vcc = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiTypography = exports.KojiNetworkUtil = exports.FloatLabelTextInput = exports.Callout = void 0;
+exports.Vcc = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiTypography = exports.KojiNetworkUtil = exports.FloatLabelTextInput = exports.Callout = void 0;
 const Callout_1 = require("./Callout");
 Object.defineProperty(exports, "Callout", { enumerable: true, get: function () { return Callout_1.Callout; } });
 const FloatLabelTextInput_1 = require("./FloatLabelTextInput");
@@ -19,6 +19,4 @@ const RemixTarget_1 = require("./RemixTarget");
 Object.defineProperty(exports, "RemixTarget", { enumerable: true, get: function () { return RemixTarget_1.RemixTarget; } });
 const Vcc_1 = require("./Vcc");
 Object.defineProperty(exports, "Vcc", { enumerable: true, get: function () { return Vcc_1.Vcc; } });
-const VccPathBinding_1 = require("./VccPathBinding");
-Object.defineProperty(exports, "VccPathBinding", { enumerable: true, get: function () { return VccPathBinding_1.VccPathBinding; } });
 //# sourceMappingURL=index.js.map

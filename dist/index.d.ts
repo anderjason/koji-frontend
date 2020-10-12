@@ -7,5 +7,4 @@ import { PriceInput } from "./PriceInput";
 import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
 import { Vcc } from "./Vcc";
-import { VccPathBinding } from "./VccPathBinding";
-export { Callout, FloatLabelTextInput, KojiNetworkUtil, KojiTypography, LoadingIndicator, PriceInput, RemixModeButton, RemixTarget, Vcc, VccPathBinding, };
+export { Callout, FloatLabelTextInput, KojiNetworkUtil, KojiTypography, LoadingIndicator, PriceInput, RemixModeButton, RemixTarget, Vcc, };

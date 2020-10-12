@@ -6,6 +6,7 @@ import {
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { UndoContext } from "@anderjason/web";
 import { Actor, PathBinding } from "skytree";
+import { ObservableStateBinding } from "./_internal/ObservableStateBinding";
 
 export interface ObservableStateProps {
   initialState?: any;
@@ -64,6 +65,13 @@ export class ObservableState extends Actor<ObservableStateProps> {
     });
   }
 
+  toBindingGivenPath<T>(valuePath: ValuePath): ObservableStateBinding<T> {
+    return new ObservableStateBinding<T>({
+      observableState: this,
+      valuePath,
+    });
+  }
+
   toOptionalValueGivenPath(path: ValuePath): any {
     return ObjectUtil.optionalValueAtPathGivenObject(this._state.value, path);
   }
@@ -73,6 +81,7 @@ export class ObservableState extends Actor<ObservableStateProps> {
       this._state.value,
       path
     );
+
     if (ObjectUtil.objectIsDeepEqual(currentValue, newValue)) {
       return;
     }

@@ -3,13 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PriceInput = void 0;
 const util_1 = require("@anderjason/util");
 const skytree_1 = require("skytree");
+const __1 = require("..");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
-const VccPathBinding_1 = require("../VccPathBinding");
 class PriceInput extends skytree_1.Actor {
     onActivate() {
-        const priceVccPathBinding = this.addActor(new VccPathBinding_1.VccPathBinding({
-            vccPath: this.props.vccPath,
-        }));
+        const priceVccPathBinding = this.addActor(__1.Vcc.instance.observableState.toBindingGivenPath(this.props.vccPath));
         this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,

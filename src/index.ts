@@ -7,7 +7,6 @@ import { PriceInput } from "./PriceInput";
 import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
 import { Vcc } from "./Vcc";
-import { VccPathBinding } from "./VccPathBinding";
 
 export {
   Callout,
@@ -19,5 +18,4 @@ export {
   RemixModeButton,
   RemixTarget,
   Vcc,
-  VccPathBinding,
 };

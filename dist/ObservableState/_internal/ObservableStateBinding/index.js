@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VccPathBinding = void 0;
+exports.ObservableStateBinding = void 0;
 const observable_1 = require("@anderjason/observable");
 const skytree_1 = require("skytree");
-const Vcc_1 = require("../Vcc");
-class VccPathBinding extends skytree_1.Actor {
+class ObservableStateBinding extends skytree_1.Actor {
     constructor(props) {
         super(props);
         if (props.output != null) {
@@ -15,21 +14,21 @@ class VccPathBinding extends skytree_1.Actor {
         }
     }
     onActivate() {
-        this.cancelOnDeactivate(Vcc_1.Vcc.instance.observableState.subscribe(this.props.vccPath, (vccValue) => {
+        this.cancelOnDeactivate(this.props.observableState.subscribe(this.props.valuePath, (vccValue) => {
             let result = vccValue;
-            if (this.props.convertFromVcc != null) {
-                result = this.props.convertFromVcc(result);
+            if (this.props.outputValueGivenPartialState != null) {
+                result = this.props.outputValueGivenPartialState(result);
             }
             this.output.setValue(result);
         }, true));
         this.cancelOnDeactivate(this.output.didChange.subscribe((value) => {
             let result = value;
-            if (this.props.convertToVcc != null) {
-                result = this.props.convertFromVcc(result);
+            if (this.props.partialStateGivenOutputValue != null) {
+                result = this.props.outputValueGivenPartialState(result);
             }
-            Vcc_1.Vcc.instance.observableState.update(this.props.vccPath, result);
+            this.props.observableState.update(this.props.valuePath, result);
         }));
     }
 }
-exports.VccPathBinding = VccPathBinding;
+exports.ObservableStateBinding = ObservableStateBinding;
 //# sourceMappingURL=index.js.map
