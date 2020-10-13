@@ -6,7 +6,7 @@
 
 ## API Reference
 
-### Vcc
+### Koji
 
 `TODO`
 
