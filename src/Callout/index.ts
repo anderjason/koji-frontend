@@ -67,7 +67,17 @@ export class Callout extends Actor<CalloutProps> {
         }
 
         const targetBox = observableTargetBox.value;
-        const availableWidth = parentBoundsWatcher.output.value.width - 30;
+        const availableSize = parentBoundsWatcher.output.value;
+
+        if (targetBox == null) {
+          return;
+        }
+
+        if (availableSize == null) {
+          return;
+        }
+
+        const availableWidth = availableSize.width - 20;
 
         const wrapperBounds = wrapper.element.getBoundingClientRect();
         const wrapperSize = Size2.givenWidthHeight(

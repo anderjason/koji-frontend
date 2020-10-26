@@ -45,7 +45,14 @@ class Callout extends skytree_1.Actor {
                 return;
             }
             const targetBox = observableTargetBox.value;
-            const availableWidth = parentBoundsWatcher.output.value.width - 30;
+            const availableSize = parentBoundsWatcher.output.value;
+            if (targetBox == null) {
+                return;
+            }
+            if (availableSize == null) {
+                return;
+            }
+            const availableWidth = availableSize.width - 20;
             const wrapperBounds = wrapper.element.getBoundingClientRect();
             const wrapperSize = geometry_1.Size2.givenWidthHeight(wrapperBounds.width, wrapperBounds.height);
             const leftPoint = targetBox.toLeft() - wrapperSize.width - 15;
