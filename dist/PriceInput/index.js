@@ -20,6 +20,13 @@ class PriceInput extends skytree_1.Actor {
                 }
                 return "$" + price.toString();
             },
+            shadowTextGivenValue: (price) => {
+                if (price == null || isNaN(price)) {
+                    return "$0.00";
+                }
+                return "$" + price.toFixed(2);
+            },
+            applyShadowTextOnBlur: true,
             valueGivenDisplayText: (displayText) => {
                 if (util_1.StringUtil.stringIsEmpty(displayText) ||
                     displayText === "$" ||

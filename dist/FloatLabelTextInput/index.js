@@ -1,31 +1,61 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FloatLabelTextInput = void 0;
+const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const KojiTypography_1 = require("../KojiTypography");
+const KojiAppearance_1 = require("../KojiAppearance");
 class FloatLabelTextInput extends skytree_1.Actor {
     constructor(props) {
         super(props);
-        KojiTypography_1.KojiTypography.preloadFonts();
+        this._isFocused = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this.isFocused = observable_1.ReadOnlyObservable.givenObservable(this._isFocused);
+        KojiAppearance_1.KojiAppearance.preloadFonts();
     }
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
+        let shadowText;
+        if (this.props.shadowTextGivenValue != null) {
+            shadowText = this.addActor(ShadowTextStyle.toManagedElement({
+                tagName: "span",
+                parentElement: wrapper.element,
+            }));
+        }
         const input = this.addActor(InputStyle.toManagedElement({
             tagName: "input",
             parentElement: wrapper.element,
         }));
         input.element.type = "text";
-        input.element.placeholder = this.props.placeholder;
+        if (this.props.placeholder != null) {
+            input.element.placeholder = this.props.placeholder;
+        }
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
             input.element.focus();
         }));
-        this.cancelOnDeactivate(input.addManagedEventListener("focus", () => {
-            input.element.setSelectionRange(0, (input.element.value || "").length);
+        this.addActor(new web_1.FocusWatcher({
+            element: input.element,
+            output: this._isFocused,
+        }));
+        const applyShadowText = () => {
+            if (this.props.shadowTextGivenValue != null &&
+                this.props.applyShadowTextOnBlur == true) {
+                const text = this.props.shadowTextGivenValue(this.props.value.value);
+                if (text != null) {
+                    input.element.value = text;
+                }
+            }
+        };
+        this.cancelOnDeactivate(this._isFocused.didChange.subscribe((isFocused) => {
+            if (isFocused == true) {
+                input.element.setSelectionRange(0, (input.element.value || "").length);
+            }
+            else {
+                applyShadowText();
+            }
         }));
         const inputBinding = this.addActor(new web_1.TextInputBinding({
             inputElement: input.element,
@@ -34,6 +64,17 @@ class FloatLabelTextInput extends skytree_1.Actor {
             valueGivenDisplayText: this.props.valueGivenDisplayText,
             overrideDisplayText: this.props.overrideDisplayText,
         }));
+        if (shadowText != null && this.props.shadowTextGivenValue != null) {
+            this.cancelOnDeactivate(this.props.value.didChange.subscribe(() => {
+                const text = this.props.shadowTextGivenValue(this.props.value.value);
+                if (text == null) {
+                    shadowText.element.innerHTML = "";
+                }
+                else {
+                    shadowText.element.innerHTML = text;
+                }
+            }, true));
+        }
         if (!util_1.StringUtil.stringIsEmpty(this.props.persistentLabel)) {
             const label = this.addActor(LabelStyle.toManagedElement({
                 tagName: "label",
@@ -43,8 +84,12 @@ class FloatLabelTextInput extends skytree_1.Actor {
             this.cancelOnDeactivate(inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
                 input.setModifier("hasValue", !isEmpty);
                 label.setModifier("hasValue", !isEmpty);
+                if (shadowText != null) {
+                    shadowText.setModifier("hasValue", !isEmpty);
+                }
             }, true));
         }
+        applyShadowText();
     }
 }
 exports.FloatLabelTextInput = FloatLabelTextInput;
@@ -125,6 +170,28 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
   `,
     modifiers: {
         hasValue: `
+      transform: translateY(8px);
+    `,
+    },
+});
+const ShadowTextStyle = web_1.ElementStyle.givenDefinition({
+    css: `
+    color: #BDBDBD;
+    position: absolute;
+    font-family: Source Sans Pro;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    margin-left: 12px;
+    transform: translateY(0);
+    opacity: 0;
+    transition: 0.1s ease-out transform;
+  `,
+    modifiers: {
+        hasValue: `
+      opacity: 1;
       transform: translateY(8px);
     `,
     },

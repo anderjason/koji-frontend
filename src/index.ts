@@ -2,20 +2,22 @@ import { Callout } from "./Callout";
 import { FloatLabelTextInput } from "./FloatLabelTextInput";
 import { Koji } from "./Koji";
 import { KojiNetworkUtil } from "./KojiNetworkUtil";
-import { KojiTypography } from "./KojiTypography";
+import { KojiAppearance } from "./KojiAppearance";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { PriceInput } from "./PriceInput";
 import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
+import * as ReactComponents from "./ReactComponents";
 
 export {
   Callout,
   FloatLabelTextInput,
   Koji,
   KojiNetworkUtil,
-  KojiTypography,
+  KojiAppearance,
   LoadingIndicator,
   PriceInput,
   RemixModeButton,
   RemixTarget,
+  ReactComponents,
 };

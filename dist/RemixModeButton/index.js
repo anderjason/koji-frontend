@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RemixModeButton = void 0;
-const geometry_1 = require("@anderjason/geometry");
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
@@ -9,6 +8,7 @@ const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const Callout_1 = require("../Callout");
 const Koji_1 = require("../Koji");
+const geometry_1 = require("@anderjason/geometry");
 function createToggleSwitchSvg() {
     const filterId = util_1.StringUtil.stringOfRandomCharacters(8);
     return `
@@ -70,19 +70,40 @@ class RemixModeButton extends skytree_1.Actor {
             tagName: "button",
             parentElement: this.props.parentElement,
         }));
-        const calloutPoint = observable_1.Observable.ofEmpty(geometry_1.Point2.isEqual);
         const shouldShowCallout = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        const parentSizeWatcher = this.addActor(new web_1.ElementSizeWatcher({
+            element: this.props.parentElement,
+        }));
+        const buttonSizeWatcher = this.addActor(new web_1.ElementSizeWatcher({
+            element: button.element,
+        }));
+        const sizeBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
+            parentSizeWatcher.output,
+            buttonSizeWatcher.output,
+        ]));
+        const bounds = observable_1.Observable.ofEmpty(geometry_1.Box2.isEqual);
+        this.cancelOnDeactivate(sizeBinding.didInvalidate.subscribe(() => {
+            const buttonSize = buttonSizeWatcher.output.value;
+            const parentSize = parentSizeWatcher.output.value;
+            if (buttonSize == null || parentSize == null) {
+                return;
+            }
+            const left = 16;
+            const bottom = parentSize.height - 16;
+            bounds.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(left, bottom), geometry_1.Point2.givenXY(left + buttonSize.width, bottom - buttonSize.height - 4)));
+        }, true));
+        this.cancelOnDeactivate(bounds.didChange.subscribe((v) => {
+            console.log(v);
+        }, true));
         this.addActor(new skytree_1.ConditionalActivator({
             input: shouldShowCallout,
             fn: (v) => v,
             actor: new skytree_1.DelayActivator({
                 activateAfter: time_1.Duration.givenSeconds(0.1),
-                // deactivateAfter: Duration.givenSeconds(6),
                 actor: new Callout_1.Callout({
-                    parentElement: document.body,
-                    screenPoint: calloutPoint,
+                    parentElement: this.props.parentElement,
+                    targetBox: bounds,
                     text: "Show more remix controls",
-                    calloutSide: observable_1.Observable.givenValue("right"),
                 }),
             }),
         }));
@@ -97,12 +118,7 @@ class RemixModeButton extends skytree_1.Actor {
                 this.onClick();
             }
         }));
-        this.cancelOnDeactivate(web_1.ScreenSize.instance.availableSize.didChange.subscribe((size) => {
-            if (size == null) {
-                return;
-            }
-            calloutPoint.setValue(geometry_1.Point2.givenXY(86, size.height - 39));
-        }, true));
+        Koji_1.Koji.instance.mode.setValue("template");
         this.cancelOnDeactivate(Koji_1.Koji.instance.mode.didChange.subscribe((mode) => {
             switch (mode) {
                 case "view":

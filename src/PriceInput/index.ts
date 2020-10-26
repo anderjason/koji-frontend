@@ -29,6 +29,14 @@ export class PriceInput extends Actor<PriceInputProps> {
 
           return "$" + price.toString();
         },
+        shadowTextGivenValue: (price) => {
+          if (price == null || isNaN(price)) {
+            return "$0.00";
+          }
+
+          return "$" + price.toFixed(2);
+        },
+        applyShadowTextOnBlur: true,
         valueGivenDisplayText: (displayText) => {
           if (
             StringUtil.stringIsEmpty(displayText) ||

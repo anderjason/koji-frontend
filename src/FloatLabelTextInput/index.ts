@@ -1,9 +1,14 @@
-import { Observable } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
-import { ElementStyle, TextInputBinding } from "@anderjason/web";
+import {
+  DynamicStyleElement,
+  ElementStyle,
+  FocusWatcher,
+  TextInputBinding,
+} from "@anderjason/web";
 import { TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
 import { Actor } from "skytree";
-import { KojiTypography } from "../KojiTypography";
+import { KojiAppearance } from "../KojiAppearance";
 
 export interface FloatLabelTextInputProps<T> {
   displayTextGivenValue: (value: T) => string;
@@ -11,16 +16,21 @@ export interface FloatLabelTextInputProps<T> {
   parentElement: HTMLElement;
   value: Observable<T>;
   valueGivenDisplayText: (displayText: string) => T;
+  shadowTextGivenValue?: (value: T) => string;
+  applyShadowTextOnBlur?: boolean;
 
   persistentLabel?: string;
   placeholder?: string;
 }
 
 export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
+  private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
+
   constructor(props: FloatLabelTextInputProps<T>) {
     super(props);
 
-    KojiTypography.preloadFonts();
+    KojiAppearance.preloadFonts();
   }
 
   onActivate() {
@@ -31,6 +41,16 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       })
     );
 
+    let shadowText: DynamicStyleElement<HTMLSpanElement>;
+    if (this.props.shadowTextGivenValue != null) {
+      shadowText = this.addActor(
+        ShadowTextStyle.toManagedElement({
+          tagName: "span",
+          parentElement: wrapper.element,
+        })
+      );
+    }
+
     const input = this.addActor(
       InputStyle.toManagedElement({
         tagName: "input",
@@ -38,7 +58,10 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       })
     );
     input.element.type = "text";
-    input.element.placeholder = this.props.placeholder;
+
+    if (this.props.placeholder != null) {
+      input.element.placeholder = this.props.placeholder;
+    }
 
     this.cancelOnDeactivate(
       wrapper.addManagedEventListener("click", () => {
@@ -46,9 +69,35 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       })
     );
 
+    this.addActor(
+      new FocusWatcher({
+        element: input.element,
+        output: this._isFocused,
+      })
+    );
+
+    const applyShadowText = () => {
+      if (
+        this.props.shadowTextGivenValue != null &&
+        this.props.applyShadowTextOnBlur == true
+      ) {
+        const text = this.props.shadowTextGivenValue(this.props.value.value);
+        if (text != null) {
+          input.element.value = text;
+        }
+      }
+    };
+
     this.cancelOnDeactivate(
-      input.addManagedEventListener("focus", () => {
-        input.element.setSelectionRange(0, (input.element.value || "").length);
+      this._isFocused.didChange.subscribe((isFocused) => {
+        if (isFocused == true) {
+          input.element.setSelectionRange(
+            0,
+            (input.element.value || "").length
+          );
+        } else {
+          applyShadowText();
+        }
       })
     );
 
@@ -61,6 +110,19 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
         overrideDisplayText: this.props.overrideDisplayText,
       })
     );
+
+    if (shadowText != null && this.props.shadowTextGivenValue != null) {
+      this.cancelOnDeactivate(
+        this.props.value.didChange.subscribe(() => {
+          const text = this.props.shadowTextGivenValue(this.props.value.value);
+          if (text == null) {
+            shadowText.element.innerHTML = "";
+          } else {
+            shadowText.element.innerHTML = text;
+          }
+        }, true)
+      );
+    }
 
     if (!StringUtil.stringIsEmpty(this.props.persistentLabel)) {
       const label = this.addActor(
@@ -75,9 +137,15 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
         inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
           input.setModifier("hasValue", !isEmpty);
           label.setModifier("hasValue", !isEmpty);
+
+          if (shadowText != null) {
+            shadowText.setModifier("hasValue", !isEmpty);
+          }
         }, true)
       );
     }
+
+    applyShadowText();
   }
 }
 
@@ -160,6 +228,29 @@ const InputStyle = ElementStyle.givenDefinition({
   `,
   modifiers: {
     hasValue: `
+      transform: translateY(8px);
+    `,
+  },
+});
+
+const ShadowTextStyle = ElementStyle.givenDefinition({
+  css: `
+    color: #BDBDBD;
+    position: absolute;
+    font-family: Source Sans Pro;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    margin-left: 12px;
+    transform: translateY(0);
+    opacity: 0;
+    transition: 0.1s ease-out transform;
+  `,
+  modifiers: {
+    hasValue: `
+      opacity: 1;
       transform: translateY(8px);
     `,
   },

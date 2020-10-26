@@ -1,13 +1,11 @@
 import { Actor } from "skytree";
-import { Duration } from "@anderjason/time";
+import { Observable } from "@anderjason/observable";
 import { Color } from "@anderjason/color";
-import { ElementStyle } from "@anderjason/web";
 export interface LoadingIndicatorProps {
-    parentElement: HTMLElement;
-    waitDuration?: Duration;
-    color?: Color;
+    parentElement: HTMLElement | Observable<HTMLElement>;
+    color?: Color | Observable<Color>;
 }
 export declare class LoadingIndicator extends Actor<LoadingIndicatorProps> {
+    private _svg;
     onActivate(): void;
 }
-export declare const LoaderStyle: ElementStyle;

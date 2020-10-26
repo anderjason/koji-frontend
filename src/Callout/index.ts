@@ -1,24 +1,21 @@
-import { Point2 } from "@anderjason/geometry";
-import { Observable } from "@anderjason/observable";
+import { Box2, Size2 } from "@anderjason/geometry";
+import { Observable, ObservableBase } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
-import { ElementStyle, ScreenSize } from "@anderjason/web";
+import { ElementSizeWatcher, ElementStyle } from "@anderjason/web";
 import { Actor, MultiBinding } from "skytree";
-import { KojiTypography } from "../KojiTypography";
-
-export type CalloutSide = "right" | "left";
+import { KojiAppearance } from "../KojiAppearance";
 
 export interface CalloutProps {
-  calloutSide: Observable<CalloutSide>;
-  parentElement: HTMLElement;
-  screenPoint: Observable<Point2>;
-  text: string;
+  parentElement: HTMLElement | Observable<HTMLElement>;
+  targetBox: Box2 | ObservableBase<Box2>;
+  text: string | ObservableBase<string>;
 }
 
 export class Callout extends Actor<CalloutProps> {
   constructor(props: CalloutProps) {
     super(props);
 
-    KojiTypography.preloadFonts();
+    KojiAppearance.preloadFonts();
   }
 
   onActivate() {
@@ -28,20 +25,38 @@ export class Callout extends Actor<CalloutProps> {
         parentElement: this.props.parentElement,
         transitionOut: async () => {
           wrapper.removeModifier("isVisible");
-          await Duration.givenSeconds(0.4).toDelay();
+          await Duration.givenSeconds(1.4).toDelay();
         },
       })
     );
 
     const span = document.createElement("span");
-    span.innerHTML = this.props.text;
     wrapper.element.appendChild(span);
 
+    const observableText = Observable.givenValueOrObservable(this.props.text);
+    this.cancelOnDeactivate(
+      observableText.didChange.subscribe((text) => {
+        if (text == null) {
+          span.innerHTML = "";
+        } else {
+          span.innerHTML = text;
+        }
+      }, true)
+    );
+
+    const parentBoundsWatcher = this.addActor(
+      new ElementSizeWatcher({
+        element: this.props.parentElement,
+      })
+    );
+
+    const observableTargetBox = Observable.givenValueOrObservable(
+      this.props.targetBox
+    );
     const pointBinding = this.addActor(
       MultiBinding.givenAnyChange([
-        this.props.screenPoint,
-        this.props.calloutSide,
-        ScreenSize.instance.availableSize,
+        observableTargetBox,
+        parentBoundsWatcher.output,
       ])
     );
 
@@ -51,35 +66,29 @@ export class Callout extends Actor<CalloutProps> {
           return;
         }
 
-        const screenPoint = this.props.screenPoint.value;
-        const calloutSide = this.props.calloutSide.value;
-        const availableSize = ScreenSize.instance.availableSize.value;
+        const targetBox = observableTargetBox.value;
+        const availableWidth = parentBoundsWatcher.output.value.width - 30;
 
-        if (screenPoint == null || calloutSide == null) {
-          return;
-        }
+        const wrapperBounds = wrapper.element.getBoundingClientRect();
+        const wrapperSize = Size2.givenWidthHeight(
+          wrapperBounds.width,
+          wrapperBounds.height
+        );
 
-        wrapper.style.top = `${screenPoint.y}px`;
+        const leftPoint = targetBox.toLeft() - wrapperSize.width - 15;
+        const rightPoint = targetBox.toRight() + 15;
 
-        if (calloutSide === "right") {
-          wrapper.style.left = `${screenPoint.x + 7}px`;
-          wrapper.style.right = null;
+        wrapper.style.top = `${targetBox.center.y}px`;
+
+        if (rightPoint + wrapperSize.width > availableWidth) {
+          wrapper.setModifier("isPointingLeft", false);
+          wrapper.style.left = `${leftPoint}px`;
         } else {
-          wrapper.style.left = null;
-          wrapper.style.right = `${availableSize.width - screenPoint.x + 7}px`;
+          wrapper.setModifier("isPointingLeft", true);
+          wrapper.style.left = `${rightPoint}px`;
         }
 
         wrapper.addModifier("isVisible");
-      }, true)
-    );
-
-    this.cancelOnDeactivate(
-      this.props.calloutSide.didChange.subscribe((calloutSide) => {
-        if (calloutSide == null) {
-          return;
-        }
-
-        wrapper.setModifier("isPointingLeft", calloutSide === "right");
       }, true)
     );
   }
@@ -102,7 +111,8 @@ const WrapperStyle = ElementStyle.givenDefinition({
     opacity: 0;
     padding: 6px 12px;
     position: absolute;
-    transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease;
+    user-select: none;
     white-space: nowrap;
     will-change: transform, opacity;
     z-index: 1000;
@@ -136,7 +146,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
   `,
   modifiers: {
     isVisible: `
-      opacity: 1
+      opacity: 1;
     `,
     isPointingLeft: `
       &:after {

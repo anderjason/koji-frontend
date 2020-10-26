@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiTypography = exports.KojiNetworkUtil = exports.Koji = exports.FloatLabelTextInput = exports.Callout = void 0;
+exports.ReactComponents = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiAppearance = exports.KojiNetworkUtil = exports.Koji = exports.FloatLabelTextInput = exports.Callout = void 0;
 const Callout_1 = require("./Callout");
 Object.defineProperty(exports, "Callout", { enumerable: true, get: function () { return Callout_1.Callout; } });
 const FloatLabelTextInput_1 = require("./FloatLabelTextInput");
@@ -9,8 +9,8 @@ const Koji_1 = require("./Koji");
 Object.defineProperty(exports, "Koji", { enumerable: true, get: function () { return Koji_1.Koji; } });
 const KojiNetworkUtil_1 = require("./KojiNetworkUtil");
 Object.defineProperty(exports, "KojiNetworkUtil", { enumerable: true, get: function () { return KojiNetworkUtil_1.KojiNetworkUtil; } });
-const KojiTypography_1 = require("./KojiTypography");
-Object.defineProperty(exports, "KojiTypography", { enumerable: true, get: function () { return KojiTypography_1.KojiTypography; } });
+const KojiAppearance_1 = require("./KojiAppearance");
+Object.defineProperty(exports, "KojiAppearance", { enumerable: true, get: function () { return KojiAppearance_1.KojiAppearance; } });
 const LoadingIndicator_1 = require("./LoadingIndicator");
 Object.defineProperty(exports, "LoadingIndicator", { enumerable: true, get: function () { return LoadingIndicator_1.LoadingIndicator; } });
 const PriceInput_1 = require("./PriceInput");
@@ -19,4 +19,6 @@ const RemixModeButton_1 = require("./RemixModeButton");
 Object.defineProperty(exports, "RemixModeButton", { enumerable: true, get: function () { return RemixModeButton_1.RemixModeButton; } });
 const RemixTarget_1 = require("./RemixTarget");
 Object.defineProperty(exports, "RemixTarget", { enumerable: true, get: function () { return RemixTarget_1.RemixTarget; } });
+const ReactComponents = require("./ReactComponents");
+exports.ReactComponents = ReactComponents;
 //# sourceMappingURL=index.js.map

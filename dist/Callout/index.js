@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Callout = void 0;
+const geometry_1 = require("@anderjason/geometry");
+const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const KojiTypography_1 = require("../KojiTypography");
+const KojiAppearance_1 = require("../KojiAppearance");
 class Callout extends skytree_1.Actor {
     constructor(props) {
         super(props);
-        KojiTypography_1.KojiTypography.preloadFonts();
+        KojiAppearance_1.KojiAppearance.preloadFonts();
     }
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
@@ -16,43 +18,48 @@ class Callout extends skytree_1.Actor {
             parentElement: this.props.parentElement,
             transitionOut: async () => {
                 wrapper.removeModifier("isVisible");
-                await time_1.Duration.givenSeconds(0.4).toDelay();
+                await time_1.Duration.givenSeconds(1.4).toDelay();
             },
         }));
         const span = document.createElement("span");
-        span.innerHTML = this.props.text;
         wrapper.element.appendChild(span);
+        const observableText = observable_1.Observable.givenValueOrObservable(this.props.text);
+        this.cancelOnDeactivate(observableText.didChange.subscribe((text) => {
+            if (text == null) {
+                span.innerHTML = "";
+            }
+            else {
+                span.innerHTML = text;
+            }
+        }, true));
+        const parentBoundsWatcher = this.addActor(new web_1.ElementSizeWatcher({
+            element: this.props.parentElement,
+        }));
+        const observableTargetBox = observable_1.Observable.givenValueOrObservable(this.props.targetBox);
         const pointBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
-            this.props.screenPoint,
-            this.props.calloutSide,
-            web_1.ScreenSize.instance.availableSize,
+            observableTargetBox,
+            parentBoundsWatcher.output,
         ]));
         this.cancelOnDeactivate(pointBinding.didInvalidate.subscribe(() => {
             if (this.isActive.value == false) {
                 return;
             }
-            const screenPoint = this.props.screenPoint.value;
-            const calloutSide = this.props.calloutSide.value;
-            const availableSize = web_1.ScreenSize.instance.availableSize.value;
-            if (screenPoint == null || calloutSide == null) {
-                return;
-            }
-            wrapper.style.top = `${screenPoint.y}px`;
-            if (calloutSide === "right") {
-                wrapper.style.left = `${screenPoint.x + 7}px`;
-                wrapper.style.right = null;
+            const targetBox = observableTargetBox.value;
+            const availableWidth = parentBoundsWatcher.output.value.width - 30;
+            const wrapperBounds = wrapper.element.getBoundingClientRect();
+            const wrapperSize = geometry_1.Size2.givenWidthHeight(wrapperBounds.width, wrapperBounds.height);
+            const leftPoint = targetBox.toLeft() - wrapperSize.width - 15;
+            const rightPoint = targetBox.toRight() + 15;
+            wrapper.style.top = `${targetBox.center.y}px`;
+            if (rightPoint + wrapperSize.width > availableWidth) {
+                wrapper.setModifier("isPointingLeft", false);
+                wrapper.style.left = `${leftPoint}px`;
             }
             else {
-                wrapper.style.left = null;
-                wrapper.style.right = `${availableSize.width - screenPoint.x + 7}px`;
+                wrapper.setModifier("isPointingLeft", true);
+                wrapper.style.left = `${rightPoint}px`;
             }
             wrapper.addModifier("isVisible");
-        }, true));
-        this.cancelOnDeactivate(this.props.calloutSide.didChange.subscribe((calloutSide) => {
-            if (calloutSide == null) {
-                return;
-            }
-            wrapper.setModifier("isPointingLeft", calloutSide === "right");
         }, true));
     }
 }
@@ -74,7 +81,8 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     opacity: 0;
     padding: 6px 12px;
     position: absolute;
-    transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease;
+    user-select: none;
     white-space: nowrap;
     will-change: transform, opacity;
     z-index: 1000;
@@ -108,7 +116,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
   `,
     modifiers: {
         isVisible: `
-      opacity: 1
+      opacity: 1;
     `,
         isPointingLeft: `
       &:after {

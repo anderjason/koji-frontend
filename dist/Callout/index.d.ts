@@ -1,12 +1,10 @@
-import { Point2 } from "@anderjason/geometry";
-import { Observable } from "@anderjason/observable";
+import { Box2 } from "@anderjason/geometry";
+import { Observable, ObservableBase } from "@anderjason/observable";
 import { Actor } from "skytree";
-export declare type CalloutSide = "right" | "left";
 export interface CalloutProps {
-    calloutSide: Observable<CalloutSide>;
-    parentElement: HTMLElement;
-    screenPoint: Observable<Point2>;
-    text: string;
+    parentElement: HTMLElement | Observable<HTMLElement>;
+    targetBox: Box2 | ObservableBase<Box2>;
+    text: string | ObservableBase<string>;
 }
 export declare class Callout extends Actor<CalloutProps> {
     constructor(props: CalloutProps);

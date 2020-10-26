@@ -1,72 +1,107 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoaderStyle = exports.LoadingIndicator = void 0;
+exports.LoadingIndicator = void 0;
 const skytree_1 = require("skytree");
-const time_1 = require("@anderjason/time");
-const color_1 = require("@anderjason/color");
 const web_1 = require("@anderjason/web");
+const observable_1 = require("@anderjason/observable");
+const util_1 = require("@anderjason/util");
+const radius = 20;
+const strokeWidth = 3;
+const diameter = radius * 2;
+const circumference = Math.PI * diameter;
 class LoadingIndicator extends skytree_1.Actor {
     onActivate() {
-        const managedLoader = this.addActor(exports.LoaderStyle.toManagedElement({
+        const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
-        if (this.props.parentElement === document.body) {
-            managedLoader.addModifier("isCentered");
+        this._svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        this._svg.setAttribute("aria-hidden", "true");
+        this._svg.setAttribute("viewBox", `0 0 ${diameter} ${diameter}`);
+        this._svg.setAttribute("width", "20px");
+        this._svg.setAttribute("height", "20px");
+        this._svg.setAttribute("class", SvgStyle.toCombinedClassName());
+        wrapper.element.appendChild(this._svg);
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        this._svg.appendChild(circle);
+        circle.setAttribute("stroke", "black");
+        circle.setAttribute("fill", "none");
+        circle.setAttribute("cx", `${radius}px`);
+        circle.setAttribute("cy", `${radius}px`);
+        circle.setAttribute("r", `${radius - strokeWidth}px`);
+        if (this.props.color != null) {
+            if (observable_1.Observable.isObservable(this.props.color)) {
+                this.cancelOnDeactivate(this.props.color.didChange.subscribe((color) => {
+                    if (color == null) {
+                        circle.setAttribute("stroke", null);
+                    }
+                    else {
+                        circle.setAttribute("stroke", color.toHexString());
+                    }
+                }, true));
+            }
+            else {
+                circle.setAttribute("stroke", this.props.color.toHexString());
+            }
         }
-        const color = this.props.color || color_1.Color.givenHexString("#FFFFFF");
-        const hexColor = color.toHexString();
-        managedLoader.element.innerHTML = `
-      <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">
-                <stop stop-color="${hexColor}" stop-opacity="0" offset="0%"/>
-                <stop stop-color="${hexColor}" stop-opacity=".631" offset="63.146%"/>
-                <stop stop-color="${hexColor}" offset="100%"/>
-            </linearGradient>
-        </defs>
-        <g fill="none" fill-rule="evenodd">
-            <g transform="translate(1 1)">
-                <path d="M36 18c0-9.94-8.06-18-18-18" stroke="url(#a)" stroke-width="2" />
-                <circle fill="${hexColor}" cx="36" cy="18" r="1" />
-            </g>
-        </g>
-      </svg>
-    `;
-        this.addActor(new skytree_1.Timer({
-            fn: () => {
-                managedLoader.style.opacity = "1";
-            },
-            isRepeating: false,
-            duration: this.props.waitDuration || time_1.Duration.givenSeconds(0.5),
+        else {
+            circle.setAttribute("stroke", "#007AFF");
+        }
+        this.cancelOnDeactivate(new observable_1.Receipt(() => {
+            wrapper.element.removeChild(this._svg);
+            this._svg = undefined;
         }));
     }
 }
 exports.LoadingIndicator = LoadingIndicator;
-exports.LoaderStyle = web_1.ElementStyle.givenDefinition({
+const animId = "anim" + util_1.StringUtil.stringOfRandomCharacters(8);
+const animId2 = "anim" + util_1.StringUtil.stringOfRandomCharacters(8);
+const WrapperStyle = web_1.ElementStyle.givenDefinition({
     css: `
-    animation: spin 1s linear infinite;
-    height: 40px;
-    opacity: 0;
-    pointer-events: none;
-    transition: 1s ease opacity;
-    user-select: none;
-    width: 40px;
-
-    @keyframes spin { 
-      100% { 
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+});
+const SvgStyle = web_1.ElementStyle.givenDefinition({
+    css: `
+    @keyframes ${animId} {
+      0% {
+        stroke-dashoffset: 0;
+      }
+      
+      100% {
+        stroke-dashoffset: ${-circumference * 2};
+      }
+    }
+  
+    @keyframes ${animId2} {
+      0% {
+        transform: rotate(0);
+      }
+      
+      100% {
         transform: rotate(360deg);
       }
     }
+
+    user-select: none;
+    pointer-events: none;
+    overflow: visible;
+    transform-origin: 50% 50%;
+    animation: 2s linear infinite ${animId2};
+
+    circle {
+      stroke-width: ${strokeWidth}px;
+      stroke-linecap: round;
+      stroke-dasharray: ${circumference};
+      animation: 3s linear infinite ${animId};
+    }
   `,
-    modifiers: {
-        isCentered: `
-      left: 50%;
-      margin: -20px 0 0 -20px;
-      position: absolute;
-      top: 50%;
-      z-index: 2000;
-    `,
-    },
 });
 //# sourceMappingURL=index.js.map

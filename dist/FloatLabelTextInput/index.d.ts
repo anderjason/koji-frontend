@@ -1,4 +1,4 @@
-import { Observable } from "@anderjason/observable";
+import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
 import { Actor } from "skytree";
 export interface FloatLabelTextInputProps<T> {
@@ -7,10 +7,14 @@ export interface FloatLabelTextInputProps<T> {
     parentElement: HTMLElement;
     value: Observable<T>;
     valueGivenDisplayText: (displayText: string) => T;
+    shadowTextGivenValue?: (value: T) => string;
+    applyShadowTextOnBlur?: boolean;
     persistentLabel?: string;
     placeholder?: string;
 }
 export declare class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
+    private _isFocused;
+    readonly isFocused: ReadOnlyObservable<boolean>;
     constructor(props: FloatLabelTextInputProps<T>);
     onActivate(): void;
 }

@@ -1,14 +1,19 @@
-import { Point2 } from "@anderjason/geometry";
 import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
 import { StringUtil } from "@anderjason/util";
-import { ElementStyle, Pointer, ScreenSize } from "@anderjason/web";
-import { Actor, ConditionalActivator, DelayActivator } from "skytree";
+import { ElementSizeWatcher, ElementStyle, Pointer } from "@anderjason/web";
+import {
+  Actor,
+  ConditionalActivator,
+  DelayActivator,
+  MultiBinding,
+} from "skytree";
 import { Callout } from "../Callout";
 import { Koji } from "../Koji";
+import { Box2, Point2 } from "@anderjason/geometry";
 
 export interface RemixModeButtonDefinition {
-  parentElement: HTMLElement;
+  parentElement: HTMLElement | Observable<HTMLElement>;
 }
 
 function createToggleSwitchSvg(): string {
@@ -77,9 +82,59 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
       })
     );
 
-    const calloutPoint = Observable.ofEmpty<Point2>(Point2.isEqual);
     const shouldShowCallout = Observable.ofEmpty<boolean>(
       Observable.isStrictEqual
+    );
+
+    const parentSizeWatcher = this.addActor(
+      new ElementSizeWatcher({
+        element: this.props.parentElement,
+      })
+    );
+
+    const buttonSizeWatcher = this.addActor(
+      new ElementSizeWatcher({
+        element: button.element,
+      })
+    );
+
+    const sizeBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        parentSizeWatcher.output,
+        buttonSizeWatcher.output,
+      ])
+    );
+
+    const bounds = Observable.ofEmpty<Box2>(Box2.isEqual);
+
+    this.cancelOnDeactivate(
+      sizeBinding.didInvalidate.subscribe(() => {
+        const buttonSize = buttonSizeWatcher.output.value;
+        const parentSize = parentSizeWatcher.output.value;
+
+        if (buttonSize == null || parentSize == null) {
+          return;
+        }
+
+        const left = 16;
+        const bottom = parentSize.height - 16;
+
+        bounds.setValue(
+          Box2.givenOppositeCorners(
+            Point2.givenXY(left, bottom),
+            Point2.givenXY(
+              left + buttonSize.width,
+              bottom - buttonSize.height - 4
+            )
+          )
+        );
+      }, true)
+    );
+
+    this.cancelOnDeactivate(
+      bounds.didChange.subscribe((v) => {
+        console.log(v);
+      }, true)
     );
 
     this.addActor(
@@ -88,12 +143,10 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
         fn: (v) => v,
         actor: new DelayActivator({
           activateAfter: Duration.givenSeconds(0.1),
-          // deactivateAfter: Duration.givenSeconds(6),
           actor: new Callout({
-            parentElement: document.body,
-            screenPoint: calloutPoint,
+            parentElement: this.props.parentElement,
+            targetBox: bounds,
             text: "Show more remix controls",
-            calloutSide: Observable.givenValue("right"),
           }),
         }),
       })
@@ -116,16 +169,7 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
       })
     );
 
-    this.cancelOnDeactivate(
-      ScreenSize.instance.availableSize.didChange.subscribe((size) => {
-        if (size == null) {
-          return;
-        }
-
-        calloutPoint.setValue(Point2.givenXY(86, size.height - 39));
-      }, true)
-    );
-
+    Koji.instance.mode.setValue("template");
     this.cancelOnDeactivate(
       Koji.instance.mode.didChange.subscribe((mode) => {
         switch (mode) {
