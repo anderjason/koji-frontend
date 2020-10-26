@@ -2,7 +2,10 @@ import { backendUrlGivenPath } from "./backendUrlGivenPath";
 import { RequestError } from "./RequestError";
 
 export async function backendGet(relativeUrl: string, params?: any) {
-  const response = await fetch(backendUrlGivenPath(relativeUrl, params));
+  const url = backendUrlGivenPath(relativeUrl, params);
+  const response = await fetch(url, {
+    credentials: "include",
+  });
 
   if (response.status == 404) {
     throw new RequestError("The requested resource could not be found.");

@@ -4,7 +4,10 @@ exports.backendGet = void 0;
 const backendUrlGivenPath_1 = require("./backendUrlGivenPath");
 const RequestError_1 = require("./RequestError");
 async function backendGet(relativeUrl, params) {
-    const response = await fetch(backendUrlGivenPath_1.backendUrlGivenPath(relativeUrl, params));
+    const url = backendUrlGivenPath_1.backendUrlGivenPath(relativeUrl, params);
+    const response = await fetch(url, {
+        credentials: "include",
+    });
     if (response.status == 404) {
         throw new RequestError_1.RequestError("The requested resource could not be found.");
     }
