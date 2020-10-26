@@ -82,6 +82,8 @@ export class Koji extends Actor<void> {
 
     if (this._instantRemixing != null) {
       this._instantRemixing.onValueChanged((path, newValue) => {
+        console.log("onValueChanged", path, newValue);
+        (window as any).ir = newValue;
         this.onValueChanged(path, newValue);
       });
 

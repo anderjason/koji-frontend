@@ -27,16 +27,12 @@
     "@anderjason/time": "^2.0.2",
     "@anderjason/util": "^2.0.3",
     "@anderjason/web": "git+https://github.com/anderjason/web.git",
-    "@withkoji/vcc": "^1.1.33",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "@withkoji/vcc": "^1.1.38",
     "skytree": "^9.1.1"
   },
   "devDependencies": {
     "@anderjason/example-tools": "git+https://github.com/anderjason/example-tools.git",
-    "@types/node": "^14.11.10",
-    "@types/react": "^16.9.53",
-    "@types/react-dom": "^16.9.8",
+    "@types/node": "^14.14.3",
     "html-webpack-plugin": "^4.5.0",
     "ts-loader": "^8.0.5",
     "typescript": "^4.0.3",

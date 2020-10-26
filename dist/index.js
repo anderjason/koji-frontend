@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReactComponents = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiAppearance = exports.KojiNetworkUtil = exports.Koji = exports.FloatLabelTextInput = exports.Callout = void 0;
+exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiAppearance = exports.KojiNetworkUtil = exports.Koji = exports.FloatLabelTextInput = exports.Callout = void 0;
 const Callout_1 = require("./Callout");
 Object.defineProperty(exports, "Callout", { enumerable: true, get: function () { return Callout_1.Callout; } });
 const FloatLabelTextInput_1 = require("./FloatLabelTextInput");
@@ -19,6 +19,4 @@ const RemixModeButton_1 = require("./RemixModeButton");
 Object.defineProperty(exports, "RemixModeButton", { enumerable: true, get: function () { return RemixModeButton_1.RemixModeButton; } });
 const RemixTarget_1 = require("./RemixTarget");
 Object.defineProperty(exports, "RemixTarget", { enumerable: true, get: function () { return RemixTarget_1.RemixTarget; } });
-const ReactComponents = require("./ReactComponents");
-exports.ReactComponents = ReactComponents;
 //# sourceMappingURL=index.js.map

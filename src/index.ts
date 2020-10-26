@@ -7,7 +7,6 @@ import { LoadingIndicator } from "./LoadingIndicator";
 import { PriceInput } from "./PriceInput";
 import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
-import * as ReactComponents from "./ReactComponents";
 
 export {
   Callout,
@@ -19,5 +18,4 @@ export {
   PriceInput,
   RemixModeButton,
   RemixTarget,
-  ReactComponents,
 };

@@ -8,8 +8,6 @@ import { PriceInputDemo } from "./PriceInputDemo";
 import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
 import { RemixModeButtonDemo } from "./RemixModeButtonDemo";
 import { ButtonDemo } from "./ButtonDemo";
-import { ReactButtonDemo } from "./ReactButtonDemo";
-import { ReactDemo } from "./ReactDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
@@ -43,12 +41,6 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Remix mode button",
     actor: new RemixModeButtonDemo({}),
-  },
-  {
-    title: "React button",
-    actor: new ReactDemo({
-      component: ReactButtonDemo,
-    }),
   },
 ]);
 

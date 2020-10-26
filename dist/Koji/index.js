@@ -59,6 +59,8 @@ class Koji extends skytree_1.Actor {
         }));
         if (this._instantRemixing != null) {
             this._instantRemixing.onValueChanged((path, newValue) => {
+                console.log("onValueChanged", path, newValue);
+                window.ir = newValue;
                 this.onValueChanged(path, newValue);
             });
             let previousEditMode = undefined;
