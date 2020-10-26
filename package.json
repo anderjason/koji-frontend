@@ -1,11 +1,11 @@
 {
-  "name": "@anderjason/koji-frontend",
-  "version": "5.0.2",
+  "name": "@anderjason/koji-frontend-tools",
+  "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:anderjason/koji-frontend.git"
+    "url": "git+ssh://git@github.com:anderjason/koji-frontend-tools.git"
   },
   "author": "Jason Anderson",
   "license": "MIT",
@@ -45,7 +45,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "bugs": {
-    "url": "https://github.com/anderjason/koji-frontend/issues"
+    "url": "https://github.com/anderjason/koji-frontend-tools/issues"
   },
-  "homepage": "https://github.com/anderjason/koji-frontend#readme"
+  "homepage": "https://github.com/anderjason/koji-frontend-tools#readme"
 }

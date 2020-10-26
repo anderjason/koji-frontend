@@ -1,8 +1,8 @@
-# @anderjason/koji-frontend
+# @anderjason/koji-frontend-tools
 
 ## Installation
 
-`npm install --save @anderjason/koji-frontend`
+`npm install --save @anderjason/koji-frontend-tools`
 
 ## API Reference
 
