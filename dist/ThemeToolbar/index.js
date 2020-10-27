@@ -23,10 +23,10 @@ class ThemeToolbar extends skytree_1.Actor {
             tagName: "div",
             parentElement: this.props.parentElement,
             transitionIn: () => {
-                wrapper.addModifier("isVisible");
+                wrapper.setModifier("isVisible", true);
             },
             transitionOut: async () => {
-                wrapper.removeModifier("isVisible");
+                wrapper.setModifier("isVisible", false);
                 await time_1.Duration.givenSeconds(0.3).toDelay();
             },
         }));

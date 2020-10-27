@@ -17,7 +17,7 @@ class Callout extends skytree_1.Actor {
             tagName: "div",
             parentElement: this.props.parentElement,
             transitionOut: async () => {
-                wrapper.removeModifier("isVisible");
+                wrapper.setModifier("isVisible", false);
                 await time_1.Duration.givenSeconds(1.4).toDelay();
             },
         }));
@@ -66,7 +66,7 @@ class Callout extends skytree_1.Actor {
                 wrapper.setModifier("isPointingLeft", true);
                 wrapper.style.left = `${rightPoint}px`;
             }
-            wrapper.addModifier("isVisible");
+            wrapper.setModifier("isVisible", true);
         }, true));
     }
 }

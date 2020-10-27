@@ -32,10 +32,10 @@ export class ThemeToolbar extends Actor<ThemeToolbarDefinition> {
         tagName: "div",
         parentElement: this.props.parentElement,
         transitionIn: () => {
-          wrapper.addModifier("isVisible");
+          wrapper.setModifier("isVisible", true);
         },
         transitionOut: async () => {
-          wrapper.removeModifier("isVisible");
+          wrapper.setModifier("isVisible", false);
           await Duration.givenSeconds(0.3).toDelay();
         },
       })

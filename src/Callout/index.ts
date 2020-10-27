@@ -24,7 +24,7 @@ export class Callout extends Actor<CalloutProps> {
         tagName: "div",
         parentElement: this.props.parentElement,
         transitionOut: async () => {
-          wrapper.removeModifier("isVisible");
+          wrapper.setModifier("isVisible", false);
           await Duration.givenSeconds(1.4).toDelay();
         },
       })
@@ -98,7 +98,7 @@ export class Callout extends Actor<CalloutProps> {
           wrapper.style.left = `${rightPoint}px`;
         }
 
-        wrapper.addModifier("isVisible");
+        wrapper.setModifier("isVisible", true);
       }, true)
     );
   }

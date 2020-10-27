@@ -74,7 +74,7 @@ class Description extends skytree_1.Actor {
                     start = end + 1;
                 }
                 if (collapsedWords.length < words.length) {
-                    wrapper.addModifier("isExpandable");
+                    wrapper.setModifier("isExpandable", true);
                     const span = document.createElement("span");
                     let trimmedText = collapsedWords.join(" ");
                     trimmedText = trimmedText.replace(/(.*?)\W+$/, "$1");
@@ -87,7 +87,7 @@ class Description extends skytree_1.Actor {
                     content.element.appendChild(more);
                 }
                 else {
-                    wrapper.removeModifier("isExpandable");
+                    wrapper.setModifier("isExpandable", false);
                 }
             }
         }, true));
