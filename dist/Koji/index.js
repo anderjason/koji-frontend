@@ -59,8 +59,6 @@ class Koji extends skytree_1.Actor {
         }));
         if (this._instantRemixing != null) {
             this._instantRemixing.onValueChanged((path, newValue) => {
-                console.log("onValueChanged", path, newValue);
-                window.ir = newValue;
                 this.onValueChanged(path, newValue);
             });
             let previousEditMode = undefined;
@@ -111,7 +109,12 @@ class Koji extends skytree_1.Actor {
     sendPendingUpdates() {
         this._updateKojiLater.clear();
         if (this._instantRemixing != null) {
-            this._instantRemixing.onSetValue(["general"], this._vccData.state.value, true);
+            const currentValue = this._instantRemixing.get(["general"]);
+            if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, this._vccData.state.value)) {
+                return; // nothing to update
+            }
+            this._instantRemixing.onSetValue(["general"], util_1.ObjectUtil.objectWithDeepMerge({}, this._vccData.state.value), // make sure to pass a clone to instant remixing
+            true);
         }
     }
 }

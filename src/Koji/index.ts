@@ -1,6 +1,6 @@
 import { Observable, TypedEvent } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
-import { ValuePath } from "@anderjason/util";
+import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { ObservableState } from "@anderjason/web";
 import { Actor } from "skytree";
@@ -82,8 +82,6 @@ export class Koji extends Actor<void> {
 
     if (this._instantRemixing != null) {
       this._instantRemixing.onValueChanged((path, newValue) => {
-        console.log("onValueChanged", path, newValue);
-        (window as any).ir = newValue;
         this.onValueChanged(path, newValue);
       });
 
@@ -142,9 +140,16 @@ export class Koji extends Actor<void> {
     this._updateKojiLater.clear();
 
     if (this._instantRemixing != null) {
+      const currentValue = this._instantRemixing.get(["general"]);
+      if (
+        ObjectUtil.objectIsDeepEqual(currentValue, this._vccData.state.value)
+      ) {
+        return; // nothing to update
+      }
+
       (this._instantRemixing as any).onSetValue(
         ["general"],
-        this._vccData.state.value,
+        ObjectUtil.objectWithDeepMerge({}, this._vccData.state.value), // make sure to pass a clone to instant remixing
         true
       );
     }
