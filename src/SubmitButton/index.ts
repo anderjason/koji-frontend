@@ -2,25 +2,14 @@ import { Color } from "@anderjason/color";
 import { Observable, ObservableBase, Receipt } from "@anderjason/observable";
 import { ElementStyle, ManagedElement } from "@anderjason/web";
 import { Actor } from "skytree";
+import { ThisOrParentElement } from "..";
 import { KojiTheme } from "../KojiAppearance";
 import { LoadingIndicator } from "../LoadingIndicator";
 
-export type ButtonMode = "ready" | "busy" | "success";
+export type SubmitButtonMode = "ready" | "busy" | "success";
 
-export interface ParentElement {
-  type: "parentElement";
-  parentElement: HTMLElement | Observable<HTMLElement>;
-}
-
-export interface ThisElement<T> {
-  type: "thisElement";
-  element: T;
-}
-
-export type ThisOrParentElement<T> = ParentElement | ThisElement<T>;
-
-export interface UnlockButtonProps {
-  buttonMode: ButtonMode | ObservableBase<ButtonMode>;
+export interface SubmitButtonProps {
+  buttonMode: SubmitButtonMode | ObservableBase<SubmitButtonMode>;
   onClick: () => void;
   element: ThisOrParentElement<HTMLButtonElement>;
   text: string | ObservableBase<string>;
@@ -33,7 +22,7 @@ const checkSvg = `
   </svg>
 `;
 
-export class Button extends Actor<UnlockButtonProps> {
+export class SubmitButton extends Actor<SubmitButtonProps> {
   onActivate() {
     let button: HTMLButtonElement;
 
@@ -53,7 +42,7 @@ export class Button extends Actor<UnlockButtonProps> {
         throw new Error("An element is required (this or parent)");
     }
 
-    button.classList.add(ButtonStyle.toCombinedClassName());
+    button.classList.add(SubmitButtonStyle.toCombinedClassName());
     button.addEventListener("click", this.props.onClick);
 
     this.cancelOnDeactivate(
@@ -96,15 +85,17 @@ export class Button extends Actor<UnlockButtonProps> {
       observableMode.didChange.subscribe((mode) => {
         switch (mode) {
           case "ready":
-            button.className = ButtonStyle.toCombinedClassName();
+            button.className = SubmitButtonStyle.toCombinedClassName();
             button.disabled = false;
             break;
           case "busy":
-            button.className = ButtonStyle.toCombinedClassName("isTextHidden");
+            button.className = SubmitButtonStyle.toCombinedClassName(
+              "isTextHidden"
+            );
             button.disabled = true;
             break;
           case "success":
-            button.className = ButtonStyle.toCombinedClassName([
+            button.className = SubmitButtonStyle.toCombinedClassName([
               "isTextHidden",
               "isSuccess",
             ]);
@@ -150,7 +141,7 @@ export class Button extends Actor<UnlockButtonProps> {
   }
 }
 
-const ButtonStyle = ElementStyle.givenDefinition({
+const SubmitButtonStyle = ElementStyle.givenDefinition({
   css: `
     align-items: center;
     background: #2D2F30;

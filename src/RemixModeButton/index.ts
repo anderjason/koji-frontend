@@ -131,12 +131,6 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
       }, true)
     );
 
-    this.cancelOnDeactivate(
-      bounds.didChange.subscribe((v) => {
-        console.log(v);
-      }, true)
-    );
-
     this.addActor(
       new ConditionalActivator({
         input: shouldShowCallout,

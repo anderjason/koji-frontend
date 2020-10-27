@@ -1,5 +1,5 @@
 import { Actor } from "skytree";
-import { ThisOrParentElement } from "../Button";
+import { ThisOrParentElement } from "..";
 export interface CardProps {
     element: ThisOrParentElement<HTMLDivElement>;
 }

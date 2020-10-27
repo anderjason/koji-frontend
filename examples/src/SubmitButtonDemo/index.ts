@@ -3,12 +3,14 @@ import { Observable } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { Card } from "../../../src/Card";
 import { KojiAppearance } from "../../../src/KojiAppearance";
-import { Button, ButtonMode } from "../../../src/Button";
+import { SubmitButton, SubmitButtonMode } from "../../../src/SubmitButton";
 import { Duration } from "@anderjason/time";
 
-export interface ButtonDemoProps {}
+export interface SubmitButtonDemoProps {}
 
-export class ButtonDemo extends Actor<ButtonDemoProps> implements DemoActor {
+export class SubmitButtonDemo
+  extends Actor<SubmitButtonDemoProps>
+  implements DemoActor {
   readonly parentElement = Observable.ofEmpty<HTMLElement>();
   readonly isVisible = Observable.ofEmpty<boolean>();
 
@@ -22,10 +24,10 @@ export class ButtonDemo extends Actor<ButtonDemoProps> implements DemoActor {
       })
     );
 
-    const buttonMode = Observable.givenValue<ButtonMode>("ready");
+    const buttonMode = Observable.givenValue<SubmitButtonMode>("ready");
 
     this.addActor(
-      new Button({
+      new SubmitButton({
         element: {
           type: "parentElement",
           parentElement: card.element,

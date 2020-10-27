@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Button = void 0;
+exports.SubmitButton = void 0;
 const color_1 = require("@anderjason/color");
 const observable_1 = require("@anderjason/observable");
 const web_1 = require("@anderjason/web");
@@ -11,7 +11,7 @@ const checkSvg = `
     <path d="M159.988 318.582c-3.988 4.012-9.43 6.25-15.082 6.25s-11.094-2.238-15.082-6.25L9.375 198.113c-12.5-12.5-12.5-32.77 0-45.246l15.082-15.086c12.504-12.5 32.75-12.5 45.25 0l75.2 75.203L348.104 9.781c12.504-12.5 32.77-12.5 45.25 0l15.082 15.086c12.5 12.5 12.5 32.766 0 45.246zm0 0" fill="currentColor" />
   </svg>
 `;
-class Button extends skytree_1.Actor {
+class SubmitButton extends skytree_1.Actor {
     onActivate() {
         let button;
         switch (this.props.element.type) {
@@ -27,7 +27,7 @@ class Button extends skytree_1.Actor {
             default:
                 throw new Error("An element is required (this or parent)");
         }
-        button.classList.add(ButtonStyle.toCombinedClassName());
+        button.classList.add(SubmitButtonStyle.toCombinedClassName());
         button.addEventListener("click", this.props.onClick);
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             button.removeEventListener("click", this.props.onClick);
@@ -57,15 +57,15 @@ class Button extends skytree_1.Actor {
         this.cancelOnDeactivate(observableMode.didChange.subscribe((mode) => {
             switch (mode) {
                 case "ready":
-                    button.className = ButtonStyle.toCombinedClassName();
+                    button.className = SubmitButtonStyle.toCombinedClassName();
                     button.disabled = false;
                     break;
                 case "busy":
-                    button.className = ButtonStyle.toCombinedClassName("isTextHidden");
+                    button.className = SubmitButtonStyle.toCombinedClassName("isTextHidden");
                     button.disabled = true;
                     break;
                 case "success":
-                    button.className = ButtonStyle.toCombinedClassName([
+                    button.className = SubmitButtonStyle.toCombinedClassName([
                         "isTextHidden",
                         "isSuccess",
                     ]);
@@ -101,8 +101,8 @@ class Button extends skytree_1.Actor {
         }, true));
     }
 }
-exports.Button = Button;
-const ButtonStyle = web_1.ElementStyle.givenDefinition({
+exports.SubmitButton = SubmitButton;
+const SubmitButtonStyle = web_1.ElementStyle.givenDefinition({
     css: `
     align-items: center;
     background: #2D2F30;

@@ -92,9 +92,6 @@ class RemixModeButton extends skytree_1.Actor {
             const bottom = parentSize.height - 16;
             bounds.setValue(geometry_1.Box2.givenOppositeCorners(geometry_1.Point2.givenXY(left, bottom), geometry_1.Point2.givenXY(left + buttonSize.width, bottom - buttonSize.height - 4)));
         }, true));
-        this.cancelOnDeactivate(bounds.didChange.subscribe((v) => {
-            console.log(v);
-        }, true));
         this.addActor(new skytree_1.ConditionalActivator({
             input: shouldShowCallout,
             fn: (v) => v,

@@ -7,7 +7,7 @@ import { LoadingIndicatorDemo } from "./LoadingIndicatorDemo";
 import { PriceInputDemo } from "./PriceInputDemo";
 import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
 import { RemixModeButtonDemo } from "./RemixModeButtonDemo";
-import { ButtonDemo } from "./ButtonDemo";
+import { SubmitButtonDemo } from "./SubmitButtonDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
@@ -23,8 +23,8 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new FloatLabelTextInputDemo({}),
   },
   {
-    title: "Button",
-    actor: new ButtonDemo({}),
+    title: "Submit button",
+    actor: new SubmitButtonDemo({}),
   },
   {
     title: "Loading indicator",

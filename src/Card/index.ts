@@ -1,10 +1,6 @@
 import { Actor } from "skytree";
-import {
-  DynamicStyleElement,
-  ElementStyle,
-  ManagedElement,
-} from "@anderjason/web";
-import { ThisOrParentElement } from "../Button";
+import { ElementStyle, ManagedElement } from "@anderjason/web";
+import { ThisOrParentElement } from "..";
 
 export interface CardProps {
   element: ThisOrParentElement<HTMLDivElement>;
