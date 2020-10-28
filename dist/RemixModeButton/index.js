@@ -115,7 +115,6 @@ class RemixModeButton extends skytree_1.Actor {
                 this.onClick();
             }
         }));
-        Koji_1.Koji.instance.mode.setValue("template");
         this.cancelOnDeactivate(Koji_1.Koji.instance.mode.didChange.subscribe((mode) => {
             switch (mode) {
                 case "view":

@@ -163,7 +163,6 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
       })
     );
 
-    Koji.instance.mode.setValue("template");
     this.cancelOnDeactivate(
       Koji.instance.mode.didChange.subscribe((mode) => {
         switch (mode) {
