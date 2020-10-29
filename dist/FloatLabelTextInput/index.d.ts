@@ -11,6 +11,7 @@ export interface FloatLabelTextInputProps<T> {
     applyShadowTextOnBlur?: boolean;
     persistentLabel?: string;
     placeholder?: string;
+    inputType?: string;
 }
 export declare class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     private _isFocused;

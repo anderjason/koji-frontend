@@ -12,6 +12,8 @@ import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
 import { SubmitButton } from "./SubmitButton";
 import { ThemeToolbar } from "./ThemeToolbar";
+import { IntegerInput } from "./IntegerInput";
+import { ConfirmationPrompt } from "./ConfirmationPrompt";
 
 export interface ParentElement {
   type: "parentElement";
@@ -28,8 +30,10 @@ export type ThisOrParentElement<T> = ParentElement | ThisElement<T>;
 export {
   Callout,
   Card,
+  ConfirmationPrompt,
   Description,
   FloatLabelTextInput,
+  IntegerInput,
   Koji,
   KojiAppearance,
   KojiNetworkUtil,

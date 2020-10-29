@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.FloatLabelTextInput = exports.Description = exports.Card = exports.Callout = void 0;
+exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.Description = exports.ConfirmationPrompt = exports.Card = exports.Callout = void 0;
 const Callout_1 = require("./Callout");
 Object.defineProperty(exports, "Callout", { enumerable: true, get: function () { return Callout_1.Callout; } });
 const Card_1 = require("./Card");
@@ -27,4 +27,8 @@ const SubmitButton_1 = require("./SubmitButton");
 Object.defineProperty(exports, "SubmitButton", { enumerable: true, get: function () { return SubmitButton_1.SubmitButton; } });
 const ThemeToolbar_1 = require("./ThemeToolbar");
 Object.defineProperty(exports, "ThemeToolbar", { enumerable: true, get: function () { return ThemeToolbar_1.ThemeToolbar; } });
+const IntegerInput_1 = require("./IntegerInput");
+Object.defineProperty(exports, "IntegerInput", { enumerable: true, get: function () { return IntegerInput_1.IntegerInput; } });
+const ConfirmationPrompt_1 = require("./ConfirmationPrompt");
+Object.defineProperty(exports, "ConfirmationPrompt", { enumerable: true, get: function () { return ConfirmationPrompt_1.ConfirmationPrompt; } });
 //# sourceMappingURL=index.js.map

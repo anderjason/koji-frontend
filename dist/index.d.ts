@@ -12,6 +12,8 @@ import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
 import { SubmitButton } from "./SubmitButton";
 import { ThemeToolbar } from "./ThemeToolbar";
+import { IntegerInput } from "./IntegerInput";
+import { ConfirmationPrompt } from "./ConfirmationPrompt";
 export interface ParentElement {
     type: "parentElement";
     parentElement: HTMLElement | Observable<HTMLElement>;
@@ -21,4 +23,4 @@ export interface ThisElement<T> {
     element: T;
 }
 export declare type ThisOrParentElement<T> = ParentElement | ThisElement<T>;
-export { Callout, Card, Description, FloatLabelTextInput, Koji, KojiAppearance, KojiNetworkUtil, LoadingIndicator, PriceInput, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };
+export { Callout, Card, ConfirmationPrompt, Description, FloatLabelTextInput, IntegerInput, Koji, KojiAppearance, KojiNetworkUtil, LoadingIndicator, PriceInput, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };

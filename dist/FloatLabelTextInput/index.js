@@ -29,7 +29,7 @@ class FloatLabelTextInput extends skytree_1.Actor {
             tagName: "input",
             parentElement: wrapper.element,
         }));
-        input.element.type = "text";
+        input.element.type = this.props.inputType || "text";
         if (this.props.placeholder != null) {
             input.element.placeholder = this.props.placeholder;
         }
@@ -156,7 +156,7 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     margin-left: 12px;
-    margin-right: 3px;
+    margin-right: 5px;
     outline: none;
     user-select: auto;
     padding: 0;
