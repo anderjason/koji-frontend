@@ -14,7 +14,6 @@ class IntegerInput extends skytree_1.Actor {
             persistentLabel: this.props.persistentLabel,
             placeholder: this.props.placeholder,
             value: vccBinding.output,
-            inputType: "number",
             displayTextGivenValue: (value) => {
                 if (value == null || isNaN(value)) {
                     return "";

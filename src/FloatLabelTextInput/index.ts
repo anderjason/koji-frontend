@@ -58,7 +58,8 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
         parentElement: wrapper.element,
       })
     );
-    input.element.type = this.props.inputType || "text";
+    const inputType = this.props.inputType || "text";
+    input.element.type = inputType;
 
     if (this.props.placeholder != null) {
       input.element.placeholder = this.props.placeholder;
@@ -89,18 +90,21 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       }
     };
 
-    this.cancelOnDeactivate(
-      this._isFocused.didChange.subscribe((isFocused) => {
-        if (isFocused == true) {
-          input.element.setSelectionRange(
-            0,
-            (input.element.value || "").length
-          );
-        } else {
-          applyShadowText();
-        }
-      })
-    );
+    if (inputType === "text") {
+      // setSelectionRange is not supported on number inputs
+      this.cancelOnDeactivate(
+        this._isFocused.didChange.subscribe((isFocused) => {
+          if (isFocused == true) {
+            input.element.setSelectionRange(
+              0,
+              (input.element.value || "").length
+            );
+          } else {
+            applyShadowText();
+          }
+        })
+      );
+    }
 
     const inputBinding = this.addActor(
       new TextInputBinding<T>({

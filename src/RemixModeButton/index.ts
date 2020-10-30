@@ -165,6 +165,7 @@ export class RemixModeButton extends Actor<RemixModeButtonDefinition> {
 
     this.cancelOnDeactivate(
       Koji.instance.mode.didChange.subscribe((mode) => {
+        console.log("koji mode", mode);
         switch (mode) {
           case "view":
             shouldShowCallout.setValue(false);

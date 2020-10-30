@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/koji-frontend-tools",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -26,8 +26,8 @@
     "@anderjason/tests": "^1.0.1",
     "@anderjason/time": "^2.0.2",
     "@anderjason/util": "^2.0.3",
-    "@anderjason/web": "^5.0.2",
-    "@withkoji/vcc": "^1.1.39",
+    "@anderjason/web": "^5.0.3",
+    "@withkoji/vcc": "^1.1.41",
     "skytree": "^9.1.1"
   },
   "devDependencies": {

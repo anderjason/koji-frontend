@@ -2,6 +2,7 @@ import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
 import { Actor } from "skytree";
+import { Koji } from "../../../src/Koji";
 import { RemixModeButton } from "../../../src/RemixModeButton";
 
 export interface RemixModeButtonDemoProps {}
@@ -19,6 +20,8 @@ export class RemixModeButtonDemo
         parentElement: this.parentElement,
       })
     );
+
+    Koji.instance.mode.setValue("template");
 
     this.addActor(
       new RemixModeButton({

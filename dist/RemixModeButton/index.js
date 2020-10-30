@@ -116,6 +116,7 @@ class RemixModeButton extends skytree_1.Actor {
             }
         }));
         this.cancelOnDeactivate(Koji_1.Koji.instance.mode.didChange.subscribe((mode) => {
+            console.log("koji mode", mode);
             switch (mode) {
                 case "view":
                     shouldShowCallout.setValue(false);
