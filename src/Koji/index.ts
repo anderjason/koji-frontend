@@ -129,7 +129,10 @@ export class Koji extends Actor<void> {
           ...path.toParts(),
         ]);
 
-        (this._instantRemixing as any).onPresentControl(externalPath.toParts());
+        (this._instantRemixing as any).onPresentControl(
+          externalPath.toParts(),
+          { preventNavigation: true }
+        );
       } else {
         (this._instantRemixing as any).onPresentControl(undefined);
       }

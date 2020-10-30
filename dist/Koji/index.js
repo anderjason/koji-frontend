@@ -99,7 +99,7 @@ class Koji extends skytree_1.Actor {
                     "general",
                     ...path.toParts(),
                 ]);
-                this._instantRemixing.onPresentControl(externalPath.toParts());
+                this._instantRemixing.onPresentControl(externalPath.toParts(), { preventNavigation: true });
             }
             else {
                 this._instantRemixing.onPresentControl(undefined);
