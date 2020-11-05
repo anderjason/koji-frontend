@@ -31,10 +31,6 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     border-radius: 15px;
     padding: 24px 20px 16px 20px;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
   `,
 });
 //# sourceMappingURL=index.js.map

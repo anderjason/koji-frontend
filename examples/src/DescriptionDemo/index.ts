@@ -1,5 +1,5 @@
 import { Actor } from "skytree";
-import { SequentialChoice } from "@anderjason/web";
+import { ElementStyle, SequentialChoice } from "@anderjason/web";
 import { Description } from "../../../src/Description";
 import { Observable } from "@anderjason/observable";
 import { Card } from "../../../src/Card";
@@ -19,11 +19,18 @@ export class DescriptionDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
+    const cardWrapper = this.addActor(
+      CardWrapperStyle.toManagedElement({
+        tagName: "div",
+        parentElement: this.parentElement,
+      })
+    );
+
     const card = this.addActor(
       new Card({
         element: {
           type: "parentElement",
-          parentElement: this.parentElement,
+          parentElement: cardWrapper.element,
         },
       })
     );
@@ -60,3 +67,12 @@ export class DescriptionDemo
     );
   }
 }
+
+const CardWrapperStyle = ElementStyle.givenDefinition({
+  css: `
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    right: 20px;
+  `,
+});

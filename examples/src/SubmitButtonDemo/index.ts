@@ -5,6 +5,7 @@ import { Card } from "../../../src/Card";
 import { KojiAppearance } from "../../../src/KojiAppearance";
 import { SubmitButton, SubmitButtonMode } from "../../../src/SubmitButton";
 import { Duration } from "@anderjason/time";
+import { ElementStyle } from "@anderjason/web";
 
 export interface SubmitButtonDemoProps {}
 
@@ -15,11 +16,18 @@ export class SubmitButtonDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
+    const cardWrapper = this.addActor(
+      CardWrapperStyle.toManagedElement({
+        tagName: "div",
+        parentElement: this.parentElement,
+      })
+    );
+
     const card = this.addActor(
       new Card({
         element: {
           type: "parentElement",
-          parentElement: this.parentElement,
+          parentElement: cardWrapper.element,
         },
       })
     );
@@ -48,3 +56,12 @@ export class SubmitButtonDemo
     );
   }
 }
+
+const CardWrapperStyle = ElementStyle.givenDefinition({
+  css: `
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    right: 20px;
+  `,
+});
