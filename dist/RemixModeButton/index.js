@@ -1,14 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RemixModeButton = void 0;
+const geometry_1 = require("@anderjason/geometry");
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const Callout_1 = require("../Callout");
-const Koji_1 = require("../Koji");
-const geometry_1 = require("@anderjason/geometry");
 function createToggleSwitchSvg() {
     const filterId = util_1.StringUtil.stringOfRandomCharacters(8);
     return `
@@ -65,6 +64,12 @@ function createToggleSwitchSvg() {
   `;
 }
 class RemixModeButton extends skytree_1.Actor {
+    constructor(props) {
+        super(props);
+        this.output =
+            this.props.output ||
+                observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
+    }
     onActivate() {
         const button = this.addActor(ButtonStyle.toManagedElement({
             tagName: "button",
@@ -115,41 +120,13 @@ class RemixModeButton extends skytree_1.Actor {
                 this.onClick();
             }
         }));
-        this.cancelOnDeactivate(Koji_1.Koji.instance.mode.didChange.subscribe((mode) => {
-            console.log("koji mode", mode);
-            switch (mode) {
-                case "view":
-                    shouldShowCallout.setValue(false);
-                    button.setModifier("isVisible", false);
-                    break;
-                case "template":
-                    shouldShowCallout.setValue(true);
-                    button.setModifier("isVisible", true);
-                    button.setModifier("isActive", false);
-                    button.element.title = "Change to edit mode";
-                    break;
-                case "generator":
-                    shouldShowCallout.setValue(false);
-                    button.setModifier("isVisible", true);
-                    button.setModifier("isActive", true);
-                    button.element.title = "Change to remix mode";
-                    break;
-            }
+        this.cancelOnDeactivate(this.output.didChange.subscribe((isActive) => {
+            button.setModifier("isActive", isActive == true);
+            shouldShowCallout.setValue(isActive == false);
         }, true));
     }
     onClick() {
-        const mode = Koji_1.Koji.instance.mode;
-        switch (mode.value) {
-            case "generator":
-                mode.setValue("template");
-                break;
-            case "template":
-                mode.setValue("generator");
-                break;
-            default:
-                mode.setValue("generator");
-                break;
-        }
+        this.output.setValue(!this.output.value);
     }
 }
 exports.RemixModeButton = RemixModeButton;
@@ -162,9 +139,9 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     left: 16px;
     bottom: 16px;
     outline: none;
-    opacity: 0;
+    opacity: 1;
     padding: 0;
-    pointer-events: none;
+    pointer-events: auto;
     position: absolute;
     transition: 0.3s ease opacity;
     z-index: 1000;
@@ -184,10 +161,6 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     }
   `,
     modifiers: {
-        isVisible: `
-      pointer-events: auto;
-      opacity: 1;
-    `,
         isActive: `
       svg {
         .shadow {

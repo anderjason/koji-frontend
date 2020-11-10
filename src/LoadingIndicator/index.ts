@@ -6,7 +6,7 @@ import { Color } from "@anderjason/color";
 
 export interface LoadingIndicatorProps {
   parentElement: HTMLElement | Observable<HTMLElement>;
-  color?: Color | Observable<Color>;
+  color: Color | Observable<Color>;
 }
 
 const radius = 20;

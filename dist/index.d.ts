@@ -1,3 +1,4 @@
+/// <reference path="../src/index.d.ts" />
 import { Callout } from "./Callout";
 import { Card } from "./Card";
 import { Description } from "./Description";

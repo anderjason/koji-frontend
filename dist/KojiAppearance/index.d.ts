@@ -2,10 +2,12 @@ import { Color, ColorGradient } from "@anderjason/color";
 import { Rotation } from "@anderjason/geometry";
 import { FontStyle } from "@anderjason/web/dist/Preload";
 export interface KojiColorTheme {
+    key: string;
     type: "color";
     color: Color;
 }
 export interface KojiGradientTheme {
+    key: string;
     type: "gradient";
     gradient: ColorGradient;
     angle: Rotation;

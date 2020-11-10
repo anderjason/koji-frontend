@@ -1,11 +1,13 @@
 import { Observable } from "@anderjason/observable";
-import { ValuePath } from "@anderjason/util";
 import { Actor } from "skytree";
-export interface ThemeToolbarDefinition {
+import { KojiTheme } from "../KojiAppearance";
+export interface ThemeToolbarProps {
     parentElement: HTMLElement | Observable<HTMLElement>;
-    vccPath: ValuePath;
-    themeKeys?: string[];
+    output?: Observable<KojiTheme>;
+    themes?: KojiTheme[];
 }
-export declare class ThemeToolbar extends Actor<ThemeToolbarDefinition> {
+export declare class ThemeToolbar extends Actor<ThemeToolbarProps> {
+    readonly output: Observable<KojiTheme>;
+    constructor(props: ThemeToolbarProps);
     onActivate(): void;
 }

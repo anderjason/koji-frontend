@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.Description = exports.ConfirmationPrompt = exports.Card = exports.Callout = void 0;
 const Callout_1 = require("./Callout");

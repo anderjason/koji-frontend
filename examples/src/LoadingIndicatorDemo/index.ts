@@ -1,3 +1,4 @@
+import { Color } from "@anderjason/color";
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
 import { Actor } from "skytree";
@@ -15,6 +16,7 @@ export class LoadingIndicatorDemo
     this.addActor(
       new LoadingIndicator({
         parentElement: this.parentElement,
+        color: Color.givenHexString("#FFFFFF"),
       })
     );
   }

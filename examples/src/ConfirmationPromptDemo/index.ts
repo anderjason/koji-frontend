@@ -42,8 +42,8 @@ export class ConfirmationPromptDemo
           title: "Lorem ipsum",
           description:
             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-          confirmText: "Yes, confirm",
-          cancelText: "No, cancel",
+          confirmText: "Yes, delete file",
+          cancelText: "No, keep it",
           isConfirmDestructive: true,
           onConfirm: () => {
             showPrompt.setValue(false);

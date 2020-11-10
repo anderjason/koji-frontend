@@ -1,10 +1,8 @@
 import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
-import { ValuePath } from "@anderjason/util";
 import { ElementStyle, Pointer } from "@anderjason/web";
 import { Actor } from "skytree";
-import { Koji } from "../Koji";
-import { KojiAppearance } from "../KojiAppearance";
+import { KojiAppearance, KojiTheme } from "../KojiAppearance";
 
 const defaultThemeKeys = [
   "kojiBlack",
@@ -18,14 +16,24 @@ const defaultThemeKeys = [
   "gradient2",
 ];
 
-export interface ThemeToolbarDefinition {
+export interface ThemeToolbarProps {
   parentElement: HTMLElement | Observable<HTMLElement>;
-  vccPath: ValuePath;
 
-  themeKeys?: string[];
+  output?: Observable<KojiTheme>;
+  themes?: KojiTheme[];
 }
 
-export class ThemeToolbar extends Actor<ThemeToolbarDefinition> {
+export class ThemeToolbar extends Actor<ThemeToolbarProps> {
+  readonly output: Observable<KojiTheme>;
+
+  constructor(props: ThemeToolbarProps) {
+    super(props);
+
+    this.output =
+      this.props.output ||
+      Observable.ofEmpty<KojiTheme>(Observable.isStrictEqual);
+  }
+
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
@@ -41,15 +49,11 @@ export class ThemeToolbar extends Actor<ThemeToolbarDefinition> {
       })
     );
 
-    const themeKeys = this.props.themeKeys || defaultThemeKeys;
+    const themes: KojiTheme[] =
+      this.props.themes ||
+      defaultThemeKeys.map((key) => KojiAppearance.themes.get(key));
 
-    themeKeys.forEach((key) => {
-      const theme = KojiAppearance.themes.get(key);
-      if (theme == null) {
-        console.warn(`Could not find KojiAppearance theme '${key}'`);
-        return;
-      }
-
+    themes.forEach((theme) => {
       const optionButton = OptionStyle.toDomElement("button");
       optionButton.type = "button";
 
@@ -67,24 +71,20 @@ export class ThemeToolbar extends Actor<ThemeToolbarDefinition> {
       optionButton.appendChild(icon);
 
       optionButton.addEventListener("click", () => {
-        Koji.instance.vccData.update(this.props.vccPath, key);
+        this.output.setValue(theme);
       });
       wrapper.element.appendChild(optionButton);
 
       this.cancelOnDeactivate(Pointer.instance.addTarget(optionButton));
 
       this.cancelOnDeactivate(
-        Koji.instance.vccData.subscribe(
-          this.props.vccPath,
-          (selectedKey) => {
-            const isSelected = selectedKey == key;
+        this.output.didChange.subscribe((selectedTheme) => {
+          const isSelected = selectedTheme?.key == theme.key;
 
-            optionButton.className = OptionStyle.toCombinedClassName(
-              isSelected ? "isSelected" : undefined
-            );
-          },
-          true
-        )
+          optionButton.className = OptionStyle.toCombinedClassName(
+            isSelected ? "isSelected" : undefined
+          );
+        }, true)
       );
     });
   }
@@ -103,6 +103,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     transition-property: opacity, transform;
     transition-timing-function: ease;
     width: 100%;
+    z-index: 1000;
   `,
   modifiers: {
     isVisible: `

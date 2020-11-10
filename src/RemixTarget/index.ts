@@ -23,33 +23,12 @@ export interface RemixTargetDefinition {
 }
 
 export class RemixTarget extends Actor<RemixTargetDefinition> {
-  private _activeRemixTarget: ActiveRemixTarget | undefined;
-
-  onActivate() {
-    this.cancelOnDeactivate(
-      Koji.instance.mode.didChange.subscribe((mode) => {
-        if (this._activeRemixTarget != null) {
-          this.removeActor(this._activeRemixTarget);
-          this._activeRemixTarget = undefined;
-        }
-
-        if (mode !== "view") {
-          this._activeRemixTarget = this.addActor(
-            new ActiveRemixTarget(this.props)
-          );
-        }
-      }, true)
-    );
-  }
-}
-
-class ActiveRemixTarget extends Actor<RemixTargetDefinition> {
-  private static allTargets = new Set<ActiveRemixTarget>();
-  private static hoveredTarget = Observable.ofEmpty<ActiveRemixTarget>();
+  private static allTargets = new Set<RemixTarget>();
+  private static hoveredTarget = Observable.ofEmpty<RemixTarget>();
 
   private static reorderAllTargets() {
     const orderedTargets = ArrayUtil.arrayWithOrderFromValue(
-      Array.from(ActiveRemixTarget.allTargets),
+      Array.from(RemixTarget.allTargets),
       (target) => {
         if (target == null || target.props.points == null) {
           return 0;
@@ -118,7 +97,7 @@ class ActiveRemixTarget extends Actor<RemixTargetDefinition> {
           );
         }
 
-        ActiveRemixTarget.reorderAllTargets();
+        RemixTarget.reorderAllTargets();
       }, true)
     );
 
@@ -174,22 +153,22 @@ class ActiveRemixTarget extends Actor<RemixTargetDefinition> {
       })
     );
     this.cancelOnDeactivate(
-      ActiveRemixTarget.hoveredTarget.didChange.subscribe(() => {
+      RemixTarget.hoveredTarget.didChange.subscribe(() => {
         this.recalculateOpacity();
       })
     );
     this.recalculateOpacity();
 
-    ActiveRemixTarget.allTargets.add(this);
-    ActiveRemixTarget.reorderAllTargets();
+    RemixTarget.allTargets.add(this);
+    RemixTarget.reorderAllTargets();
 
     this.cancelOnDeactivate(
       new Receipt(() => {
-        ActiveRemixTarget.allTargets.delete(this);
-        ActiveRemixTarget.reorderAllTargets();
+        RemixTarget.allTargets.delete(this);
+        RemixTarget.reorderAllTargets();
 
-        if (ActiveRemixTarget.hoveredTarget.value === this) {
-          ActiveRemixTarget.hoveredTarget.setValue(undefined);
+        if (RemixTarget.hoveredTarget.value === this) {
+          RemixTarget.hoveredTarget.setValue(undefined);
         }
       })
     );
@@ -198,8 +177,8 @@ class ActiveRemixTarget extends Actor<RemixTargetDefinition> {
   private recalculateOpacity() {
     const isEnabled = this._isEnabled.value;
     const isSelectable = this._isSelectable.value;
-    const isAnyHovered = ActiveRemixTarget.hoveredTarget.value != null;
-    const isThisHovered = ActiveRemixTarget.hoveredTarget.value === this;
+    const isAnyHovered = RemixTarget.hoveredTarget.value != null;
+    const isThisHovered = RemixTarget.hoveredTarget.value === this;
 
     let opacity: number;
 
@@ -225,12 +204,12 @@ class ActiveRemixTarget extends Actor<RemixTargetDefinition> {
   }
 
   private onHover() {
-    ActiveRemixTarget.hoveredTarget.setValue(this);
+    RemixTarget.hoveredTarget.setValue(this);
   }
 
   private onLeave() {
-    if (ActiveRemixTarget.hoveredTarget.value === this) {
-      ActiveRemixTarget.hoveredTarget.setValue(undefined);
+    if (RemixTarget.hoveredTarget.value === this) {
+      RemixTarget.hoveredTarget.setValue(undefined);
     }
   }
 

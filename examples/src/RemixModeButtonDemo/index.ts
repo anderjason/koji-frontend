@@ -21,8 +21,6 @@ export class RemixModeButtonDemo
       })
     );
 
-    Koji.instance.mode.setValue("template");
-
     this.addActor(
       new RemixModeButton({
         parentElement: wrapper.element,

@@ -14,13 +14,9 @@ export class ThemeToolbarDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
-    const vccPath = ValuePath.givenString("themeIndex");
-    Koji.instance.vccData.update(vccPath, 0);
-
     this.addActor(
       new ThemeToolbar({
         parentElement: this.parentElement,
-        vccPath,
       })
     );
   }

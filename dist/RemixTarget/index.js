@@ -11,20 +11,6 @@ const ManagedSvg_1 = require("./_internal/ManagedSvg");
 const Polygon_1 = require("./_internal/Polygon");
 const svgStyleGivenStrokeWidth_1 = require("./_internal/svgStyleGivenStrokeWidth");
 class RemixTarget extends skytree_1.Actor {
-    onActivate() {
-        this.cancelOnDeactivate(Koji_1.Koji.instance.mode.didChange.subscribe((mode) => {
-            if (this._activeRemixTarget != null) {
-                this.removeActor(this._activeRemixTarget);
-                this._activeRemixTarget = undefined;
-            }
-            if (mode !== "view") {
-                this._activeRemixTarget = this.addActor(new ActiveRemixTarget(this.props));
-            }
-        }, true));
-    }
-}
-exports.RemixTarget = RemixTarget;
-class ActiveRemixTarget extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this.polygon = observable_1.Observable.givenValue(Polygon_1.Polygon.ofPoints([]));
@@ -34,7 +20,7 @@ class ActiveRemixTarget extends skytree_1.Actor {
         this._isSelectable = props.isSelectable || observable_1.Observable.givenValue(true);
     }
     static reorderAllTargets() {
-        const orderedTargets = util_1.ArrayUtil.arrayWithOrderFromValue(Array.from(ActiveRemixTarget.allTargets), (target) => {
+        const orderedTargets = util_1.ArrayUtil.arrayWithOrderFromValue(Array.from(RemixTarget.allTargets), (target) => {
             if (target == null || target.props.points == null) {
                 return 0;
             }
@@ -70,7 +56,7 @@ class ActiveRemixTarget extends skytree_1.Actor {
             if (points != null) {
                 this.polygon.setValue(Polygon_1.Polygon.ofPoints(points).withExpansion(this.props.expansion || -10));
             }
-            ActiveRemixTarget.reorderAllTargets();
+            RemixTarget.reorderAllTargets();
         }, true));
         this._wrapper = this.addActor(web_1.ManagedElement.givenDefinition({
             tagName: "div",
@@ -106,25 +92,25 @@ class ActiveRemixTarget extends skytree_1.Actor {
         this.cancelOnDeactivate(this._isSelectable.didChange.subscribe(() => {
             this.recalculateOpacity();
         }));
-        this.cancelOnDeactivate(ActiveRemixTarget.hoveredTarget.didChange.subscribe(() => {
+        this.cancelOnDeactivate(RemixTarget.hoveredTarget.didChange.subscribe(() => {
             this.recalculateOpacity();
         }));
         this.recalculateOpacity();
-        ActiveRemixTarget.allTargets.add(this);
-        ActiveRemixTarget.reorderAllTargets();
+        RemixTarget.allTargets.add(this);
+        RemixTarget.reorderAllTargets();
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
-            ActiveRemixTarget.allTargets.delete(this);
-            ActiveRemixTarget.reorderAllTargets();
-            if (ActiveRemixTarget.hoveredTarget.value === this) {
-                ActiveRemixTarget.hoveredTarget.setValue(undefined);
+            RemixTarget.allTargets.delete(this);
+            RemixTarget.reorderAllTargets();
+            if (RemixTarget.hoveredTarget.value === this) {
+                RemixTarget.hoveredTarget.setValue(undefined);
             }
         }));
     }
     recalculateOpacity() {
         const isEnabled = this._isEnabled.value;
         const isSelectable = this._isSelectable.value;
-        const isAnyHovered = ActiveRemixTarget.hoveredTarget.value != null;
-        const isThisHovered = ActiveRemixTarget.hoveredTarget.value === this;
+        const isAnyHovered = RemixTarget.hoveredTarget.value != null;
+        const isThisHovered = RemixTarget.hoveredTarget.value === this;
         let opacity;
         if (isEnabled) {
             if (isAnyHovered) {
@@ -146,11 +132,11 @@ class ActiveRemixTarget extends skytree_1.Actor {
         }
     }
     onHover() {
-        ActiveRemixTarget.hoveredTarget.setValue(this);
+        RemixTarget.hoveredTarget.setValue(this);
     }
     onLeave() {
-        if (ActiveRemixTarget.hoveredTarget.value === this) {
-            ActiveRemixTarget.hoveredTarget.setValue(undefined);
+        if (RemixTarget.hoveredTarget.value === this) {
+            RemixTarget.hoveredTarget.setValue(undefined);
         }
     }
     onClick(point) {
@@ -167,8 +153,9 @@ class ActiveRemixTarget extends skytree_1.Actor {
         }
     }
 }
-ActiveRemixTarget.allTargets = new Set();
-ActiveRemixTarget.hoveredTarget = observable_1.Observable.ofEmpty();
+exports.RemixTarget = RemixTarget;
+RemixTarget.allTargets = new Set();
+RemixTarget.hoveredTarget = observable_1.Observable.ofEmpty();
 exports.Container = web_1.ElementStyle.givenDefinition({
     css: `
     position: absolute;

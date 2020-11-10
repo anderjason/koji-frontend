@@ -1,11 +1,14 @@
-import { Observable, TypedEvent } from "@anderjason/observable";
+import {
+  Observable,
+  ReadOnlyObservable,
+  TypedEvent,
+} from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { ObservableState } from "@anderjason/web";
 import { Actor } from "skytree";
-
-export type KojiMode = "view" | "generator" | "template";
+import { EditorAttributes } from "@withkoji/vcc";
 
 type PathPart = string | number;
 
@@ -21,19 +24,21 @@ export class Koji extends Actor<void> {
     return Koji._instance;
   }
 
-  readonly mode = Observable.givenValue<KojiMode>(
-    "view",
-    Observable.isStrictEqual
-  );
-
-  readonly willReceiveExternalData = new TypedEvent<ValuePath>();
-  readonly allPlaybackShouldStop = new TypedEvent();
-
+  private _isRemixing = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  private _editorAttributes = Observable.ofEmpty<EditorAttributes>();
   private _vccData: ObservableState;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
   private _updateKojiLater: Debounce<void>;
+
+  readonly willReceiveExternalData = new TypedEvent<ValuePath>();
+  readonly allPlaybackShouldStop = new TypedEvent();
+
+  readonly isRemixing = ReadOnlyObservable.givenObservable(this._isRemixing);
+  readonly editorAttributes = ReadOnlyObservable.givenObservable(
+    this._editorAttributes
+  );
 
   private constructor() {
     super();
@@ -85,18 +90,15 @@ export class Koji extends Actor<void> {
         this.onValueChanged(path, newValue);
       });
 
-      let previousEditMode: KojiMode = undefined;
-
-      this._instantRemixing.onSetRemixing((isRemixing) => {
+      this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
         if (isRemixing === false) {
-          if (this.mode.value !== "view") {
-            previousEditMode = this.mode.value;
-          }
+          this._editorAttributes.setValue(undefined);
 
           this._selectedPath.setValue(undefined);
-          this.mode.setValue("view");
+          this._isRemixing.setValue(false);
         } else {
-          this.mode.setValue(previousEditMode || "template");
+          this._editorAttributes.setValue(editorAttributes);
+          this._isRemixing.setValue(true);
         }
       });
 
