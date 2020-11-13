@@ -26,7 +26,7 @@
     "@anderjason/tests": "^1.0.1",
     "@anderjason/time": "^2.0.2",
     "@anderjason/util": "^2.0.3",
-    "@anderjason/web": "git+https://github.com/anderjason/web.git",
+    "@anderjason/web": "^6.1.0",
     "@withkoji/vcc": "^1.1.42",
     "skytree": "^9.2.0"
   },
