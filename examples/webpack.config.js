@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./examples/src/index.ts",
+  entry: ["@anderjason/skytree-devtools", "./examples/src/index.ts"],
   module: {
     rules: [
       {

@@ -72,6 +72,7 @@ class Callout extends skytree_1.Actor {
 }
 exports.Callout = Callout;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     animation: 1.4s ease 0s infinite normal none running bounce;
     background-color: rgb(0, 122, 255);

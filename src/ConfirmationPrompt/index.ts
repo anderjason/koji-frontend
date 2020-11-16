@@ -118,6 +118,7 @@ export class ConfirmationPrompt extends Actor<ConfirmationPromptProps> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     position: absolute;
     left: 0;
@@ -129,6 +130,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const OverlayStyle = ElementStyle.givenDefinition({
+  elementDescription: "Overlay",
   css: `
     background-color: #000;
     bottom: 0px;
@@ -149,6 +151,7 @@ const OverlayStyle = ElementStyle.givenDefinition({
 });
 
 const ModalContainerStyle = ElementStyle.givenDefinition({
+  elementDescription: "ModalContainer",
   css: `
     align-items: center;
     bottom: 0;
@@ -165,6 +168,7 @@ const ModalContainerStyle = ElementStyle.givenDefinition({
 });
 
 const CardStyle = ElementStyle.givenDefinition({
+  elementDescription: "Card",
   css: `
     background-color: #FFF;
     border-radius: 12px;
@@ -191,6 +195,7 @@ const CardStyle = ElementStyle.givenDefinition({
 });
 
 const MessageAreaStyle = ElementStyle.givenDefinition({
+  elementDescription: "MessageArea",
   css: `
     align-items: center;
     box-sizing: border-box;
@@ -221,6 +226,7 @@ const MessageAreaStyle = ElementStyle.givenDefinition({
 });
 
 const ButtonStyle = ElementStyle.givenDefinition({
+  elementDescription: "Button",
   css: `
     appearance: none;
     background: none;

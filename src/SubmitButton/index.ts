@@ -42,7 +42,7 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
         throw new Error("An element is required (this or parent)");
     }
 
-    button.classList.add(SubmitButtonStyle.toCombinedClassName());
+    button.classList.add(ButtonStyle.toCombinedClassName());
     button.addEventListener("click", this.props.onClick);
 
     this.cancelOnDeactivate(
@@ -85,17 +85,15 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
       observableMode.didChange.subscribe((mode) => {
         switch (mode) {
           case "ready":
-            button.className = SubmitButtonStyle.toCombinedClassName();
+            button.className = ButtonStyle.toCombinedClassName();
             button.disabled = false;
             break;
           case "busy":
-            button.className = SubmitButtonStyle.toCombinedClassName(
-              "isTextHidden"
-            );
+            button.className = ButtonStyle.toCombinedClassName("isTextHidden");
             button.disabled = true;
             break;
           case "success":
-            button.className = SubmitButtonStyle.toCombinedClassName([
+            button.className = ButtonStyle.toCombinedClassName([
               "isTextHidden",
               "isSuccess",
             ]);
@@ -141,7 +139,8 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
   }
 }
 
-const SubmitButtonStyle = ElementStyle.givenDefinition({
+const ButtonStyle = ElementStyle.givenDefinition({
+  elementDescription: "Button",
   css: `
     align-items: center;
     background: #2D2F30;

@@ -188,6 +188,7 @@ export class RemixModeButton extends Actor<RemixModeButtonProps> {
 }
 
 const ButtonStyle = ElementStyle.givenDefinition({
+  elementDescription: "Button",
   css: `
     appearance: none;
     background: transparent;

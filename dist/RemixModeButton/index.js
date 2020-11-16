@@ -131,6 +131,7 @@ class RemixModeButton extends skytree_1.Actor {
 }
 exports.RemixModeButton = RemixModeButton;
 const ButtonStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Button",
     css: `
     appearance: none;
     background: transparent;

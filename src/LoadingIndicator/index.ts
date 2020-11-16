@@ -76,6 +76,7 @@ const animId = "anim" + StringUtil.stringOfRandomCharacters(8);
 const animId2 = "anim" + StringUtil.stringOfRandomCharacters(8);
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     position: absolute;
     left: 0;
@@ -89,6 +90,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const SvgStyle = ElementStyle.givenDefinition({
+  elementDescription: "Svg",
   css: `
     @keyframes ${animId} {
       0% {

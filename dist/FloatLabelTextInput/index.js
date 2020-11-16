@@ -98,6 +98,7 @@ class FloatLabelTextInput extends skytree_1.Actor {
 }
 exports.FloatLabelTextInput = FloatLabelTextInput;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     align-items: center;
     background: white;
@@ -126,6 +127,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
   `,
 });
 const LabelStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Label",
     css: `
     color: #BDBDBD;
     position: absolute;
@@ -149,6 +151,7 @@ const LabelStyle = web_1.ElementStyle.givenDefinition({
     },
 });
 const InputStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Input",
     css: `
     appearance: none;
     background: transparent;
@@ -179,6 +182,7 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
     },
 });
 const ShadowTextStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "ShadowText",
     css: `
     color: #BDBDBD;
     position: absolute;

@@ -64,6 +64,7 @@ class ThemeToolbar extends skytree_1.Actor {
 }
 exports.ThemeToolbar = ThemeToolbar;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     display: grid;
     grid-auto-flow: column;
@@ -85,6 +86,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     },
 });
 const OptionStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Option",
     css: `
     align-items: center;
     appearance: none;

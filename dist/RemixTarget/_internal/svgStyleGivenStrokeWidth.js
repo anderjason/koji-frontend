@@ -8,6 +8,7 @@ function svgStyleGivenStrokeWidth(strokeWidth) {
         return svgStylesByStrokeWidth.get(strokeWidth);
     }
     const dynamicSvgStyle = web_1.ElementStyle.givenDefinition({
+        elementDescription: "DynamicSvg",
         css: `
       left: 0;
       opacity: 0;

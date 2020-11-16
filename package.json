@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/koji-frontend-tools",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -26,12 +26,13 @@
     "@anderjason/tests": "^1.0.1",
     "@anderjason/time": "^2.0.2",
     "@anderjason/util": "^2.0.3",
-    "@anderjason/web": "^6.1.0",
+    "@anderjason/web": "^6.2.3",
     "@withkoji/vcc": "^1.1.42",
-    "skytree": "^9.2.0"
+    "skytree": "^9.3.0"
   },
   "devDependencies": {
     "@anderjason/example-tools": "git+https://github.com/anderjason/example-tools.git",
+    "@anderjason/skytree-devtools": "git+https://github.com/anderjason/skytree-devtools.git",
     "@types/node": "^14.14.7",
     "html-webpack-plugin": "^4.5.0",
     "ts-loader": "^8.0.9",

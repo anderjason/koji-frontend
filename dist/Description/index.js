@@ -95,6 +95,7 @@ class Description extends skytree_1.Actor {
 }
 exports.Description = Description;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     border: none;
     color: #2D2F30;
@@ -113,6 +114,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     },
 });
 const ContentStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Content",
     css: `
     font-family: Source Sans Pro;
     font-style: normal;

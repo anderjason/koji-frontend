@@ -57,6 +57,7 @@ exports.LoadingIndicator = LoadingIndicator;
 const animId = "anim" + util_1.StringUtil.stringOfRandomCharacters(8);
 const animId2 = "anim" + util_1.StringUtil.stringOfRandomCharacters(8);
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     position: absolute;
     left: 0;
@@ -69,6 +70,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
   `,
 });
 const SvgStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Svg",
     css: `
     @keyframes ${animId} {
       0% {

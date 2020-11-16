@@ -78,6 +78,7 @@ class ConfirmationPrompt extends skytree_1.Actor {
 }
 exports.ConfirmationPrompt = ConfirmationPrompt;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     position: absolute;
     left: 0;
@@ -88,6 +89,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
   `,
 });
 const OverlayStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Overlay",
     css: `
     background-color: #000;
     bottom: 0px;
@@ -107,6 +109,7 @@ const OverlayStyle = web_1.ElementStyle.givenDefinition({
     },
 });
 const ModalContainerStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "ModalContainer",
     css: `
     align-items: center;
     bottom: 0;
@@ -122,6 +125,7 @@ const ModalContainerStyle = web_1.ElementStyle.givenDefinition({
   `,
 });
 const CardStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Card",
     css: `
     background-color: #FFF;
     border-radius: 12px;
@@ -147,6 +151,7 @@ const CardStyle = web_1.ElementStyle.givenDefinition({
     },
 });
 const MessageAreaStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "MessageArea",
     css: `
     align-items: center;
     box-sizing: border-box;
@@ -176,6 +181,7 @@ const MessageAreaStyle = web_1.ElementStyle.givenDefinition({
   `,
 });
 const ButtonStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Button",
     css: `
     appearance: none;
     background: none;

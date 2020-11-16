@@ -8,6 +8,7 @@ export function svgStyleGivenStrokeWidth(strokeWidth: number): ElementStyle {
   }
 
   const dynamicSvgStyle = ElementStyle.givenDefinition({
+    elementDescription: "DynamicSvg",
     css: `
       left: 0;
       opacity: 0;

@@ -26,6 +26,7 @@ class Card extends skytree_1.Actor {
 }
 exports.Card = Card;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
     css: `
     background: #FFFFFF;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);

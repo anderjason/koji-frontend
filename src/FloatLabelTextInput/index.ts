@@ -155,6 +155,7 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     align-items: center;
     background: white;
@@ -184,6 +185,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const LabelStyle = ElementStyle.givenDefinition({
+  elementDescription: "Label",
   css: `
     color: #BDBDBD;
     position: absolute;
@@ -208,6 +210,7 @@ const LabelStyle = ElementStyle.givenDefinition({
 });
 
 const InputStyle = ElementStyle.givenDefinition({
+  elementDescription: "Input",
   css: `
     appearance: none;
     background: transparent;
@@ -239,6 +242,7 @@ const InputStyle = ElementStyle.givenDefinition({
 });
 
 const ShadowTextStyle = ElementStyle.givenDefinition({
+  elementDescription: "ShadowText",
   css: `
     color: #BDBDBD;
     position: absolute;

@@ -91,6 +91,7 @@ export class ThemeToolbar extends Actor<ThemeToolbarProps> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     display: grid;
     grid-auto-flow: column;
@@ -113,6 +114,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
 });
 
 const OptionStyle = ElementStyle.givenDefinition({
+  elementDescription: "Option",
   css: `
     align-items: center;
     appearance: none;

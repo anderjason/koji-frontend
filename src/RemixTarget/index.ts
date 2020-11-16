@@ -229,6 +229,7 @@ export class RemixTarget extends Actor<RemixTargetDefinition> {
 }
 
 export const Container = ElementStyle.givenDefinition({
+  elementDescription: "Container",
   css: `
     position: absolute;
     left: 0;

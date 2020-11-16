@@ -157,6 +157,7 @@ exports.RemixTarget = RemixTarget;
 RemixTarget.allTargets = new Set();
 RemixTarget.hoveredTarget = observable_1.Observable.ofEmpty();
 exports.Container = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Container",
     css: `
     position: absolute;
     left: 0;

@@ -105,6 +105,7 @@ export class Callout extends Actor<CalloutProps> {
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
   css: `
     animation: 1.4s ease 0s infinite normal none running bounce;
     background-color: rgb(0, 122, 255);
