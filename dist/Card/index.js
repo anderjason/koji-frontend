@@ -31,6 +31,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     background: #FFFFFF;
     border-radius: 15px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: #2D2F30;
     margin: 20px;
     padding: 24px 20px 16px 20px;
     width: 100%;
