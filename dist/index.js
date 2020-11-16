@@ -1,7 +1,9 @@
 "use strict";
 /// <reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.Description = exports.ConfirmationPrompt = exports.Card = exports.Callout = void 0;
+exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.PriceInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.Description = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
+const AlignBottom_1 = require("./AlignBottom");
+Object.defineProperty(exports, "AlignBottom", { enumerable: true, get: function () { return AlignBottom_1.AlignBottom; } });
 const Callout_1 = require("./Callout");
 Object.defineProperty(exports, "Callout", { enumerable: true, get: function () { return Callout_1.Callout; } });
 const Card_1 = require("./Card");

@@ -1,5 +1,6 @@
 /// <reference path="./index.d.ts" />
 
+import { AlignBottom } from "./AlignBottom";
 import { Callout } from "./Callout";
 import { Card } from "./Card";
 import { Description } from "./Description";
@@ -30,6 +31,7 @@ export interface ThisElement<T> {
 export type ThisOrParentElement<T> = ParentElement | ThisElement<T>;
 
 export {
+  AlignBottom,
   Callout,
   Card,
   ConfirmationPrompt,

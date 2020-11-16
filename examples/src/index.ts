@@ -1,5 +1,6 @@
 import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
 import { ObservableArray } from "@anderjason/observable";
+import { AlignBottomDemo } from "./AlignBottomDemo";
 import { CalloutDemo } from "./CalloutDemo";
 import { ConfirmationPromptDemo } from "./ConfirmationPromptDemo";
 import { DescriptionDemo } from "./DescriptionDemo";
@@ -12,6 +13,10 @@ import { SubmitButtonDemo } from "./SubmitButtonDemo";
 import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
+  {
+    title: "Align bottom",
+    actor: new AlignBottomDemo({}),
+  },
   {
     title: "Confirmation prompt",
     actor: new ConfirmationPromptDemo({}),

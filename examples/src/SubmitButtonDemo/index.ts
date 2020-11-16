@@ -1,11 +1,11 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { Actor } from "skytree";
+import { Duration } from "@anderjason/time";
+import { Actor, Timer } from "skytree";
+import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 import { KojiAppearance } from "../../../src/KojiAppearance";
 import { SubmitButton, SubmitButtonMode } from "../../../src/SubmitButton";
-import { Duration } from "@anderjason/time";
-import { ElementStyle } from "@anderjason/web";
 
 export interface SubmitButtonDemoProps {}
 
@@ -16,10 +16,13 @@ export class SubmitButtonDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
-    const cardWrapper = this.addActor(
-      CardWrapperStyle.toManagedElement({
-        tagName: "div",
-        parentElement: this.parentElement,
+    const alignBottom = this.addActor(
+      new AlignBottom({
+        element: {
+          type: "parentElement",
+          parentElement: this.parentElement,
+        },
+        isRemixing: false,
       })
     );
 
@@ -27,7 +30,7 @@ export class SubmitButtonDemo
       new Card({
         element: {
           type: "parentElement",
-          parentElement: cardWrapper.element,
+          parentElement: alignBottom.element,
         },
       })
     );
@@ -56,12 +59,3 @@ export class SubmitButtonDemo
     );
   }
 }
-
-const CardWrapperStyle = ElementStyle.givenDefinition({
-  css: `
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    right: 20px;
-  `,
-});

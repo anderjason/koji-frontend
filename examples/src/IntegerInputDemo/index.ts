@@ -5,7 +5,7 @@ import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
 import { Koji } from "../../../src/Koji";
 import { IntegerInput } from "../../../src/IntegerInput";
-import { ElementStyle } from "@anderjason/web";
+import { AlignBottom } from "../../../src";
 
 export interface IntegerInputDemoProps {}
 
@@ -19,10 +19,13 @@ export class IntegerInputDemo
     const vccPath = ValuePath.givenString("quantity");
     Koji.instance.vccData.update(vccPath, 0);
 
-    const cardWrapper = this.addActor(
-      CardWrapperStyle.toManagedElement({
-        tagName: "div",
-        parentElement: this.parentElement,
+    const alignBottom = this.addActor(
+      new AlignBottom({
+        element: {
+          type: "parentElement",
+          parentElement: this.parentElement,
+        },
+        isRemixing: false,
       })
     );
 
@@ -30,7 +33,7 @@ export class IntegerInputDemo
       new Card({
         element: {
           type: "parentElement",
-          parentElement: cardWrapper.element,
+          parentElement: alignBottom.element,
         },
       })
     );
@@ -45,12 +48,3 @@ export class IntegerInputDemo
     );
   }
 }
-
-const CardWrapperStyle = ElementStyle.givenDefinition({
-  css: `
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    right: 20px;
-  `,
-});

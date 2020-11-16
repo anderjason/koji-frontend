@@ -4,6 +4,7 @@ import { Observable } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { Card } from "../../../src/Card";
 import { ElementStyle } from "@anderjason/web";
+import { AlignBottom } from "../../../src";
 
 export interface FloatLabelTextInputDemoProps {}
 
@@ -14,10 +15,13 @@ export class FloatLabelTextInputDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
-    const cardWrapper = this.addActor(
-      CardWrapperStyle.toManagedElement({
-        tagName: "div",
-        parentElement: this.parentElement,
+    const alignBottom = this.addActor(
+      new AlignBottom({
+        element: {
+          type: "parentElement",
+          parentElement: this.parentElement,
+        },
+        isRemixing: false,
       })
     );
 
@@ -25,7 +29,7 @@ export class FloatLabelTextInputDemo
       new Card({
         element: {
           type: "parentElement",
-          parentElement: cardWrapper.element,
+          parentElement: alignBottom.element,
         },
       })
     );
@@ -44,12 +48,3 @@ export class FloatLabelTextInputDemo
     );
   }
 }
-
-const CardWrapperStyle = ElementStyle.givenDefinition({
-  css: `
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    right: 20px;
-  `,
-});

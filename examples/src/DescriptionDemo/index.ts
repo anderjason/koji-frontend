@@ -4,6 +4,7 @@ import { Description } from "../../../src/Description";
 import { Observable } from "@anderjason/observable";
 import { Card } from "../../../src/Card";
 import { DemoActor } from "@anderjason/example-tools";
+import { AlignBottom } from "../../../src";
 
 export interface DescriptionDemoProps {}
 
@@ -19,10 +20,13 @@ export class DescriptionDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
-    const cardWrapper = this.addActor(
-      CardWrapperStyle.toManagedElement({
-        tagName: "div",
-        parentElement: this.parentElement,
+    const alignBottom = this.addActor(
+      new AlignBottom({
+        element: {
+          type: "parentElement",
+          parentElement: this.parentElement,
+        },
+        isRemixing: false,
       })
     );
 
@@ -30,7 +34,7 @@ export class DescriptionDemo
       new Card({
         element: {
           type: "parentElement",
-          parentElement: cardWrapper.element,
+          parentElement: alignBottom.element,
         },
       })
     );
@@ -67,12 +71,3 @@ export class DescriptionDemo
     );
   }
 }
-
-const CardWrapperStyle = ElementStyle.givenDefinition({
-  css: `
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    right: 20px;
-  `,
-});

@@ -1,4 +1,5 @@
 /// <reference path="../src/index.d.ts" />
+import { AlignBottom } from "./AlignBottom";
 import { Callout } from "./Callout";
 import { Card } from "./Card";
 import { Description } from "./Description";
@@ -24,4 +25,4 @@ export interface ThisElement<T> {
     element: T;
 }
 export declare type ThisOrParentElement<T> = ParentElement | ThisElement<T>;
-export { Callout, Card, ConfirmationPrompt, Description, FloatLabelTextInput, IntegerInput, Koji, KojiAppearance, KojiNetworkUtil, LoadingIndicator, PriceInput, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };
+export { AlignBottom, Callout, Card, ConfirmationPrompt, Description, FloatLabelTextInput, IntegerInput, Koji, KojiAppearance, KojiNetworkUtil, LoadingIndicator, PriceInput, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };
