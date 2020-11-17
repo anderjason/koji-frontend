@@ -88,16 +88,7 @@ class SubmitButton extends skytree_1.Actor {
             if (theme == null) {
                 return;
             }
-            switch (theme.type) {
-                case "color":
-                    button.style.background = theme.color.toHexString();
-                    break;
-                case "gradient":
-                    button.style.background = theme.gradient
-                        .withHclStepCount(5)
-                        .toLinearGradientString(`${theme.angle.toDegrees()}deg`);
-                    break;
-            }
+            theme.applyStyle(button, "background");
         }, true));
     }
 }

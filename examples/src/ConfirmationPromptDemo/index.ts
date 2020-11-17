@@ -1,18 +1,15 @@
-import { Actor, ConditionalActivator, Timer } from "skytree";
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { ConfirmationPrompt } from "../../../src/ConfirmationPrompt";
-import { ElementStyle } from "@anderjason/web";
 import { Duration } from "@anderjason/time";
+import { ElementStyle } from "@anderjason/web";
+import { ConditionalActivator, Timer } from "skytree";
+import { ConfirmationPrompt } from "../../../src/ConfirmationPrompt";
 
 export interface ConfirmationPromptDemoProps {}
 
-export class ConfirmationPromptDemo
-  extends Actor<ConfirmationPromptDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class ConfirmationPromptDemo extends DemoActor<
+  ConfirmationPromptDemoProps
+> {
   onActivate() {
     const background = this.addActor(
       BackgroundStyle.toManagedElement({

@@ -43,12 +43,7 @@ class ThemeToolbar extends skytree_1.Actor {
             optionButton.type = "button";
             const icon = document.createElement("div");
             icon.className = "icon";
-            if (theme.type === "color") {
-                icon.style.background = theme.color.toHexString();
-            }
-            else {
-                icon.style.background = theme.gradient.toLinearGradientString(`${theme.angle.toDegrees()}deg`);
-            }
+            theme.applyStyle(icon, "background");
             optionButton.appendChild(icon);
             optionButton.addEventListener("click", () => {
                 this.output.setValue(theme);

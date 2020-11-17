@@ -1,19 +1,14 @@
 import { DemoActor } from "@anderjason/example-tools";
-import { FloatLabelTextInput } from "../../../src/FloatLabelTextInput";
 import { Observable } from "@anderjason/observable";
-import { Actor } from "skytree";
-import { Card } from "../../../src/Card";
-import { ElementStyle } from "@anderjason/web";
 import { AlignBottom } from "../../../src";
+import { Card } from "../../../src/Card";
+import { FloatLabelTextInput } from "../../../src/FloatLabelTextInput";
 
 export interface FloatLabelTextInputDemoProps {}
 
-export class FloatLabelTextInputDemo
-  extends Actor<FloatLabelTextInputDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class FloatLabelTextInputDemo extends DemoActor<
+  FloatLabelTextInputDemoProps
+> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({

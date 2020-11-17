@@ -1,18 +1,15 @@
-import { Actor, Timer } from "skytree";
-import { ElementStyle } from "@anderjason/web";
-import { Callout } from "../../../src/Callout";
-import { Observable } from "@anderjason/observable";
+import { DemoActor } from "@anderjason/example-tools";
 import { Box2, Point2, Size2 } from "@anderjason/geometry";
+import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
 import { NumberUtil } from "@anderjason/util";
-import { DemoActor } from "@anderjason/example-tools";
+import { ElementStyle } from "@anderjason/web";
+import { Timer } from "skytree";
+import { Callout } from "../../../src/Callout";
 
 export interface CalloutDemoProps {}
 
-export class CalloutDemo extends Actor<CalloutDemoProps> implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class CalloutDemo extends DemoActor<CalloutDemoProps> {
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({

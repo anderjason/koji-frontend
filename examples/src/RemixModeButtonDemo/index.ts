@@ -1,18 +1,10 @@
 import { DemoActor } from "@anderjason/example-tools";
-import { Observable } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
-import { Actor } from "skytree";
-import { Koji } from "../../../src/Koji";
 import { RemixModeButton } from "../../../src/RemixModeButton";
 
 export interface RemixModeButtonDemoProps {}
 
-export class RemixModeButtonDemo
-  extends Actor<RemixModeButtonDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class RemixModeButtonDemo extends DemoActor<RemixModeButtonDemoProps> {
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({

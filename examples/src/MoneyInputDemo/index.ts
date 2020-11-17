@@ -2,19 +2,13 @@ import { DemoActor } from "@anderjason/example-tools";
 import { Currency, Money } from "@anderjason/money";
 import { Observable } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
-import { Actor } from "skytree";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 import { MoneyInput } from "../../../src/MoneyInput";
 
 export interface MoneyInputDemoProps {}
 
-export class MoneyInputDemo
-  extends Actor<MoneyInputDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
   onActivate() {
     const value = Observable.givenValue<Money>(
       new Money(0, Currency.ofUSD()),
@@ -52,7 +46,9 @@ export class MoneyInputDemo
         if (v == null) {
           currentValue.element.innerHTML = "No price set";
         } else {
-          currentValue.element.innerHTML = v.toString("$1.00");
+          currentValue.element.innerHTML = `The price is ${v.toString(
+            "$1.00"
+          )}`;
         }
       }, true)
     );
@@ -69,7 +65,7 @@ export class MoneyInputDemo
 
 const CurrentValueStyle = ElementStyle.givenDefinition({
   css: `
-    color: #007AFF;
+    color: #BABABA;
     font-family: monospace;
     margin: 0 50px;
     font-size: 16px;

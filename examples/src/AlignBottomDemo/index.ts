@@ -2,18 +2,13 @@ import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
 import { ElementStyle } from "@anderjason/web";
-import { Actor, ConditionalActivator, Timer } from "skytree";
+import { ConditionalActivator, Timer } from "skytree";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 
 export interface AlignBottomDemoProps {}
 
-export class AlignBottomDemo
-  extends Actor<AlignBottomDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class AlignBottomDemo extends DemoActor<AlignBottomDemoProps> {
   onActivate() {
     const isRemixing = Observable.givenValue(false);
 

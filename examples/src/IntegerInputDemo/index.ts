@@ -1,18 +1,12 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { Actor } from "skytree";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 import { IntegerInput } from "../../../src/IntegerInput";
 
 export interface IntegerInputDemoProps {}
 
-export class IntegerInputDemo
-  extends Actor<IntegerInputDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class IntegerInputDemo extends DemoActor<IntegerInputDemoProps> {
   onActivate() {
     const value = Observable.givenValue(0, Observable.isStrictEqual);
 

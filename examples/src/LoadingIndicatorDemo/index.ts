@@ -1,17 +1,10 @@
 import { Color } from "@anderjason/color";
 import { DemoActor } from "@anderjason/example-tools";
-import { Observable } from "@anderjason/observable";
-import { Actor } from "skytree";
 import { LoadingIndicator } from "../../../src/LoadingIndicator";
 
 export interface LoadingIndicatorDemoProps {}
 
-export class LoadingIndicatorDemo
-  extends Actor<LoadingIndicatorDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class LoadingIndicatorDemo extends DemoActor<LoadingIndicatorDemoProps> {
   onActivate() {
     this.addActor(
       new LoadingIndicator({

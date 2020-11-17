@@ -1,23 +1,64 @@
-import { Actor } from "skytree";
-import { ValuePath } from "@anderjason/util";
-import { ThemeToolbar } from "../../../src/ThemeToolbar";
 import { DemoActor } from "@anderjason/example-tools";
-import { Observable } from "@anderjason/observable";
-import { Koji } from "../../../src/Koji";
+import { ElementStyle } from "@anderjason/web";
+import { ThemeToolbar } from "../../../src/ThemeToolbar";
 
 export interface ThemeToolbarDemoProps {}
 
-export class ThemeToolbarDemo
-  extends Actor<ThemeToolbarDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class ThemeToolbarDemo extends DemoActor<ThemeToolbarDemoProps> {
   onActivate() {
-    this.addActor(
+    const themeToolbar = this.addActor(
       new ThemeToolbar({
         parentElement: this.parentElement,
       })
     );
+
+    const backgroundExample = this.addActor(
+      BackgroundExampleStyle.toManagedElement({
+        tagName: "div",
+        parentElement: this.parentElement,
+      })
+    );
+
+    const textExample = this.addActor(
+      TextExampleStyle.toManagedElement({
+        tagName: "div",
+        parentElement: this.parentElement,
+      })
+    );
+    textExample.element.innerHTML = "Example text";
+
+    this.cancelOnDeactivate(
+      themeToolbar.output.didChange.subscribe((theme) => {
+        if (theme == null) {
+          return;
+        }
+
+        theme.applyStyle(backgroundExample.element, "background");
+        theme.applyStyle(textExample.element, "text");
+      }, true)
+    );
   }
 }
+
+const BackgroundExampleStyle = ElementStyle.givenDefinition({
+  css: `
+    position: absolute;
+    left: 20px;
+    width: 150px;
+    bottom: 20px;
+    height: 45px;
+    border-radius: 3px;
+  `,
+});
+
+const TextExampleStyle = ElementStyle.givenDefinition({
+  css: `
+    position: absolute;
+    right: 30px;
+    bottom: 20px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+});

@@ -124,16 +124,7 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
           return;
         }
 
-        switch (theme.type) {
-          case "color":
-            button.style.background = theme.color.toHexString();
-            break;
-          case "gradient":
-            button.style.background = theme.gradient
-              .withHclStepCount(5)
-              .toLinearGradientString(`${theme.angle.toDegrees()}deg`);
-            break;
-        }
+        theme.applyStyle(button, "background");
       }, true)
     );
   }

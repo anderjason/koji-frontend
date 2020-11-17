@@ -1,7 +1,6 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
-import { Actor, Timer } from "skytree";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 import { KojiAppearance } from "../../../src/KojiAppearance";
@@ -9,16 +8,11 @@ import { SubmitButton, SubmitButtonMode } from "../../../src/SubmitButton";
 
 export interface SubmitButtonDemoProps {}
 
-export class SubmitButtonDemo
-  extends Actor<SubmitButtonDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class SubmitButtonDemo extends DemoActor<SubmitButtonDemoProps> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({
-        element: {
+        target: {
           type: "parentElement",
           parentElement: this.parentElement,
         },
@@ -28,7 +22,7 @@ export class SubmitButtonDemo
 
     const card = this.addActor(
       new Card({
-        element: {
+        target: {
           type: "parentElement",
           parentElement: alignBottom.element,
         },
@@ -39,7 +33,7 @@ export class SubmitButtonDemo
 
     this.addActor(
       new SubmitButton({
-        element: {
+        target: {
           type: "parentElement",
           parentElement: card.element,
         },

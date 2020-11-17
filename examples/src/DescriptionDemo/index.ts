@@ -1,10 +1,9 @@
-import { Actor } from "skytree";
-import { ElementStyle, SequentialChoice } from "@anderjason/web";
-import { Description } from "../../../src/Description";
-import { Observable } from "@anderjason/observable";
-import { Card } from "../../../src/Card";
 import { DemoActor } from "@anderjason/example-tools";
+import { Observable } from "@anderjason/observable";
+import { SequentialChoice } from "@anderjason/web";
 import { AlignBottom } from "../../../src";
+import { Card } from "../../../src/Card";
+import { Description } from "../../../src/Description";
 
 export interface DescriptionDemoProps {}
 
@@ -13,12 +12,7 @@ interface DescriptionState {
   text: string;
 }
 
-export class DescriptionDemo
-  extends Actor<DescriptionDemoProps>
-  implements DemoActor {
-  readonly parentElement = Observable.ofEmpty<HTMLElement>();
-  readonly isVisible = Observable.ofEmpty<boolean>();
-
+export class DescriptionDemo extends DemoActor<DescriptionDemoProps> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({
