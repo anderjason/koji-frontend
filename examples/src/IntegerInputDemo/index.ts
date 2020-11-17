@@ -1,11 +1,9 @@
-import { Actor } from "skytree";
-import { ValuePath } from "@anderjason/util";
-import { Card } from "../../../src/Card";
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { Koji } from "../../../src/Koji";
-import { IntegerInput } from "../../../src/IntegerInput";
+import { Actor } from "skytree";
 import { AlignBottom } from "../../../src";
+import { Card } from "../../../src/Card";
+import { IntegerInput } from "../../../src/IntegerInput";
 
 export interface IntegerInputDemoProps {}
 
@@ -16,8 +14,7 @@ export class IntegerInputDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
-    const vccPath = ValuePath.givenString("quantity");
-    Koji.instance.vccData.update(vccPath, 0);
+    const value = Observable.givenValue(0, Observable.isStrictEqual);
 
     const alignBottom = this.addActor(
       new AlignBottom({
@@ -43,7 +40,7 @@ export class IntegerInputDemo
         parentElement: card.element,
         placeholder: "Set quantity",
         persistentLabel: "Quantity",
-        vccPath,
+        value,
       })
     );
   }

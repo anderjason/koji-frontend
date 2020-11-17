@@ -1,8 +1,8 @@
-import { ValuePath } from "@anderjason/util";
+import { Observable } from "@anderjason/observable";
 import { Actor } from "skytree";
 export interface PriceInputProps {
     parentElement: HTMLElement;
-    vccPath: ValuePath;
+    usdCents: Observable<number>;
     persistentLabel: string;
 }
 export declare class PriceInput extends Actor<PriceInputProps> {

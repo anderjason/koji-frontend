@@ -3,17 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PriceInput = void 0;
 const util_1 = require("@anderjason/util");
 const skytree_1 = require("skytree");
-const Koji_1 = require("../Koji");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
 class PriceInput extends skytree_1.Actor {
     onActivate() {
-        const priceVccPathBinding = this.addActor(Koji_1.Koji.instance.vccData.toBinding({
-            valuePath: this.props.vccPath,
-        }));
         this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
-            value: priceVccPathBinding.output,
+            value: this.props.usdCents,
             displayTextGivenValue: (price) => {
                 if (price == null || isNaN(price)) {
                     return "";

@@ -17,8 +17,7 @@ export class PriceInputDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
-    const vccPath = ValuePath.givenString("price");
-    Koji.instance.vccData.update(vccPath, 0);
+    const usdCents = Observable.givenValue(0, Observable.isStrictEqual);
 
     const alignBottom = this.addActor(
       new AlignBottom({
@@ -43,7 +42,7 @@ export class PriceInputDemo
       new PriceInput({
         parentElement: card.element,
         persistentLabel: "Set Price",
-        vccPath,
+        usdCents,
       })
     );
   }
