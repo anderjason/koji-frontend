@@ -16,8 +16,6 @@ export interface KojiGradientDefinition {
 
 export type KojiThemeDefinition = KojiColorDefinition | KojiGradientDefinition;
 
-export type KojiThemeStyleType = "background" | "text";
-
 export class KojiTheme {
   readonly key: string;
   readonly definition: KojiThemeDefinition;
@@ -44,25 +42,21 @@ export class KojiTheme {
     }
   }
 
-  toStyle(styleType: KojiThemeStyleType): any {
-    switch (styleType) {
-      case "background":
-        return this.toBackgroundStyle();
-      case "text":
-        return this.toTextStyle();
-      default:
-        throw new Error(`Unsupported style type '${styleType}'`);
-    }
-  }
-
-  applyStyle(element: HTMLElement, styleType: KojiThemeStyleType): void {
-    const style = this.toStyle(styleType);
+  applyBackgroundStyle(element: HTMLElement): void {
+    let style = this.toBackgroundStyle();
     Object.keys(style).forEach((key) => {
       element.style.setProperty(key, style[key]);
     });
   }
 
-  private toBackgroundStyle(): any {
+  applyTextStyle(element: HTMLElement): void {
+    let style = this.toTextStyle();
+    Object.keys(style).forEach((key) => {
+      element.style.setProperty(key, style[key]);
+    });
+  }
+
+  toBackgroundStyle(): any {
     switch (this.definition.type) {
       case "color":
         const { color } = this.definition;
@@ -81,7 +75,7 @@ export class KojiTheme {
     }
   }
 
-  private toTextStyle(): any {
+  toTextStyle(): any {
     return {
       color: this.toColor().toHexString(),
     };
