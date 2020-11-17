@@ -1,8 +1,8 @@
-import { ValuePath } from "@anderjason/util";
 import { Actor } from "skytree";
+import { Observable } from "@anderjason/observable";
 export interface IntegerInputProps {
     parentElement: HTMLElement;
-    vccPath: ValuePath;
+    value: Observable<number>;
     persistentLabel: string;
     placeholder: string;
 }

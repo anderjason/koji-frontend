@@ -2,18 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IntegerInput = void 0;
 const skytree_1 = require("skytree");
-const Koji_1 = require("../Koji");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
 class IntegerInput extends skytree_1.Actor {
     onActivate() {
-        const vccBinding = this.addActor(Koji_1.Koji.instance.vccData.toBinding({
-            valuePath: this.props.vccPath,
-        }));
         this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
             placeholder: this.props.placeholder,
-            value: vccBinding.output,
+            value: this.props.value,
             displayTextGivenValue: (value) => {
                 if (value == null || isNaN(value)) {
                     return "";

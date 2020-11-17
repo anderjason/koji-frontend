@@ -1,29 +1,22 @@
-import { ValuePath } from "@anderjason/util";
 import { Actor } from "skytree";
-import { Koji } from "../Koji";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
+import { Observable } from "@anderjason/observable";
 
 export interface IntegerInputProps {
   parentElement: HTMLElement;
-  vccPath: ValuePath;
+  value: Observable<number>;
   persistentLabel: string;
   placeholder: string;
 }
 
 export class IntegerInput extends Actor<IntegerInputProps> {
   onActivate() {
-    const vccBinding = this.addActor(
-      Koji.instance.vccData.toBinding<number>({
-        valuePath: this.props.vccPath,
-      })
-    );
-
     this.addActor(
       new FloatLabelTextInput({
         parentElement: this.props.parentElement,
         persistentLabel: this.props.persistentLabel,
         placeholder: this.props.placeholder,
-        value: vccBinding.output,
+        value: this.props.value,
         displayTextGivenValue: (value) => {
           if (value == null || isNaN(value)) {
             return "";
