@@ -18,7 +18,7 @@ export class IntegerInputDemo
 
     const alignBottom = this.addActor(
       new AlignBottom({
-        element: {
+        target: {
           type: "parentElement",
           parentElement: this.parentElement,
         },
@@ -28,7 +28,7 @@ export class IntegerInputDemo
 
     const card = this.addActor(
       new Card({
-        element: {
+        target: {
           type: "parentElement",
           parentElement: alignBottom.element,
         },

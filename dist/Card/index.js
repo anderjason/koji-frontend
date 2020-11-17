@@ -8,14 +8,14 @@ class Card extends skytree_1.Actor {
         return this._element;
     }
     onActivate() {
-        switch (this.props.element.type) {
+        switch (this.props.target.type) {
             case "thisElement":
-                this._element = this.props.element.element;
+                this._element = this.props.target.element;
                 break;
             case "parentElement":
                 this._element = this.addActor(web_1.ManagedElement.givenDefinition({
                     tagName: "div",
-                    parentElement: this.props.element.parentElement,
+                    parentElement: this.props.target.parentElement,
                 })).element;
                 break;
             default:
@@ -31,10 +31,11 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     background: #FFFFFF;
     border-radius: 15px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
     color: #2D2F30;
     margin: 20px;
     padding: 24px 20px 16px 20px;
-    width: 100%;
+    width: calc(100% - 40px);
   `,
 });
 //# sourceMappingURL=index.js.map

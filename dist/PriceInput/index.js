@@ -4,23 +4,24 @@ exports.PriceInput = void 0;
 const util_1 = require("@anderjason/util");
 const skytree_1 = require("skytree");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
+const money_1 = require("@anderjason/money");
 class PriceInput extends skytree_1.Actor {
     onActivate() {
         this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
-            value: this.props.usdCents,
+            value: this.props.value,
             displayTextGivenValue: (price) => {
-                if (price == null || isNaN(price)) {
+                if (price == null) {
                     return "";
                 }
-                return "$" + price.toString();
+                return "$" + price.rawValue.toString();
             },
             shadowTextGivenValue: (price) => {
-                if (price == null || isNaN(price)) {
+                if (price == null || price.isZero) {
                     return "$0.00";
                 }
-                return "$" + price.toFixed(2);
+                return price.toString("$1.00");
             },
             applyShadowTextOnBlur: true,
             valueGivenDisplayText: (displayText) => {
@@ -28,17 +29,18 @@ class PriceInput extends skytree_1.Actor {
                     displayText === "$" ||
                     displayText === "." ||
                     displayText === "$.") {
-                    return 0;
+                    return new money_1.Money(0, money_1.Currency.ofUSD());
                 }
                 try {
                     let text = displayText.replace("$", "");
                     if (util_1.StringUtil.stringIsEmpty(text)) {
-                        return 0;
+                        return new money_1.Money(0, money_1.Currency.ofUSD());
                     }
-                    return parseFloat(text);
+                    console.log(text);
+                    return new money_1.Money(Math.round(parseFloat(text) * 100), money_1.Currency.ofUSD());
                 }
                 catch (_a) {
-                    return 0;
+                    return new money_1.Money(0, money_1.Currency.ofUSD());
                 }
             },
             overrideDisplayText: (e) => {

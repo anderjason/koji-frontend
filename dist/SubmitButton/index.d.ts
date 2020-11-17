@@ -6,7 +6,7 @@ export declare type SubmitButtonMode = "ready" | "busy" | "success";
 export interface SubmitButtonProps {
     buttonMode: SubmitButtonMode | ObservableBase<SubmitButtonMode>;
     onClick: () => void;
-    element: ThisOrParentElement<HTMLButtonElement>;
+    target: ThisOrParentElement<HTMLButtonElement>;
     text: string | ObservableBase<string>;
     theme: KojiTheme | ObservableBase<KojiTheme>;
 }

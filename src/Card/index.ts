@@ -3,7 +3,7 @@ import { ElementStyle, ManagedElement } from "@anderjason/web";
 import { ThisOrParentElement } from "..";
 
 export interface CardProps {
-  element: ThisOrParentElement<HTMLDivElement>;
+  target: ThisOrParentElement<HTMLDivElement>;
 }
 
 export class Card extends Actor<CardProps> {
@@ -14,15 +14,15 @@ export class Card extends Actor<CardProps> {
   }
 
   onActivate() {
-    switch (this.props.element.type) {
+    switch (this.props.target.type) {
       case "thisElement":
-        this._element = this.props.element.element;
+        this._element = this.props.target.element;
         break;
       case "parentElement":
         this._element = this.addActor(
           ManagedElement.givenDefinition({
             tagName: "div",
-            parentElement: this.props.element.parentElement,
+            parentElement: this.props.target.parentElement,
           })
         ).element;
         break;
@@ -40,9 +40,10 @@ const WrapperStyle = ElementStyle.givenDefinition({
     background: #FFFFFF;
     border-radius: 15px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
     color: #2D2F30;
     margin: 20px;
     padding: 24px 20px 16px 20px;
-    width: 100%;
+    width: calc(100% - 40px);
   `,
 });

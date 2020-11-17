@@ -13,14 +13,14 @@ class AlignBottom extends skytree_1.Actor {
         return this._element;
     }
     onActivate() {
-        switch (this.props.element.type) {
+        switch (this.props.target.type) {
             case "thisElement":
-                this._element = this.props.element.element;
+                this._element = this.props.target.element;
                 break;
             case "parentElement":
                 this._element = this.addActor(web_1.ManagedElement.givenDefinition({
                     tagName: "div",
-                    parentElement: this.props.element.parentElement,
+                    parentElement: this.props.target.parentElement,
                 })).element;
                 break;
             default:
@@ -52,10 +52,11 @@ class AlignBottom extends skytree_1.Actor {
 exports.AlignBottom = AlignBottom;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     css: `
-    align-items: flex-end;
+    align-items: stretch;
     bottom: 0;
     display: flex;
-    justify-content: stretch;
+    flex-direction: column;
+    justify-content: flex-end;
     left: 0;
     position: absolute;
     right: 0;

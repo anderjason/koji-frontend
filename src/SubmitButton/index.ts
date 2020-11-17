@@ -11,7 +11,7 @@ export type SubmitButtonMode = "ready" | "busy" | "success";
 export interface SubmitButtonProps {
   buttonMode: SubmitButtonMode | ObservableBase<SubmitButtonMode>;
   onClick: () => void;
-  element: ThisOrParentElement<HTMLButtonElement>;
+  target: ThisOrParentElement<HTMLButtonElement>;
   text: string | ObservableBase<string>;
   theme: KojiTheme | ObservableBase<KojiTheme>;
 }
@@ -26,15 +26,15 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
   onActivate() {
     let button: HTMLButtonElement;
 
-    switch (this.props.element.type) {
+    switch (this.props.target.type) {
       case "thisElement":
-        button = this.props.element.element;
+        button = this.props.target.element;
         break;
       case "parentElement":
         button = this.addActor(
           ManagedElement.givenDefinition({
             tagName: "button",
-            parentElement: this.props.element.parentElement,
+            parentElement: this.props.target.parentElement,
           })
         ).element;
         break;

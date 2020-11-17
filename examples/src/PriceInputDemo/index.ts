@@ -1,12 +1,11 @@
-import { Actor } from "skytree";
-import { ValuePath } from "@anderjason/util";
-import { Card } from "../../../src/Card";
 import { DemoActor } from "@anderjason/example-tools";
+import { Currency, Money } from "@anderjason/money";
 import { Observable } from "@anderjason/observable";
-import { Koji } from "../../../src/Koji";
-import { PriceInput } from "../../../src/PriceInput";
 import { ElementStyle } from "@anderjason/web";
+import { Actor } from "skytree";
 import { AlignBottom } from "../../../src";
+import { Card } from "../../../src/Card";
+import { PriceInput } from "../../../src/PriceInput";
 
 export interface PriceInputDemoProps {}
 
@@ -17,11 +16,14 @@ export class PriceInputDemo
   readonly isVisible = Observable.ofEmpty<boolean>();
 
   onActivate() {
-    const usdCents = Observable.givenValue(0, Observable.isStrictEqual);
+    const value = Observable.givenValue<Money>(
+      new Money(0, Currency.ofUSD()),
+      Money.isEqual
+    );
 
     const alignBottom = this.addActor(
       new AlignBottom({
-        element: {
+        target: {
           type: "parentElement",
           parentElement: this.parentElement,
         },
@@ -29,21 +31,47 @@ export class PriceInputDemo
       })
     );
 
+    const currentValue = this.addActor(
+      CurrentValueStyle.toManagedElement({
+        tagName: "div",
+        parentElement: alignBottom.element,
+      })
+    );
+
     const card = this.addActor(
       new Card({
-        element: {
+        target: {
           type: "parentElement",
           parentElement: alignBottom.element,
         },
       })
     );
 
+    this.cancelOnDeactivate(
+      value.didChange.subscribe((v) => {
+        if (v == null) {
+          currentValue.element.innerHTML = "No price set";
+        } else {
+          currentValue.element.innerHTML = v.toString("$1.00");
+        }
+      }, true)
+    );
+
     this.addActor(
       new PriceInput({
         parentElement: card.element,
         persistentLabel: "Set Price",
-        usdCents,
+        value,
       })
     );
   }
 }
+
+const CurrentValueStyle = ElementStyle.givenDefinition({
+  css: `
+    color: #007AFF;
+    font-family: monospace;
+    margin: 0 50px;
+    font-size: 16px;
+  `,
+});

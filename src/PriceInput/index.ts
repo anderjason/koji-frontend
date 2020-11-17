@@ -2,10 +2,11 @@ import { Observable } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 import { Actor } from "skytree";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
+import { Currency, Money } from "@anderjason/money";
 
 export interface PriceInputProps {
   parentElement: HTMLElement;
-  usdCents: Observable<number>;
+  value: Observable<Money>;
   persistentLabel: string;
 }
 
@@ -15,20 +16,20 @@ export class PriceInput extends Actor<PriceInputProps> {
       new FloatLabelTextInput({
         parentElement: this.props.parentElement,
         persistentLabel: this.props.persistentLabel,
-        value: this.props.usdCents,
+        value: this.props.value,
         displayTextGivenValue: (price) => {
-          if (price == null || isNaN(price)) {
+          if (price == null) {
             return "";
           }
 
-          return "$" + price.toString();
+          return "$" + price.rawValue.toString();
         },
         shadowTextGivenValue: (price) => {
-          if (price == null || isNaN(price)) {
+          if (price == null || price.isZero) {
             return "$0.00";
           }
 
-          return "$" + price.toFixed(2);
+          return price.toString("$1.00");
         },
         applyShadowTextOnBlur: true,
         valueGivenDisplayText: (displayText) => {
@@ -38,18 +39,22 @@ export class PriceInput extends Actor<PriceInputProps> {
             displayText === "." ||
             displayText === "$."
           ) {
-            return 0;
+            return new Money(0, Currency.ofUSD());
           }
 
           try {
             let text = displayText.replace("$", "");
             if (StringUtil.stringIsEmpty(text)) {
-              return 0;
+              return new Money(0, Currency.ofUSD());
             }
 
-            return parseFloat(text);
+            console.log(text);
+            return new Money(
+              Math.round(parseFloat(text) * 100),
+              Currency.ofUSD()
+            );
           } catch {
-            return 0;
+            return new Money(0, Currency.ofUSD());
           }
         },
         overrideDisplayText: (e) => {

@@ -2,7 +2,7 @@ import { ObservableBase } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { ThisOrParentElement } from "..";
 export interface AlignBottomProps {
-    element: ThisOrParentElement<HTMLDivElement>;
+    target: ThisOrParentElement<HTMLDivElement>;
     isRemixing: boolean | ObservableBase<boolean>;
 }
 export declare class AlignBottom extends Actor<AlignBottomProps> {

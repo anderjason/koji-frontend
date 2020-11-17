@@ -8,7 +8,7 @@ import { Actor } from "skytree";
 import { ThisOrParentElement } from "..";
 
 export interface AlignBottomProps {
-  element: ThisOrParentElement<HTMLDivElement>;
+  target: ThisOrParentElement<HTMLDivElement>;
   isRemixing: boolean | ObservableBase<boolean>;
 }
 
@@ -27,15 +27,15 @@ export class AlignBottom extends Actor<AlignBottomProps> {
   }
 
   onActivate() {
-    switch (this.props.element.type) {
+    switch (this.props.target.type) {
       case "thisElement":
-        this._element = this.props.element.element;
+        this._element = this.props.target.element;
         break;
       case "parentElement":
         this._element = this.addActor(
           ManagedElement.givenDefinition({
             tagName: "div",
-            parentElement: this.props.element.parentElement,
+            parentElement: this.props.target.parentElement,
           })
         ).element;
         break;
@@ -74,10 +74,11 @@ export class AlignBottom extends Actor<AlignBottomProps> {
 
 const WrapperStyle = ElementStyle.givenDefinition({
   css: `
-    align-items: flex-end;
+    align-items: stretch;
     bottom: 0;
     display: flex;
-    justify-content: stretch;
+    flex-direction: column;
+    justify-content: flex-end;
     left: 0;
     position: absolute;
     right: 0;

@@ -1,8 +1,9 @@
 import { Observable } from "@anderjason/observable";
 import { Actor } from "skytree";
+import { Money } from "@anderjason/money";
 export interface PriceInputProps {
     parentElement: HTMLElement;
-    usdCents: Observable<number>;
+    value: Observable<Money>;
     persistentLabel: string;
 }
 export declare class PriceInput extends Actor<PriceInputProps> {
