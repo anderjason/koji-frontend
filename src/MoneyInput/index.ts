@@ -4,13 +4,13 @@ import { Actor } from "skytree";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
 import { Currency, Money } from "@anderjason/money";
 
-export interface PriceInputProps {
+export interface MoneyInputProps {
   parentElement: HTMLElement;
   value: Observable<Money>;
   persistentLabel: string;
 }
 
-export class PriceInput extends Actor<PriceInputProps> {
+export class MoneyInput extends Actor<MoneyInputProps> {
   onActivate() {
     this.addActor(
       new FloatLabelTextInput({

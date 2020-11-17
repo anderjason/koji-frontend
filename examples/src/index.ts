@@ -7,7 +7,7 @@ import { DescriptionDemo } from "./DescriptionDemo";
 import { FloatLabelTextInputDemo } from "./FloatLabelTextInputDemo";
 import { IntegerInputDemo } from "./IntegerInputDemo";
 import { LoadingIndicatorDemo } from "./LoadingIndicatorDemo";
-import { PriceInputDemo } from "./PriceInputDemo";
+import { MoneyInputDemo } from "./MoneyInputDemo";
 import { RemixModeButtonDemo } from "./RemixModeButtonDemo";
 import { SubmitButtonDemo } from "./SubmitButtonDemo";
 import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
@@ -42,8 +42,8 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new LoadingIndicatorDemo({}),
   },
   {
-    title: "Price input",
-    actor: new PriceInputDemo({}),
+    title: "Money input",
+    actor: new MoneyInputDemo({}),
   },
   {
     title: "Integer input",

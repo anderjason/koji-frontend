@@ -1,11 +1,11 @@
 import { Observable } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { Money } from "@anderjason/money";
-export interface PriceInputProps {
+export interface MoneyInputProps {
     parentElement: HTMLElement;
     value: Observable<Money>;
     persistentLabel: string;
 }
-export declare class PriceInput extends Actor<PriceInputProps> {
+export declare class MoneyInput extends Actor<MoneyInputProps> {
     onActivate(): void;
 }

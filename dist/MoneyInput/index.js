@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PriceInput = void 0;
+exports.MoneyInput = void 0;
 const util_1 = require("@anderjason/util");
 const skytree_1 = require("skytree");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
 const money_1 = require("@anderjason/money");
-class PriceInput extends skytree_1.Actor {
+class MoneyInput extends skytree_1.Actor {
     onActivate() {
         this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
@@ -69,5 +69,5 @@ class PriceInput extends skytree_1.Actor {
         }));
     }
 }
-exports.PriceInput = PriceInput;
+exports.MoneyInput = MoneyInput;
 //# sourceMappingURL=index.js.map

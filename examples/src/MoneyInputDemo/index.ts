@@ -5,12 +5,12 @@ import { ElementStyle } from "@anderjason/web";
 import { Actor } from "skytree";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
-import { PriceInput } from "../../../src/PriceInput";
+import { MoneyInput } from "../../../src/MoneyInput";
 
-export interface PriceInputDemoProps {}
+export interface MoneyInputDemoProps {}
 
-export class PriceInputDemo
-  extends Actor<PriceInputDemoProps>
+export class MoneyInputDemo
+  extends Actor<MoneyInputDemoProps>
   implements DemoActor {
   readonly parentElement = Observable.ofEmpty<HTMLElement>();
   readonly isVisible = Observable.ofEmpty<boolean>();
@@ -58,7 +58,7 @@ export class PriceInputDemo
     );
 
     this.addActor(
-      new PriceInput({
+      new MoneyInput({
         parentElement: card.element,
         persistentLabel: "Set Price",
         value,
