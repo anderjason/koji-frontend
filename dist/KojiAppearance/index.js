@@ -36,7 +36,7 @@ class KojiTheme {
     applyStyle(element, styleType) {
         const style = this.toStyle(styleType);
         Object.keys(style).forEach((key) => {
-            element.style[key] = style[key];
+            element.style.setProperty(key, style[key]);
         });
     }
     toBackgroundStyle() {
@@ -58,19 +58,9 @@ class KojiTheme {
         }
     }
     toTextStyle() {
-        switch (this.definition.type) {
-            case "color":
-                const { color } = this.definition;
-                return {
-                    color: color.toHexString(),
-                };
-            case "gradient":
-                return {
-                    color: this.toColor().toHexString(),
-                };
-            default:
-                throw new Error("Unsupported theme definition type");
-        }
+        return {
+            color: this.toColor().toHexString(),
+        };
     }
 }
 exports.KojiTheme = KojiTheme;

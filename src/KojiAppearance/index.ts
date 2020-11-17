@@ -44,7 +44,7 @@ export class KojiTheme {
     }
   }
 
-  toStyle(styleType: KojiThemeStyleType): CSSStyleDeclaration {
+  toStyle(styleType: KojiThemeStyleType): any {
     switch (styleType) {
       case "background":
         return this.toBackgroundStyle();
@@ -56,45 +56,35 @@ export class KojiTheme {
   }
 
   applyStyle(element: HTMLElement, styleType: KojiThemeStyleType): void {
-    const style: CSSStyleDeclaration = this.toStyle(styleType);
+    const style = this.toStyle(styleType);
     Object.keys(style).forEach((key) => {
-      (element.style as any)[key] = (style as any)[key];
+      element.style.setProperty(key, style[key]);
     });
   }
 
-  private toBackgroundStyle(): CSSStyleDeclaration {
+  private toBackgroundStyle(): any {
     switch (this.definition.type) {
       case "color":
         const { color } = this.definition;
         return {
           background: color.toHexString(),
-        } as CSSStyleDeclaration;
+        };
       case "gradient":
         const { gradient, angle } = this.definition;
         return {
           background: gradient
             .withHclStepCount(5)
             .toLinearGradientString(`${angle.toDegrees()}deg`),
-        } as CSSStyleDeclaration;
+        };
       default:
         throw new Error("Unsupported theme definition type");
     }
   }
 
-  private toTextStyle(): CSSStyleDeclaration {
-    switch (this.definition.type) {
-      case "color":
-        const { color } = this.definition;
-        return {
-          color: color.toHexString(),
-        } as CSSStyleDeclaration;
-      case "gradient":
-        return {
-          color: this.toColor().toHexString(),
-        } as CSSStyleDeclaration;
-      default:
-        throw new Error("Unsupported theme definition type");
-    }
+  private toTextStyle(): any {
+    return {
+      color: this.toColor().toHexString(),
+    };
   }
 }
 

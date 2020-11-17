@@ -18,7 +18,7 @@ export declare class KojiTheme {
     constructor(key: string, definition: KojiThemeDefinition);
     toHighContrastColor(): Color;
     toColor(): Color;
-    toStyle(styleType: KojiThemeStyleType): CSSStyleDeclaration;
+    toStyle(styleType: KojiThemeStyleType): any;
     applyStyle(element: HTMLElement, styleType: KojiThemeStyleType): void;
     private toBackgroundStyle;
     private toTextStyle;
