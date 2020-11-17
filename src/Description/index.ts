@@ -88,6 +88,10 @@ export class Description extends Actor<DescriptionInputProps> {
           content.element.innerHTML = this.props.text.value;
           const words = content.element.textContent.split(" ");
           const textNode = content.element.firstChild;
+          if (textNode == null) {
+            return;
+          }
+
           const contentBounds = content.element.getBoundingClientRect();
 
           let start = 0;
@@ -169,5 +173,6 @@ const ContentStyle = ElementStyle.givenDefinition({
     font-size: 20px;
     line-height: 25px;
     letter-spacing: 0.02em;
+    text-align: left;
   `,
 });

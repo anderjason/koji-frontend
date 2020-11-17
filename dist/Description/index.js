@@ -53,6 +53,9 @@ class Description extends skytree_1.Actor {
                 content.element.innerHTML = this.props.text.value;
                 const words = content.element.textContent.split(" ");
                 const textNode = content.element.firstChild;
+                if (textNode == null) {
+                    return;
+                }
                 const contentBounds = content.element.getBoundingClientRect();
                 let start = 0;
                 let end = 0;
@@ -122,6 +125,7 @@ const ContentStyle = web_1.ElementStyle.givenDefinition({
     font-size: 20px;
     line-height: 25px;
     letter-spacing: 0.02em;
+    text-align: left;
   `,
 });
 //# sourceMappingURL=index.js.map
