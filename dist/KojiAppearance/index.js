@@ -80,6 +80,13 @@ class KojiAppearance {
             Preload_1.Preload.instance.addFont(style);
         }
     }
+    static toColor(themeKey) {
+        const theme = KojiAppearance.themes.get(themeKey);
+        if (theme == null) {
+            throw new Error(`Unrecognized theme key '${themeKey}'`);
+        }
+        return theme.toColor();
+    }
 }
 exports.KojiAppearance = KojiAppearance;
 KojiAppearance.fontStyles = new Map();

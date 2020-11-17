@@ -27,4 +27,5 @@ export declare class KojiAppearance {
     static readonly fontStyles: Map<string, FontStyle>;
     static readonly themes: Map<string, KojiTheme>;
     static preloadFonts(): void;
+    static toColor(themeKey: string): Color;
 }

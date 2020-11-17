@@ -107,6 +107,15 @@ export class KojiAppearance {
       Preload.instance.addFont(style);
     }
   }
+
+  static toColor(themeKey: string): Color {
+    const theme = KojiAppearance.themes.get(themeKey);
+    if (theme == null) {
+      throw new Error(`Unrecognized theme key '${themeKey}'`);
+    }
+
+    return theme.toColor();
+  }
 }
 
 KojiAppearance.fontStyles.set("ptSansBold", {
