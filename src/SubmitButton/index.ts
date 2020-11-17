@@ -124,7 +124,7 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
           return;
         }
 
-        theme.applyStyle(button, "background");
+        theme.applyBackgroundStyle(button);
       }, true)
     );
   }

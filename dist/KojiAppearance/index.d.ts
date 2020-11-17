@@ -11,17 +11,16 @@ export interface KojiGradientDefinition {
     angle: Rotation;
 }
 export declare type KojiThemeDefinition = KojiColorDefinition | KojiGradientDefinition;
-export declare type KojiThemeStyleType = "background" | "text";
 export declare class KojiTheme {
     readonly key: string;
     readonly definition: KojiThemeDefinition;
     constructor(key: string, definition: KojiThemeDefinition);
     toHighContrastColor(): Color;
     toColor(): Color;
-    toStyle(styleType: KojiThemeStyleType): any;
-    applyStyle(element: HTMLElement, styleType: KojiThemeStyleType): void;
-    private toBackgroundStyle;
-    private toTextStyle;
+    applyBackgroundStyle(element: HTMLElement): void;
+    applyTextStyle(element: HTMLElement): void;
+    toBackgroundStyle(): any;
+    toTextStyle(): any;
 }
 export declare class KojiAppearance {
     static readonly fontStyles: Map<string, FontStyle>;

@@ -33,8 +33,8 @@ export class ThemeToolbarDemo extends DemoActor<ThemeToolbarDemoProps> {
           return;
         }
 
-        theme.applyStyle(backgroundExample.element, "background");
-        theme.applyStyle(textExample.element, "text");
+        theme.applyBackgroundStyle(backgroundExample.element);
+        theme.applyTextStyle(textExample.element);
       }, true)
     );
   }

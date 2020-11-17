@@ -88,7 +88,7 @@ class SubmitButton extends skytree_1.Actor {
             if (theme == null) {
                 return;
             }
-            theme.applyStyle(button, "background");
+            theme.applyBackgroundStyle(button);
         }, true));
     }
 }

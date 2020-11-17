@@ -23,18 +23,14 @@ class KojiTheme {
                 throw new Error("Unsupported theme type");
         }
     }
-    toStyle(styleType) {
-        switch (styleType) {
-            case "background":
-                return this.toBackgroundStyle();
-            case "text":
-                return this.toTextStyle();
-            default:
-                throw new Error(`Unsupported style type '${styleType}'`);
-        }
+    applyBackgroundStyle(element) {
+        let style = this.toBackgroundStyle();
+        Object.keys(style).forEach((key) => {
+            element.style.setProperty(key, style[key]);
+        });
     }
-    applyStyle(element, styleType) {
-        const style = this.toStyle(styleType);
+    applyTextStyle(element) {
+        let style = this.toTextStyle();
         Object.keys(style).forEach((key) => {
             element.style.setProperty(key, style[key]);
         });

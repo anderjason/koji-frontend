@@ -59,7 +59,7 @@ export class ThemeToolbar extends Actor<ThemeToolbarProps> {
 
       const icon = document.createElement("div");
       icon.className = "icon";
-      theme.applyStyle(icon, "background");
+      theme.applyBackgroundStyle(icon);
 
       optionButton.appendChild(icon);
 
