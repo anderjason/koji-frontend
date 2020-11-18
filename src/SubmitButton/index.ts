@@ -147,7 +147,6 @@ const ButtonStyle = ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     justify-content: center;
-    margin-top: 20px;
     outline: none;
     padding: 1em 0;
     position: relative;

@@ -104,6 +104,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     background: white;
     border: 1px solid #E0E0E0;
     border-radius: 10px;
+    box-sizing: border-box;
     display: flex;
     line-height: 25px;
     letter-spacing: 0.02em;
@@ -114,7 +115,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     pointer-events: auto;
     position: relative;
     user-select: auto;
-    width: 100%;
+    width: calc(100% + 8px);
     transition: 0.2s ease border-color;
 
     &:focus-within {
