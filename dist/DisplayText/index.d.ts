@@ -1,7 +1,7 @@
 import { Color } from "@anderjason/color";
 import { Observable } from "@anderjason/observable";
 import { Actor } from "skytree";
-export declare type DisplayTextType = "title";
+export declare type DisplayTextType = "title" | "description";
 export interface DisplayTextProps {
     parentElement: HTMLElement;
     displayType: DisplayTextType;

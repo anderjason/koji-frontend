@@ -4,7 +4,6 @@ import { AlignBottom } from "./AlignBottom";
 import { Callout } from "./Callout";
 import { Card } from "./Card";
 import { ConfirmationPrompt } from "./ConfirmationPrompt";
-import { Description } from "./Description";
 import { FloatLabelTextInput } from "./FloatLabelTextInput";
 import { IntegerInput } from "./IntegerInput";
 import { Koji } from "./Koji";
@@ -36,7 +35,6 @@ export {
   Callout,
   Card,
   ConfirmationPrompt,
-  Description,
   DisplayText,
   FloatLabelTextInput,
   IntegerInput,

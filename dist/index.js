@@ -1,7 +1,7 @@
 "use strict";
 /// <reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.DisplayText = exports.Description = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
+exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.DisplayText = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
 const AlignBottom_1 = require("./AlignBottom");
 Object.defineProperty(exports, "AlignBottom", { enumerable: true, get: function () { return AlignBottom_1.AlignBottom; } });
 const Callout_1 = require("./Callout");
@@ -10,8 +10,6 @@ const Card_1 = require("./Card");
 Object.defineProperty(exports, "Card", { enumerable: true, get: function () { return Card_1.Card; } });
 const ConfirmationPrompt_1 = require("./ConfirmationPrompt");
 Object.defineProperty(exports, "ConfirmationPrompt", { enumerable: true, get: function () { return ConfirmationPrompt_1.ConfirmationPrompt; } });
-const Description_1 = require("./Description");
-Object.defineProperty(exports, "Description", { enumerable: true, get: function () { return Description_1.Description; } });
 const FloatLabelTextInput_1 = require("./FloatLabelTextInput");
 Object.defineProperty(exports, "FloatLabelTextInput", { enumerable: true, get: function () { return FloatLabelTextInput_1.FloatLabelTextInput; } });
 const IntegerInput_1 = require("./IntegerInput");

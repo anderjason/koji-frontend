@@ -5,32 +5,37 @@ const observable_1 = require("@anderjason/observable");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const KojiAppearance_1 = require("../KojiAppearance");
+const Description_1 = require("./_internal/Description");
 class DisplayText extends skytree_1.Actor {
     constructor(props) {
         super(props);
         KojiAppearance_1.KojiAppearance.preloadFonts();
     }
     onActivate() {
-        const style = styleByDisplayType.get(this.props.displayType);
-        if (style == null) {
-            return;
-        }
-        const actor = this.addActor(style.toManagedElement({
-            tagName: "div",
-            parentElement: this.props.parentElement,
-        }));
         const observableText = observable_1.Observable.givenValueOrObservable(this.props.text);
-        this.cancelOnDeactivate(observableText.didChange.subscribe((text) => {
-            actor.element.innerHTML = text || "";
-        }, true));
-        if (this.props.color != null) {
-            const observableColor = observable_1.Observable.givenValueOrObservable(this.props.color);
+        const observableColor = observable_1.Observable.givenValueOrObservable(this.props.color);
+        if (styleByDisplayType.has(this.props.displayType)) {
+            const style = styleByDisplayType.get(this.props.displayType);
+            const actor = this.addActor(style.toManagedElement({
+                tagName: "div",
+                parentElement: this.props.parentElement,
+            }));
+            this.cancelOnDeactivate(observableText.didChange.subscribe((text) => {
+                actor.element.innerHTML = text || "";
+            }, true));
             this.cancelOnDeactivate(observableColor.didChange.subscribe((color) => {
                 if (color == null) {
                     return;
                 }
                 actor.style.color = color.toHexString();
             }, true));
+            return;
+        }
+        if (this.props.displayType === "description") {
+            this.addActor(new Description_1.Description({
+                parentElement: this.props.parentElement,
+                text: observableText,
+            }));
         }
     }
 }

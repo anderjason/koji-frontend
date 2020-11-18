@@ -1,11 +1,11 @@
-import { Observable } from "@anderjason/observable";
+import { Observable, ObservableBase } from "@anderjason/observable";
 import { NumberUtil } from "@anderjason/util";
 import { ElementSizeWatcher, ElementStyle } from "@anderjason/web";
 import { Actor, MultiBinding } from "skytree";
 
 export interface DescriptionInputProps {
   parentElement: HTMLElement;
-  text: Observable<string>;
+  text: ObservableBase<string>;
 }
 
 const lineHeight = 25;

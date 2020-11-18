@@ -3,8 +3,9 @@ import { Observable } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
 import { Actor } from "skytree";
 import { KojiAppearance } from "../KojiAppearance";
+import { Description } from "./_internal/Description";
 
-export type DisplayTextType = "title";
+export type DisplayTextType = "title" | "description";
 
 export interface DisplayTextProps {
   parentElement: HTMLElement;
@@ -22,29 +23,23 @@ export class DisplayText extends Actor<DisplayTextProps> {
   }
 
   onActivate() {
-    const style = styleByDisplayType.get(this.props.displayType);
-    if (style == null) {
-      return;
-    }
-
-    const actor = this.addActor(
-      style.toManagedElement({
-        tagName: "div",
-        parentElement: this.props.parentElement,
-      })
-    );
-
     const observableText = Observable.givenValueOrObservable(this.props.text);
+    const observableColor = Observable.givenValueOrObservable(this.props.color);
 
-    this.cancelOnDeactivate(
-      observableText.didChange.subscribe((text) => {
-        actor.element.innerHTML = text || "";
-      }, true)
-    );
+    if (styleByDisplayType.has(this.props.displayType)) {
+      const style = styleByDisplayType.get(this.props.displayType);
 
-    if (this.props.color != null) {
-      const observableColor = Observable.givenValueOrObservable(
-        this.props.color
+      const actor = this.addActor(
+        style.toManagedElement({
+          tagName: "div",
+          parentElement: this.props.parentElement,
+        })
+      );
+
+      this.cancelOnDeactivate(
+        observableText.didChange.subscribe((text) => {
+          actor.element.innerHTML = text || "";
+        }, true)
       );
 
       this.cancelOnDeactivate(
@@ -55,6 +50,17 @@ export class DisplayText extends Actor<DisplayTextProps> {
 
           actor.style.color = color.toHexString();
         }, true)
+      );
+
+      return;
+    }
+
+    if (this.props.displayType === "description") {
+      this.addActor(
+        new Description({
+          parentElement: this.props.parentElement,
+          text: observableText,
+        })
       );
     }
   }
