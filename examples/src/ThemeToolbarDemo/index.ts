@@ -60,5 +60,6 @@ const TextExampleStyle = ElementStyle.givenDefinition({
     display: flex;
     align-items: center;
     justify-content: center;
+    color: transparent;
   `,
 });
