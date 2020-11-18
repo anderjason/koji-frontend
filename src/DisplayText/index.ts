@@ -29,16 +29,17 @@ export class DisplayText extends Actor<DisplayTextProps> {
     if (styleByDisplayType.has(this.props.displayType)) {
       const style = styleByDisplayType.get(this.props.displayType);
 
-      const actor = this.addActor(
+      const div = this.addActor(
         style.toManagedElement({
           tagName: "div",
           parentElement: this.props.parentElement,
         })
       );
+      div.element.classList.add("kft-text");
 
       this.cancelOnDeactivate(
         observableText.didChange.subscribe((text) => {
-          actor.element.innerHTML = text || "";
+          div.element.innerHTML = text || "";
         }, true)
       );
 
@@ -48,7 +49,7 @@ export class DisplayText extends Actor<DisplayTextProps> {
             return;
           }
 
-          actor.style.color = color.toHexString();
+          div.style.color = color.toHexString();
         }, true)
       );
 

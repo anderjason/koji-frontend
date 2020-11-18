@@ -3,7 +3,6 @@ import { ObservableArray } from "@anderjason/observable";
 import { AlignBottomDemo } from "./AlignBottomDemo";
 import { CalloutDemo } from "./CalloutDemo";
 import { ConfirmationPromptDemo } from "./ConfirmationPromptDemo";
-import { DescriptionDemo } from "./DescriptionDemo";
 import { DisplayTextDemo } from "./DisplayTextDemo";
 import { FloatLabelTextInputDemo } from "./FloatLabelTextInputDemo";
 import { IntegerInputDemo } from "./IntegerInputDemo";
@@ -25,10 +24,6 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Callout",
     actor: new CalloutDemo({}),
-  },
-  {
-    title: "Description",
-    actor: new DescriptionDemo({}),
   },
   {
     title: "Display text",

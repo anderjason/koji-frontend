@@ -16,18 +16,19 @@ class DisplayText extends skytree_1.Actor {
         const observableColor = observable_1.Observable.givenValueOrObservable(this.props.color);
         if (styleByDisplayType.has(this.props.displayType)) {
             const style = styleByDisplayType.get(this.props.displayType);
-            const actor = this.addActor(style.toManagedElement({
+            const div = this.addActor(style.toManagedElement({
                 tagName: "div",
                 parentElement: this.props.parentElement,
             }));
+            div.element.classList.add("kft-text");
             this.cancelOnDeactivate(observableText.didChange.subscribe((text) => {
-                actor.element.innerHTML = text || "";
+                div.element.innerHTML = text || "";
             }, true));
             this.cancelOnDeactivate(observableColor.didChange.subscribe((color) => {
                 if (color == null) {
                     return;
                 }
-                actor.style.color = color.toHexString();
+                div.style.color = color.toHexString();
             }, true));
             return;
         }

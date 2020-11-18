@@ -41,6 +41,7 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
         parentElement: this.props.parentElement,
       })
     );
+    wrapper.element.classList.add("kft-control");
 
     let shadowText: DynamicStyleElement<HTMLSpanElement>;
     if (this.props.shadowTextGivenValue != null) {

@@ -43,6 +43,7 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     }
 
     button.classList.add(ButtonStyle.toCombinedClassName());
+    button.classList.add("kft-control");
     button.addEventListener("click", this.props.onClick);
 
     this.cancelOnDeactivate(

@@ -1,7 +1,7 @@
 import { Color } from "@anderjason/color";
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { AlignBottom, Description } from "../../../src";
+import { AlignBottom, KojiAppearance, SubmitButton } from "../../../src";
 import { Card } from "../../../src/Card";
 import { DisplayText } from "../../../src/DisplayText";
 
@@ -31,16 +31,30 @@ export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
     this.addActor(
       new DisplayText({
         parentElement: card.element,
+        displayType: "title",
         text: Observable.givenValue("Something is for sale"),
         color: Observable.givenValue(Color.givenHexString("#007AFF")),
-        displayType: "title",
       })
     );
 
     this.addActor(
-      new Description({
+      new DisplayText({
         parentElement: card.element,
+        displayType: "description",
         text: Observable.givenValue("This is a description of the thing"),
+      })
+    );
+
+    this.addActor(
+      new SubmitButton({
+        target: {
+          type: "parentElement",
+          parentElement: card.element,
+        },
+        text: "Buy the thing",
+        onClick: () => {},
+        buttonMode: "ready",
+        theme: KojiAppearance.themes.get("kojiBlack"),
       })
     );
   }

@@ -22,6 +22,7 @@ export class Description extends Actor<DescriptionInputProps> {
         parentElement: this.props.parentElement,
       })
     );
+    wrapper.element.classList.add("kft-text");
 
     this.cancelOnDeactivate(
       wrapper.addManagedEventListener("click", () => {
@@ -151,6 +152,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     color: #2D2F30;
     grid-area: description;
     overflow: hidden;
+    user-select: none;
     white-space: pre-wrap;
     transition: 0.5s ease height;
   `,

@@ -1,8 +1,7 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Currency, Money } from "@anderjason/money";
 import { Observable } from "@anderjason/observable";
-import { ElementStyle } from "@anderjason/web";
-import { AlignBottom } from "../../../src";
+import { AlignBottom, DisplayText } from "../../../src";
 import { Card } from "../../../src/Card";
 import { MoneyInput } from "../../../src/MoneyInput";
 
@@ -10,7 +9,7 @@ export interface MoneyInputDemoProps {}
 
 export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
   onActivate() {
-    const value = Observable.givenValue<Money>(
+    const moneyPrice = Observable.givenValue<Money>(
       new Money(0, Currency.ofUSD()),
       Money.isEqual
     );
@@ -25,13 +24,6 @@ export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
       })
     );
 
-    const currentValue = this.addActor(
-      CurrentValueStyle.toManagedElement({
-        tagName: "div",
-        parentElement: alignBottom.element,
-      })
-    );
-
     const card = this.addActor(
       new Card({
         target: {
@@ -41,14 +33,23 @@ export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
       })
     );
 
+    const priceText = Observable.ofEmpty<string>();
+
+    this.addActor(
+      new DisplayText({
+        parentElement: card.element,
+        displayType: "description",
+        text: priceText,
+      })
+    );
+
     this.cancelOnDeactivate(
-      value.didChange.subscribe((v) => {
-        if (v == null) {
-          currentValue.element.innerHTML = "No price set";
+      moneyPrice.didChange.subscribe((price) => {
+        if (price == null) {
+          priceText.setValue("No price set");
         } else {
-          currentValue.element.innerHTML = `The price is ${v.toString(
-            "$1.00"
-          )}`;
+          const formattedPrice = price.toString("$1.00");
+          priceText.setValue(`The price is ${formattedPrice}`);
         }
       }, true)
     );
@@ -57,17 +58,8 @@ export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
       new MoneyInput({
         parentElement: card.element,
         persistentLabel: "Set Price",
-        value,
+        value: moneyPrice,
       })
     );
   }
 }
-
-const CurrentValueStyle = ElementStyle.givenDefinition({
-  css: `
-    color: #BABABA;
-    font-family: monospace;
-    margin: 0 50px;
-    font-size: 16px;
-  `,
-});

@@ -28,6 +28,7 @@ class SubmitButton extends skytree_1.Actor {
                 throw new Error("An element is required (this or parent)");
         }
         button.classList.add(ButtonStyle.toCombinedClassName());
+        button.classList.add("kft-control");
         button.addEventListener("click", this.props.onClick);
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             button.removeEventListener("click", this.props.onClick);

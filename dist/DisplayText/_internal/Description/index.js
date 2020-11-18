@@ -18,6 +18,7 @@ class Description extends skytree_1.Actor {
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
+        wrapper.element.classList.add("kft-text");
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
             this.isExpanded.setValue(!this.isExpanded.value);
         }));
@@ -104,6 +105,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     color: #2D2F30;
     grid-area: description;
     overflow: hidden;
+    user-select: none;
     white-space: pre-wrap;
     transition: 0.5s ease height;
   `,

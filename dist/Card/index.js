@@ -37,8 +37,8 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     padding: 18px 20px 18px 20px;
     width: calc(100% - 40px);
 
-    & > .control + .control,
-    & > .text + .control {
+    & > .kft-control + .kft-control,
+    & > .kft-text + .kft-control {
       margin-top: 16px;
     }
   `,

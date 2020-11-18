@@ -18,6 +18,7 @@ class FloatLabelTextInput extends skytree_1.Actor {
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
+        wrapper.element.classList.add("kft-control");
         let shadowText;
         if (this.props.shadowTextGivenValue != null) {
             shadowText = this.addActor(ShadowTextStyle.toManagedElement({
