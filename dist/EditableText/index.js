@@ -32,6 +32,7 @@ class EditableText extends skytree_1.Actor {
             default:
                 throw new Error(`Unsupported display type '${this.props.displayType}`);
         }
+        input.element.classList.add("kft-control");
         input.element.placeholder = this.props.placeholderLabel;
         this.cancelOnDeactivate(input.addManagedEventListener("focus", () => {
             input.element.setSelectionRange(0, (input.element.value || "").length);
