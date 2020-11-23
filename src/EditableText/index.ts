@@ -8,6 +8,7 @@ import {
 } from "@anderjason/web";
 import { Actor } from "skytree";
 import { DisplayTextType } from "../DisplayText";
+import { KojiAppearance, KojiTheme } from "../KojiAppearance";
 
 export interface EditableTextProps {
   parentElement: HTMLElement;
@@ -15,7 +16,7 @@ export interface EditableTextProps {
   placeholderLabel: string;
 
   output?: Observable<string>;
-  color?: Color | Observable<Color>;
+  theme?: KojiTheme | Observable<KojiTheme>;
 }
 
 export class EditableText extends Actor<EditableTextProps> {
@@ -31,7 +32,9 @@ export class EditableText extends Actor<EditableTextProps> {
 
   onActivate() {
     const style = styleByDisplayType.get(this.props.displayType);
-    const observableColor = Observable.givenValueOrObservable(this.props.color);
+    const observableTheme = Observable.givenValueOrObservable(
+      this.props.theme || KojiAppearance.themes.get("kojiBlack")
+    );
 
     let input:
       | DynamicStyleElement<HTMLInputElement>
@@ -91,12 +94,14 @@ export class EditableText extends Actor<EditableTextProps> {
     );
 
     this.cancelOnDeactivate(
-      observableColor.didChange.subscribe((color) => {
-        if (color == null) {
+      observableTheme.didChange.subscribe((theme) => {
+        if (theme == null) {
           return;
         }
 
-        input.style.color = color.toHexString();
+        if (this.props.displayType === "title") {
+          theme.applyTextStyle(input.element);
+        }
       }, true)
     );
   }

@@ -13,7 +13,7 @@ class DisplayText extends skytree_1.Actor {
     }
     onActivate() {
         const observableText = observable_1.Observable.givenValueOrObservable(this.props.text);
-        const observableColor = observable_1.Observable.givenValueOrObservable(this.props.color);
+        const observableTheme = observable_1.Observable.givenValueOrObservable(this.props.theme || KojiAppearance_1.KojiAppearance.themes.get("kojiBlack"));
         if (styleByDisplayType.has(this.props.displayType)) {
             const style = styleByDisplayType.get(this.props.displayType);
             const div = this.addActor(style.toManagedElement({
@@ -24,11 +24,13 @@ class DisplayText extends skytree_1.Actor {
             this.cancelOnDeactivate(observableText.didChange.subscribe((text) => {
                 div.element.innerHTML = text || "";
             }, true));
-            this.cancelOnDeactivate(observableColor.didChange.subscribe((color) => {
-                if (color == null) {
+            this.cancelOnDeactivate(observableTheme.didChange.subscribe((theme) => {
+                if (theme == null) {
                     return;
                 }
-                div.style.color = color.toHexString();
+                if (this.props.displayType === "title") {
+                    theme.applyTextStyle(div.element);
+                }
             }, true));
             return;
         }

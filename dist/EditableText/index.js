@@ -5,6 +5,7 @@ const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
+const KojiAppearance_1 = require("../KojiAppearance");
 class EditableText extends skytree_1.Actor {
     constructor(props) {
         super(props);
@@ -14,7 +15,7 @@ class EditableText extends skytree_1.Actor {
     }
     onActivate() {
         const style = styleByDisplayType.get(this.props.displayType);
-        const observableColor = observable_1.Observable.givenValueOrObservable(this.props.color);
+        const observableTheme = observable_1.Observable.givenValueOrObservable(this.props.theme || KojiAppearance_1.KojiAppearance.themes.get("kojiBlack"));
         let input;
         switch (this.props.displayType) {
             case "title":
@@ -49,11 +50,13 @@ class EditableText extends skytree_1.Actor {
             const height = util_1.NumberUtil.numberWithHardLimit(input.element.scrollHeight, 25, 100);
             input.style.height = `${height}px`;
         }, true));
-        this.cancelOnDeactivate(observableColor.didChange.subscribe((color) => {
-            if (color == null) {
+        this.cancelOnDeactivate(observableTheme.didChange.subscribe((theme) => {
+            if (theme == null) {
                 return;
             }
-            input.style.color = color.toHexString();
+            if (this.props.displayType === "title") {
+                theme.applyTextStyle(input.element);
+            }
         }, true));
     }
 }

@@ -1,4 +1,3 @@
-import { Color } from "@anderjason/color";
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
 import { AlignBottom, KojiAppearance, SubmitButton } from "../../../src";
@@ -33,7 +32,7 @@ export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
         parentElement: card.element,
         displayType: "title",
         text: Observable.givenValue("Something is for sale"),
-        color: Observable.givenValue(Color.givenHexString("#007AFF")),
+        theme: Observable.givenValue(KojiAppearance.themes.get("kojiBlack")),
       })
     );
 

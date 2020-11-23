@@ -1,8 +1,7 @@
-import { Color } from "@anderjason/color";
 import { Observable } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
 import { Actor } from "skytree";
-import { KojiAppearance } from "../KojiAppearance";
+import { KojiAppearance, KojiTheme } from "../KojiAppearance";
 import { Description } from "./_internal/Description";
 
 export type DisplayTextType = "title" | "description";
@@ -12,7 +11,7 @@ export interface DisplayTextProps {
   displayType: DisplayTextType;
   text: string | Observable<string>;
 
-  color?: Color | Observable<Color>;
+  theme?: KojiTheme | Observable<KojiTheme>;
 }
 
 export class DisplayText extends Actor<DisplayTextProps> {
@@ -24,7 +23,9 @@ export class DisplayText extends Actor<DisplayTextProps> {
 
   onActivate() {
     const observableText = Observable.givenValueOrObservable(this.props.text);
-    const observableColor = Observable.givenValueOrObservable(this.props.color);
+    const observableTheme = Observable.givenValueOrObservable(
+      this.props.theme || KojiAppearance.themes.get("kojiBlack")
+    );
 
     if (styleByDisplayType.has(this.props.displayType)) {
       const style = styleByDisplayType.get(this.props.displayType);
@@ -44,12 +45,14 @@ export class DisplayText extends Actor<DisplayTextProps> {
       );
 
       this.cancelOnDeactivate(
-        observableColor.didChange.subscribe((color) => {
-          if (color == null) {
+        observableTheme.didChange.subscribe((theme) => {
+          if (theme == null) {
             return;
           }
 
-          div.style.color = color.toHexString();
+          if (this.props.displayType === "title") {
+            theme.applyTextStyle(div.element);
+          }
         }, true)
       );
 
