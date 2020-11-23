@@ -58,7 +58,7 @@ export class EditableText extends Actor<EditableTextProps> {
         throw new Error(`Unsupported display type '${this.props.displayType}`);
     }
 
-    input.element.classList.add("kft-control");
+    input.element.classList.add("kft-text");
     input.element.placeholder = this.props.placeholderLabel;
 
     this.cancelOnDeactivate(
