@@ -8,6 +8,8 @@ export interface MoneyInputProps {
   parentElement: HTMLElement;
   value: Observable<Money>;
   persistentLabel: string;
+
+  maxValue?: Money;
 }
 
 export class MoneyInput extends Actor<MoneyInputProps> {
@@ -48,7 +50,6 @@ export class MoneyInput extends Actor<MoneyInputProps> {
               return new Money(0, Currency.ofUSD());
             }
 
-            console.log(text);
             return new Money(
               Math.round(parseFloat(text) * 100),
               Currency.ofUSD()
@@ -82,6 +83,12 @@ export class MoneyInput extends Actor<MoneyInputProps> {
           // only allow things that look like a price
           if (text.match(/^\$[0-9]*\.?[0-9]{0,2}$/gm) == null) {
             return e.previousDisplayText;
+          }
+
+          if (this.props.maxValue != null) {
+            if (e.value.rawValue > this.props.maxValue.rawValue) {
+              return e.previousDisplayText;
+            }
           }
 
           return text.replace(/^\$0+([1-9]+)/, "$$$1");

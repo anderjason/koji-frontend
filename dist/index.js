@@ -1,7 +1,7 @@
 "use strict";
 /// <reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.DisplayText = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
+exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.EditableText = exports.DisplayText = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
 const AlignBottom_1 = require("./AlignBottom");
 Object.defineProperty(exports, "AlignBottom", { enumerable: true, get: function () { return AlignBottom_1.AlignBottom; } });
 const Callout_1 = require("./Callout");
@@ -34,4 +34,6 @@ const ThemeToolbar_1 = require("./ThemeToolbar");
 Object.defineProperty(exports, "ThemeToolbar", { enumerable: true, get: function () { return ThemeToolbar_1.ThemeToolbar; } });
 const DisplayText_1 = require("./DisplayText");
 Object.defineProperty(exports, "DisplayText", { enumerable: true, get: function () { return DisplayText_1.DisplayText; } });
+const EditableText_1 = require("./EditableText");
+Object.defineProperty(exports, "EditableText", { enumerable: true, get: function () { return EditableText_1.EditableText; } });
 //# sourceMappingURL=index.js.map

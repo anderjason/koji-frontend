@@ -43,7 +43,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     box-sizing: border-box;
     color: #2D2F30;
     margin: 20px;
-    padding: 18px 20px 18px 20px;
+    padding: 20px;
     width: calc(100% - 40px);
 
     & > .kft-control + .kft-control,

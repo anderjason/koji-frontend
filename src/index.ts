@@ -17,6 +17,7 @@ import { RemixTarget } from "./RemixTarget";
 import { SubmitButton } from "./SubmitButton";
 import { ThemeToolbar } from "./ThemeToolbar";
 import { DisplayText } from "./DisplayText";
+import { EditableText } from "./EditableText";
 
 export interface ParentElement {
   type: "parentElement";
@@ -36,6 +37,7 @@ export {
   Card,
   ConfirmationPrompt,
   DisplayText,
+  EditableText,
   FloatLabelTextInput,
   IntegerInput,
   Koji,

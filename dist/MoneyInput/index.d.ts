@@ -5,6 +5,7 @@ export interface MoneyInputProps {
     parentElement: HTMLElement;
     value: Observable<Money>;
     persistentLabel: string;
+    maxValue?: Money;
 }
 export declare class MoneyInput extends Actor<MoneyInputProps> {
     onActivate(): void;

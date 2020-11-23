@@ -36,7 +36,6 @@ class MoneyInput extends skytree_1.Actor {
                     if (util_1.StringUtil.stringIsEmpty(text)) {
                         return new money_1.Money(0, money_1.Currency.ofUSD());
                     }
-                    console.log(text);
                     return new money_1.Money(Math.round(parseFloat(text) * 100), money_1.Currency.ofUSD());
                 }
                 catch (_a) {
@@ -63,6 +62,11 @@ class MoneyInput extends skytree_1.Actor {
                 // only allow things that look like a price
                 if (text.match(/^\$[0-9]*\.?[0-9]{0,2}$/gm) == null) {
                     return e.previousDisplayText;
+                }
+                if (this.props.maxValue != null) {
+                    if (e.value.rawValue > this.props.maxValue.rawValue) {
+                        return e.previousDisplayText;
+                    }
                 }
                 return text.replace(/^\$0+([1-9]+)/, "$$$1");
             },

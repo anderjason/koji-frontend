@@ -4,6 +4,7 @@ import { AlignBottomDemo } from "./AlignBottomDemo";
 import { CalloutDemo } from "./CalloutDemo";
 import { ConfirmationPromptDemo } from "./ConfirmationPromptDemo";
 import { DisplayTextDemo } from "./DisplayTextDemo";
+import { EditableTextDemo } from "./EditableTextDemo";
 import { FloatLabelTextInputDemo } from "./FloatLabelTextInputDemo";
 import { IntegerInputDemo } from "./IntegerInputDemo";
 import { LoadingIndicatorDemo } from "./LoadingIndicatorDemo";
@@ -28,6 +29,10 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Display text",
     actor: new DisplayTextDemo({}),
+  },
+  {
+    title: "Editable text",
+    actor: new EditableTextDemo({}),
   },
   {
     title: "Float label text input",
