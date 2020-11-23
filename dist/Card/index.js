@@ -39,7 +39,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
 
     .kft-control + .kft-control,
     .kft-text + .kft-control {
-      margin-top: 16px;
+      margin-top: 8px;
     }
   `,
 });
