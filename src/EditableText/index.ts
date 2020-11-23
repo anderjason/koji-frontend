@@ -1,3 +1,4 @@
+import { Color } from "@anderjason/color";
 import { Observable, TypedEvent } from "@anderjason/observable";
 import { NumberUtil } from "@anderjason/util";
 import {
@@ -14,6 +15,7 @@ export interface EditableTextProps {
   placeholderLabel: string;
 
   output?: Observable<string>;
+  color?: Color | Observable<Color>;
 }
 
 export class EditableText extends Actor<EditableTextProps> {
@@ -29,6 +31,7 @@ export class EditableText extends Actor<EditableTextProps> {
 
   onActivate() {
     const style = styleByDisplayType.get(this.props.displayType);
+    const observableColor = Observable.givenValueOrObservable(this.props.color);
 
     let input:
       | DynamicStyleElement<HTMLInputElement>
@@ -83,6 +86,16 @@ export class EditableText extends Actor<EditableTextProps> {
           100
         );
         input.style.height = `${height}px`;
+      }, true)
+    );
+
+    this.cancelOnDeactivate(
+      observableColor.didChange.subscribe((color) => {
+        if (color == null) {
+          return;
+        }
+
+        input.style.color = color.toHexString();
       }, true)
     );
   }

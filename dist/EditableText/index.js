@@ -14,6 +14,7 @@ class EditableText extends skytree_1.Actor {
     }
     onActivate() {
         const style = styleByDisplayType.get(this.props.displayType);
+        const observableColor = observable_1.Observable.givenValueOrObservable(this.props.color);
         let input;
         switch (this.props.displayType) {
             case "title":
@@ -46,6 +47,12 @@ class EditableText extends skytree_1.Actor {
             input.style.height = "25px";
             const height = util_1.NumberUtil.numberWithHardLimit(input.element.scrollHeight, 25, 100);
             input.style.height = `${height}px`;
+        }, true));
+        this.cancelOnDeactivate(observableColor.didChange.subscribe((color) => {
+            if (color == null) {
+                return;
+            }
+            input.style.color = color.toHexString();
         }, true));
     }
 }
