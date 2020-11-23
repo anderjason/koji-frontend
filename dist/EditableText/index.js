@@ -61,6 +61,7 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     line-height: 34px;
     letter-spacing: 0.02em;
     outline: none;
+    resize: none;
     padding: 0;
     margin: 0;
     user-select: auto;
@@ -84,7 +85,6 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     letter-spacing: 0.02em;
     height: 25px;
     padding: 0;
-    margin: 2px 0 16px 0;
     outline: none;
     overflow: auto;
     resize: none;
