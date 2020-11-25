@@ -64,6 +64,7 @@ exports.EditableText = EditableText;
 const TitleStyle = web_1.ElementStyle.givenDefinition({
     css: `
     appearance: none;
+    background: yellow;
     border: none;
     font-family: PT Sans;
     font-style: normal;
@@ -87,6 +88,7 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     css: `
     appearance: none;
     border: none;
+    background: orange;
     color: #2D2F30;
     font-family: Source Sans Pro;
     font-style: normal;

@@ -46,6 +46,7 @@ exports.DisplayText = DisplayText;
 const TitleStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Title",
     css: `
+    background: yellow;
     border: none;
     color: #2D2F30;
     font-family: PT Sans;

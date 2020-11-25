@@ -148,6 +148,7 @@ export class Description extends Actor<DescriptionInputProps> {
 const WrapperStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
+    background: orange;
     border: none;
     color: #2D2F30;
     grid-area: description;
