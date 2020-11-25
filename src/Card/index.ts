@@ -47,11 +47,11 @@ const WrapperStyle = ElementStyle.givenDefinition({
     width: calc(100% - 40px);
 
     .kft-text + .kft-control {
-      margin-top: 10px;
+      margin-top: 11px;
     }
 
     .kft-control + .kft-control {
-      margin-top: 18px;
+      margin-top: 15px;
     }
   `,
 });
