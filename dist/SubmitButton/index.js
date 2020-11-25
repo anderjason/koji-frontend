@@ -30,12 +30,12 @@ class SubmitButton extends skytree_1.Actor {
         button.classList.add(ButtonStyle.toCombinedClassName());
         button.classList.add("kft-control");
         button.addEventListener("click", this.props.onClick);
+        button.type = "button";
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             button.removeEventListener("click", this.props.onClick);
         }));
         const textElement = document.createElement("span");
         textElement.className = "text";
-        textElement.innerHTML = "Unlock Now";
         button.appendChild(textElement);
         const observableText = observable_1.Observable.givenValueOrObservable(this.props.text);
         this.cancelOnDeactivate(observableText.didChange.subscribe((text) => {

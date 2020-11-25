@@ -45,6 +45,7 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     button.classList.add(ButtonStyle.toCombinedClassName());
     button.classList.add("kft-control");
     button.addEventListener("click", this.props.onClick);
+    button.type = "button";
 
     this.cancelOnDeactivate(
       new Receipt(() => {
@@ -54,7 +55,6 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
 
     const textElement = document.createElement("span");
     textElement.className = "text";
-    textElement.innerHTML = "Unlock Now";
     button.appendChild(textElement);
 
     const observableText = Observable.givenValueOrObservable(this.props.text);
