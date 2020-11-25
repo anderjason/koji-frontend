@@ -35,6 +35,14 @@ export class EditableText extends Actor<EditableTextProps> {
       this.props.theme || KojiAppearance.themes.get("kojiBlack")
     );
 
+    const wrapper = this.addActor(
+      WrapperStyle.toManagedElement({
+        tagName: "div",
+        parentElement: this.props.parentElement,
+      })
+    );
+    wrapper.element.classList.add("kft-text");
+
     let input:
       | DynamicStyleElement<HTMLInputElement>
       | DynamicStyleElement<HTMLTextAreaElement>;
@@ -44,7 +52,7 @@ export class EditableText extends Actor<EditableTextProps> {
         input = this.addActor(
           style.toManagedElement({
             tagName: "textarea",
-            parentElement: this.props.parentElement,
+            parentElement: wrapper.element,
           })
         );
         break;
@@ -52,7 +60,7 @@ export class EditableText extends Actor<EditableTextProps> {
         input = this.addActor(
           style.toManagedElement({
             tagName: "textarea",
-            parentElement: this.props.parentElement,
+            parentElement: wrapper.element,
           })
         );
         break;
@@ -60,7 +68,6 @@ export class EditableText extends Actor<EditableTextProps> {
         throw new Error(`Unsupported display type '${this.props.displayType}`);
     }
 
-    input.element.classList.add("kft-text");
     input.element.placeholder = this.props.placeholderLabel;
 
     this.cancelOnDeactivate(
@@ -106,10 +113,15 @@ export class EditableText extends Actor<EditableTextProps> {
   }
 }
 
+const WrapperStyle = ElementStyle.givenDefinition({
+  css: `
+    background: orange;
+  `,
+});
+
 const TitleStyle = ElementStyle.givenDefinition({
   css: `
     appearance: none;
-    background: yellow;
     border: none;
     font-family: PT Sans;
     font-style: normal;
@@ -134,7 +146,6 @@ const DescriptionStyle = ElementStyle.givenDefinition({
   css: `
     appearance: none;
     border: none;
-    background: orange;
     color: #2D2F30;
     font-family: Source Sans Pro;
     font-style: normal;
@@ -143,7 +154,7 @@ const DescriptionStyle = ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     height: 25px;
-    margin: -1px 0 0 0;
+    margin: -1px 0 -5px 0;
     padding: 0;
     outline: none;
     overflow: auto;

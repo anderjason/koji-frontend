@@ -16,24 +16,28 @@ class EditableText extends skytree_1.Actor {
     onActivate() {
         const style = styleByDisplayType.get(this.props.displayType);
         const observableTheme = observable_1.Observable.givenValueOrObservable(this.props.theme || KojiAppearance_1.KojiAppearance.themes.get("kojiBlack"));
+        const wrapper = this.addActor(WrapperStyle.toManagedElement({
+            tagName: "div",
+            parentElement: this.props.parentElement,
+        }));
+        wrapper.element.classList.add("kft-text");
         let input;
         switch (this.props.displayType) {
             case "title":
                 input = this.addActor(style.toManagedElement({
                     tagName: "textarea",
-                    parentElement: this.props.parentElement,
+                    parentElement: wrapper.element,
                 }));
                 break;
             case "description":
                 input = this.addActor(style.toManagedElement({
                     tagName: "textarea",
-                    parentElement: this.props.parentElement,
+                    parentElement: wrapper.element,
                 }));
                 break;
             default:
                 throw new Error(`Unsupported display type '${this.props.displayType}`);
         }
-        input.element.classList.add("kft-text");
         input.element.placeholder = this.props.placeholderLabel;
         this.cancelOnDeactivate(input.addManagedEventListener("focus", () => {
             input.element.setSelectionRange(0, (input.element.value || "").length);
@@ -61,10 +65,14 @@ class EditableText extends skytree_1.Actor {
     }
 }
 exports.EditableText = EditableText;
+const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    css: `
+    background: orange;
+  `,
+});
 const TitleStyle = web_1.ElementStyle.givenDefinition({
     css: `
     appearance: none;
-    background: yellow;
     border: none;
     font-family: PT Sans;
     font-style: normal;
@@ -88,7 +96,6 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     css: `
     appearance: none;
     border: none;
-    background: orange;
     color: #2D2F30;
     font-family: Source Sans Pro;
     font-style: normal;
@@ -97,7 +104,7 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     height: 25px;
-    margin: -1px 0 0 0;
+    margin: -1px 0 -5px 0;
     padding: 0;
     outline: none;
     overflow: auto;
