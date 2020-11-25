@@ -38,11 +38,11 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     width: calc(100% - 40px);
 
     .kft-text + .kft-control {
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .kft-control + .kft-control {
-      margin-top: 12px;
+      margin-top: 18px;
     }
   `,
 });

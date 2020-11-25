@@ -141,7 +141,7 @@ const DescriptionStyle = ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     height: 25px;
-    margin: -2px 0 0 0;
+    margin: -1px 0 0 0;
     padding: 0;
     outline: none;
     overflow: auto;
