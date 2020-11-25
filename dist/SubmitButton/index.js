@@ -115,7 +115,7 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     padding: 1em 0;
     position: relative;
     text-align: center;
-    transition: 0.2s ease all;
+    transition: 0.2s ease transform;
     width: 100%;
 
     &:active:enabled {
