@@ -37,9 +37,12 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     padding: 20px;
     width: calc(100% - 40px);
 
-    .kft-control + .kft-control,
     .kft-text + .kft-control {
       margin-top: 8px;
+    }
+
+    .kft-control + .kft-control {
+      margin-top: 12px;
     }
   `,
 });

@@ -111,12 +111,10 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     letter-spacing: 0.02em;
     height: 50px;
     outline: none;
-    margin-left: -4px;
-    margin-right: -4px;
     pointer-events: auto;
     position: relative;
     user-select: auto;
-    width: calc(100% + 8px);
+    width: 100%;
     transition: 0.2s ease border-color;
 
     &:focus-within {
