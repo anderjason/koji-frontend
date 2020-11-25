@@ -111,12 +111,14 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     justify-content: center;
+    margin-left: -2px;
+    margin-right: -2px;
     outline: none;
     padding: 1em 0;
     position: relative;
     text-align: center;
     transition: 0.2s ease transform;
-    width: 100%;
+    width: calc(100% + 4px);
 
     &:active:enabled {
       transform: scale(0.98);
