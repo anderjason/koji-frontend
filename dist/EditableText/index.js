@@ -67,6 +67,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
 });
 const TitleStyle = web_1.ElementStyle.givenDefinition({
     css: `
+    -webkit-user-select: auto;
     appearance: none;
     background: none;
     border: none;
@@ -90,23 +91,23 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
 });
 const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     css: `
+    -webkit-user-select: auto;
     appearance: none;
     border: none;
     color: #2D2F30;
     font-family: Source Sans Pro;
+    font-size: 20px;
     font-style: normal;
     font-weight: normal;
-    font-size: 20px;
-    line-height: 25px;
-    letter-spacing: 0.02em;
     height: 25px;
+    letter-spacing: 0.02em;
+    line-height: 25px;
     margin-top: -2px;
-    padding: 0;
     outline: none;
     overflow: auto;
+    padding: 0;
     resize: none;
     user-select: auto;
-    -webkit-user-select: auto;
     width: 100%;
 
     &::placeholder {
