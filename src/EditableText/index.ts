@@ -115,13 +115,13 @@ export class EditableText extends Actor<EditableTextProps> {
 
 const WrapperStyle = ElementStyle.givenDefinition({
   css: `
-    background: orange;
   `,
 });
 
 const TitleStyle = ElementStyle.givenDefinition({
   css: `
     appearance: none;
+    background: none;
     border: none;
     font-family: PT Sans;
     font-style: normal;
@@ -132,7 +132,7 @@ const TitleStyle = ElementStyle.givenDefinition({
     outline: none;
     resize: none;
     padding: 0;
-    margin: -5px 0 0 0;
+    margin: -13px 0 -10.5px 0;
     user-select: auto;
     width: 100%;
 
