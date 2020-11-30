@@ -76,6 +76,7 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     font-size: 26px;
     line-height: 34px;
     letter-spacing: 0.02em;
+    margin-top: -6px;
     outline: none;
     resize: none;
     padding: 0;
@@ -100,7 +101,7 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     height: 25px;
-    margin: 0;
+    margin-top: -2px;
     padding: 0;
     outline: none;
     overflow: auto;
