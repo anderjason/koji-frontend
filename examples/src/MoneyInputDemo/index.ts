@@ -58,6 +58,7 @@ export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
       new MoneyInput({
         parentElement: card.element,
         persistentLabel: "Set Price",
+        maxValue: new Money(100000, Currency.ofUSD()),
         value: moneyPrice,
       })
     );
