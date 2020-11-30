@@ -117,16 +117,15 @@ const TitleStyle = ElementStyle.givenDefinition({
     background: none;
     border: none;
     font-family: PT Sans;
+    font-size: 26px;
     font-style: normal;
     font-weight: bold;
-    font-size: 26px;
-    line-height: 34px;
     letter-spacing: 0.02em;
+    line-height: 34px;
     margin-top: -6px;
     outline: none;
-    resize: none;
     padding: 0;
-    margin: 0;
+    resize: none;
     user-select: auto;
     width: 100%;
 
