@@ -35,14 +35,6 @@ export class EditableText extends Actor<EditableTextProps> {
       this.props.theme || KojiAppearance.themes.get("kojiBlack")
     );
 
-    const wrapper = this.addActor(
-      WrapperStyle.toManagedElement({
-        tagName: "div",
-        parentElement: this.props.parentElement,
-      })
-    );
-    wrapper.element.classList.add("kft-text");
-
     let input:
       | DynamicStyleElement<HTMLInputElement>
       | DynamicStyleElement<HTMLTextAreaElement>;
@@ -52,7 +44,7 @@ export class EditableText extends Actor<EditableTextProps> {
         input = this.addActor(
           style.toManagedElement({
             tagName: "textarea",
-            parentElement: wrapper.element,
+            parentElement: this.props.parentElement,
           })
         );
         break;
@@ -60,7 +52,7 @@ export class EditableText extends Actor<EditableTextProps> {
         input = this.addActor(
           style.toManagedElement({
             tagName: "textarea",
-            parentElement: wrapper.element,
+            parentElement: this.props.parentElement,
           })
         );
         break;
@@ -68,6 +60,7 @@ export class EditableText extends Actor<EditableTextProps> {
         throw new Error(`Unsupported display type '${this.props.displayType}`);
     }
 
+    input.element.classList.add("kft-text");
     input.element.placeholder = this.props.placeholderLabel;
 
     this.cancelOnDeactivate(
