@@ -102,7 +102,7 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     height: 25px;
     letter-spacing: 0.02em;
     line-height: 25px;
-    margin-top: -2px;
+    margin-top: -3px;
     outline: none;
     overflow: auto;
     padding: 0;
