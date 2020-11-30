@@ -134,7 +134,7 @@ const LabelStyle = web_1.ElementStyle.givenDefinition({
     color: #BDBDBD;
     position: absolute;
     left: 12px;
-    top: 5px;
+    top: 4px;
     font-family: Source Sans Pro;
     font-style: normal;
     font-weight: normal;
@@ -142,7 +142,7 @@ const LabelStyle = web_1.ElementStyle.givenDefinition({
     line-height: 18px;
     letter-spacing: 0.02em;
     transition: 0.2s ease color, 0.1s ease opacity, 0.1s ease transform;
-    transform: translateY(8px);
+    transform: translateY(9px);
     opacity: 0;
   `,
     modifiers: {
@@ -179,7 +179,7 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
   `,
     modifiers: {
         hasValue: `
-      transform: translateY(8px);
+      transform: translateY(7px);
     `,
     },
 });
@@ -202,7 +202,7 @@ const ShadowTextStyle = web_1.ElementStyle.givenDefinition({
     modifiers: {
         hasValue: `
       opacity: 1;
-      transform: translateY(8px);
+      transform: translateY(7px);
     `,
     },
 });

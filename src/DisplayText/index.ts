@@ -73,7 +73,6 @@ export class DisplayText extends Actor<DisplayTextProps> {
 const TitleStyle = ElementStyle.givenDefinition({
   elementDescription: "Title",
   css: `
-    background: yellow;
     border: none;
     color: #2D2F30;
     font-family: PT Sans;
