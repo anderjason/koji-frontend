@@ -83,7 +83,7 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     outline: none;
     resize: none;
     padding: 0;
-    margin: -13px 0 -10.5px 0;
+    margin: 0;
     user-select: auto;
     width: 100%;
 
