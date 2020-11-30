@@ -101,10 +101,9 @@ exports.Description = Description;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
     css: `
-    background: orange;
     border: none;
     color: #2D2F30;
-    grid-area: description;
+    margin-bottom: 18px;
     overflow: hidden;
     user-select: none;
     white-space: pre-wrap;
