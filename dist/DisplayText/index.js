@@ -54,6 +54,7 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     font-size: 26px;
     line-height: 34px;
     letter-spacing: 0.02em;
+    margin-top: -4px;
     text-align: left;
     user-select: none;
   `,

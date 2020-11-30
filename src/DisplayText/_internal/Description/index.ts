@@ -150,6 +150,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
   css: `
     border: none;
     color: #2D2F30;
+    margin-top: 1px;
     margin-bottom: 18px;
     overflow: hidden;
     user-select: none;
