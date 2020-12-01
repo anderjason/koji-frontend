@@ -40,12 +40,14 @@ class KojiTheme {
             case "color":
                 const { color } = this.definition;
                 return {
-                    background: color.toHexString(),
+                    backgroundColor: color.toHexString(),
+                    backgroundImage: null,
                 };
             case "gradient":
                 const { gradient, angle } = this.definition;
                 return {
-                    background: gradient
+                    backgroundColor: null,
+                    backgroundImage: gradient
                         .withHclStepCount(5)
                         .toLinearGradientString(`${angle.toDegrees()}deg`),
                 };
