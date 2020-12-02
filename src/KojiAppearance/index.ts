@@ -1,6 +1,6 @@
 import { Color, ColorGradient } from "@anderjason/color";
 import { Rotation } from "@anderjason/geometry";
-import { Percent } from "@anderjason/util";
+import { Percent, StringUtil } from "@anderjason/util";
 import { FontStyle, Preload } from "@anderjason/web/dist/Preload";
 
 export interface KojiColorDefinition {
@@ -45,14 +45,20 @@ export class KojiTheme {
   applyBackgroundStyle(element: HTMLElement): void {
     let style = this.toBackgroundStyle();
     Object.keys(style).forEach((key) => {
-      element.style.setProperty(key, style[key]);
+      element.style.setProperty(
+        StringUtil.stringWithCase(key, "kebab-case"),
+        style[key]
+      );
     });
   }
 
   applyTextStyle(element: HTMLElement): void {
     let style = this.toTextStyle();
     Object.keys(style).forEach((key) => {
-      element.style.setProperty(key, style[key]);
+      element.style.setProperty(
+        StringUtil.stringWithCase(key, "kebab-case"),
+        style[key]
+      );
     });
   }
 

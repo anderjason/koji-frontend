@@ -100,7 +100,7 @@ const OptionStyle = web_1.ElementStyle.givenDefinition({
     
     .icon {
       box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
-      background: #888;
+      background-color: #888;
       border-radius: 50%;
       border: 2px solid white;
       box-sizing: border-box;

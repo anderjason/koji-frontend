@@ -26,13 +26,13 @@ class KojiTheme {
     applyBackgroundStyle(element) {
         let style = this.toBackgroundStyle();
         Object.keys(style).forEach((key) => {
-            element.style.setProperty(key, style[key]);
+            element.style.setProperty(util_1.StringUtil.stringWithCase(key, "kebab-case"), style[key]);
         });
     }
     applyTextStyle(element) {
         let style = this.toTextStyle();
         Object.keys(style).forEach((key) => {
-            element.style.setProperty(key, style[key]);
+            element.style.setProperty(util_1.StringUtil.stringWithCase(key, "kebab-case"), style[key]);
         });
     }
     toBackgroundStyle() {
