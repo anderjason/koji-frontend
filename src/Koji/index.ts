@@ -25,7 +25,7 @@ export class Koji extends Actor<void> {
   }
 
   private _isRemixing = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
-  private _editorAttributes = Observable.ofEmpty<EditorAttributes>();
+  private _isEditing = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   private _vccData: ObservableState;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
@@ -36,9 +36,7 @@ export class Koji extends Actor<void> {
   readonly allPlaybackShouldStop = new TypedEvent();
 
   readonly isRemixing = ReadOnlyObservable.givenObservable(this._isRemixing);
-  readonly editorAttributes = ReadOnlyObservable.givenObservable(
-    this._editorAttributes
-  );
+  readonly isEditing = ReadOnlyObservable.givenObservable(this._isRemixing);
 
   private constructor() {
     super();
@@ -91,13 +89,16 @@ export class Koji extends Actor<void> {
       });
 
       this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-        if (isRemixing === false) {
-          this._editorAttributes.setValue(undefined);
+        if (editorAttributes?.mode === "edit") {
+          this._isEditing.setValue(true);
+        } else if (editorAttributes?.mode === "new") {
+          this._isEditing.setValue(false);
+        }
 
+        if (isRemixing === false) {
           this._selectedPath.setValue(undefined);
           this._isRemixing.setValue(false);
         } else {
-          this._editorAttributes.setValue(editorAttributes);
           this._isRemixing.setValue(true);
         }
       });

@@ -11,12 +11,12 @@ class Koji extends skytree_1.Actor {
     constructor() {
         super();
         this._isRemixing = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
-        this._editorAttributes = observable_1.Observable.ofEmpty();
+        this._isEditing = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
         this.willReceiveExternalData = new observable_1.TypedEvent();
         this.allPlaybackShouldStop = new observable_1.TypedEvent();
         this.isRemixing = observable_1.ReadOnlyObservable.givenObservable(this._isRemixing);
-        this.editorAttributes = observable_1.ReadOnlyObservable.givenObservable(this._editorAttributes);
+        this.isEditing = observable_1.ReadOnlyObservable.givenObservable(this._isRemixing);
         this.onValueChanged = (path, newValue) => {
             const valuePath = util_1.ValuePath.givenParts(path.slice(1));
             this.willReceiveExternalData.emit(valuePath);
@@ -65,13 +65,17 @@ class Koji extends skytree_1.Actor {
                 this.onValueChanged(path, newValue);
             });
             this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
+                if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {
+                    this._isEditing.setValue(true);
+                }
+                else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
+                    this._isEditing.setValue(false);
+                }
                 if (isRemixing === false) {
-                    this._editorAttributes.setValue(undefined);
                     this._selectedPath.setValue(undefined);
                     this._isRemixing.setValue(false);
                 }
                 else {
-                    this._editorAttributes.setValue(editorAttributes);
                     this._isRemixing.setValue(true);
                 }
             });
