@@ -17,6 +17,7 @@ export declare class KojiTools extends Actor<void> {
     readonly willReceiveExternalData: TypedEvent<ValuePath>;
     readonly allPlaybackShouldStop: TypedEvent<void>;
     readonly isRemixingNow: ReadOnlyObservable<boolean>;
+    readonly sessionType: ReadOnlyObservable<KojiSessionType>;
     private constructor();
     get vccData(): ObservableState;
     get selectedPath(): Observable<ValuePath>;

@@ -16,6 +16,7 @@ class KojiTools extends skytree_1.Actor {
         this.willReceiveExternalData = new observable_1.TypedEvent();
         this.allPlaybackShouldStop = new observable_1.TypedEvent();
         this.isRemixingNow = observable_1.ReadOnlyObservable.givenObservable(this._isRemixingNow);
+        this.sessionType = observable_1.ReadOnlyObservable.givenObservable(this._sessionType);
         this.onValueChanged = (path, newValue) => {
             const valuePath = util_1.ValuePath.givenParts(path.slice(1));
             this.willReceiveExternalData.emit(valuePath);

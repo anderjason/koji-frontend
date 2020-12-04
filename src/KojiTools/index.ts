@@ -49,6 +49,7 @@ export class KojiTools extends Actor<void> {
   readonly isRemixingNow = ReadOnlyObservable.givenObservable(
     this._isRemixingNow
   );
+  readonly sessionType = ReadOnlyObservable.givenObservable(this._sessionType);
 
   private constructor() {
     super();
