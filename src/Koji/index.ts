@@ -36,7 +36,7 @@ export class Koji extends Actor<void> {
   readonly allPlaybackShouldStop = new TypedEvent();
 
   readonly isRemixing = ReadOnlyObservable.givenObservable(this._isRemixing);
-  readonly isEditing = ReadOnlyObservable.givenObservable(this._isRemixing);
+  readonly isEditing = ReadOnlyObservable.givenObservable(this._isEditing);
 
   private constructor() {
     super();

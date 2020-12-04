@@ -16,7 +16,7 @@ class Koji extends skytree_1.Actor {
         this.willReceiveExternalData = new observable_1.TypedEvent();
         this.allPlaybackShouldStop = new observable_1.TypedEvent();
         this.isRemixing = observable_1.ReadOnlyObservable.givenObservable(this._isRemixing);
-        this.isEditing = observable_1.ReadOnlyObservable.givenObservable(this._isRemixing);
+        this.isEditing = observable_1.ReadOnlyObservable.givenObservable(this._isEditing);
         this.onValueChanged = (path, newValue) => {
             const valuePath = util_1.ValuePath.givenParts(path.slice(1));
             this.willReceiveExternalData.emit(valuePath);
