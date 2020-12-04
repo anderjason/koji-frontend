@@ -6,7 +6,7 @@ const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const Koji_1 = require("../Koji");
+const KojiTools_1 = require("../KojiTools");
 const ManagedSvg_1 = require("./_internal/ManagedSvg");
 const Polygon_1 = require("./_internal/Polygon");
 const svgStyleGivenStrokeWidth_1 = require("./_internal/svgStyleGivenStrokeWidth");
@@ -149,7 +149,7 @@ class RemixTarget extends skytree_1.Actor {
             }
         }
         if (this.props.valuePath != null) {
-            Koji_1.Koji.instance.selectedPath.setValue(this.props.valuePath);
+            KojiTools_1.KojiTools.instance.selectedPath.setValue(this.props.valuePath);
         }
     }
 }

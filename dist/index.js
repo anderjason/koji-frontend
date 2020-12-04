@@ -1,7 +1,7 @@
 "use strict";
 /// <reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.Koji = exports.IntegerInput = exports.FloatLabelTextInput = exports.EditableText = exports.DisplayText = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
+exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.KojiTools = exports.IntegerInput = exports.FloatLabelTextInput = exports.EditableText = exports.DisplayText = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
 const AlignBottom_1 = require("./AlignBottom");
 Object.defineProperty(exports, "AlignBottom", { enumerable: true, get: function () { return AlignBottom_1.AlignBottom; } });
 const Callout_1 = require("./Callout");
@@ -14,8 +14,8 @@ const FloatLabelTextInput_1 = require("./FloatLabelTextInput");
 Object.defineProperty(exports, "FloatLabelTextInput", { enumerable: true, get: function () { return FloatLabelTextInput_1.FloatLabelTextInput; } });
 const IntegerInput_1 = require("./IntegerInput");
 Object.defineProperty(exports, "IntegerInput", { enumerable: true, get: function () { return IntegerInput_1.IntegerInput; } });
-const Koji_1 = require("./Koji");
-Object.defineProperty(exports, "Koji", { enumerable: true, get: function () { return Koji_1.Koji; } });
+const KojiTools_1 = require("./KojiTools");
+Object.defineProperty(exports, "KojiTools", { enumerable: true, get: function () { return KojiTools_1.KojiTools; } });
 const KojiAppearance_1 = require("./KojiAppearance");
 Object.defineProperty(exports, "KojiAppearance", { enumerable: true, get: function () { return KojiAppearance_1.KojiAppearance; } });
 const KojiNetworkUtil_1 = require("./KojiNetworkUtil");

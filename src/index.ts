@@ -6,7 +6,7 @@ import { Card } from "./Card";
 import { ConfirmationPrompt } from "./ConfirmationPrompt";
 import { FloatLabelTextInput } from "./FloatLabelTextInput";
 import { IntegerInput } from "./IntegerInput";
-import { Koji } from "./Koji";
+import { KojiTools } from "./KojiTools";
 import { KojiAppearance } from "./KojiAppearance";
 import { KojiNetworkUtil } from "./KojiNetworkUtil";
 import { LoadingIndicator } from "./LoadingIndicator";
@@ -40,7 +40,7 @@ export {
   EditableText,
   FloatLabelTextInput,
   IntegerInput,
-  Koji,
+  KojiTools,
   KojiAppearance,
   KojiNetworkUtil,
   LoadingIndicator,

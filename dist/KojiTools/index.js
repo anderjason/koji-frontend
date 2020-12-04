@@ -1,22 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Koji = void 0;
+exports.KojiTools = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
 const vcc_1 = require("@withkoji/vcc");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-class Koji extends skytree_1.Actor {
+class KojiTools extends skytree_1.Actor {
     constructor() {
         super();
-        this._isRemixing = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
-        this._isEditing = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this._isRemixingNow = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this._sessionType = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
         this.willReceiveExternalData = new observable_1.TypedEvent();
         this.allPlaybackShouldStop = new observable_1.TypedEvent();
-        this.isRemixing = observable_1.ReadOnlyObservable.givenObservable(this._isRemixing);
-        this.isEditing = observable_1.ReadOnlyObservable.givenObservable(this._isEditing);
+        this.isRemixingNow = observable_1.ReadOnlyObservable.givenObservable(this._isRemixingNow);
         this.onValueChanged = (path, newValue) => {
             const valuePath = util_1.ValuePath.givenParts(path.slice(1));
             this.willReceiveExternalData.emit(valuePath);
@@ -25,6 +24,19 @@ class Koji extends skytree_1.Actor {
         if (typeof window !== "undefined") {
             this._instantRemixing = new vcc_1.InstantRemixing();
             this._feedSdk = new vcc_1.FeedSdk();
+            const query = web_1.LocationUtil.objectOfCurrentQueryString();
+            if (query["koji-screenshot"] == "1") {
+                this._sessionType.setValue("screenshot");
+            }
+            else if (query["context"] === "about") {
+                this._sessionType.setValue("about");
+            }
+            else if (query["context"] === "admin") {
+                this._sessionType.setValue("admin");
+            }
+            else {
+                this._sessionType.setValue("view");
+            }
         }
         this._updateKojiLater = new time_1.Debounce({
             fn: () => {
@@ -34,11 +46,11 @@ class Koji extends skytree_1.Actor {
         });
     }
     static get instance() {
-        if (Koji._instance == null) {
-            Koji._instance = new Koji();
-            Koji._instance.activate();
+        if (KojiTools._instance == null) {
+            KojiTools._instance = new KojiTools();
+            KojiTools._instance.activate();
         }
-        return Koji._instance;
+        return KojiTools._instance;
     }
     get vccData() {
         return this._vccData;
@@ -65,20 +77,20 @@ class Koji extends skytree_1.Actor {
                 this.onValueChanged(path, newValue);
             });
             this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-                if (this._isEditing.value == null) {
+                if (this._sessionType.value === "view") {
                     if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {
-                        this._isEditing.setValue(true);
+                        this._sessionType.setValue("edit");
                     }
                     else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
-                        this._isEditing.setValue(false);
+                        this._sessionType.setValue("remix");
                     }
                 }
                 if (isRemixing === false) {
                     this._selectedPath.setValue(undefined);
-                    this._isRemixing.setValue(false);
+                    this._isRemixingNow.setValue(false);
                 }
                 else {
-                    this._isRemixing.setValue(true);
+                    this._isRemixingNow.setValue(true);
                 }
             });
             this._instantRemixing.onSetActivePath((externalPath) => {
@@ -125,5 +137,5 @@ class Koji extends skytree_1.Actor {
         }
     }
 }
-exports.Koji = Koji;
+exports.KojiTools = KojiTools;
 //# sourceMappingURL=index.js.map

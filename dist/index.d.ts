@@ -5,7 +5,7 @@ import { Card } from "./Card";
 import { ConfirmationPrompt } from "./ConfirmationPrompt";
 import { FloatLabelTextInput } from "./FloatLabelTextInput";
 import { IntegerInput } from "./IntegerInput";
-import { Koji } from "./Koji";
+import { KojiTools } from "./KojiTools";
 import { KojiAppearance } from "./KojiAppearance";
 import { KojiNetworkUtil } from "./KojiNetworkUtil";
 import { LoadingIndicator } from "./LoadingIndicator";
@@ -26,4 +26,4 @@ export interface ThisElement<T> {
     element: T;
 }
 export declare type ThisOrParentElement<T> = ParentElement | ThisElement<T>;
-export { AlignBottom, Callout, Card, ConfirmationPrompt, DisplayText, EditableText, FloatLabelTextInput, IntegerInput, Koji, KojiAppearance, KojiNetworkUtil, LoadingIndicator, MoneyInput, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };
+export { AlignBottom, Callout, Card, ConfirmationPrompt, DisplayText, EditableText, FloatLabelTextInput, IntegerInput, KojiTools, KojiAppearance, KojiNetworkUtil, LoadingIndicator, MoneyInput, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };

@@ -4,7 +4,7 @@ import { Observable, Receipt } from "@anderjason/observable";
 import { ArrayUtil, ValuePath } from "@anderjason/util";
 import { ElementStyle, ManagedElement } from "@anderjason/web";
 import { Actor } from "skytree";
-import { Koji } from "../Koji";
+import { KojiTools } from "../KojiTools";
 import { ManagedSvg } from "./_internal/ManagedSvg";
 import { Polygon } from "./_internal/Polygon";
 import { svgStyleGivenStrokeWidth } from "./_internal/svgStyleGivenStrokeWidth";
@@ -223,7 +223,7 @@ export class RemixTarget extends Actor<RemixTargetDefinition> {
     }
 
     if (this.props.valuePath != null) {
-      Koji.instance.selectedPath.setValue(this.props.valuePath);
+      KojiTools.instance.selectedPath.setValue(this.props.valuePath);
     }
   }
 }

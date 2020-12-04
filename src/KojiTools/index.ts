@@ -6,26 +6,37 @@ import {
 import { Debounce, Duration } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
-import { ObservableState } from "@anderjason/web";
+import { LocationUtil, ObservableState } from "@anderjason/web";
 import { Actor } from "skytree";
-import { EditorAttributes } from "@withkoji/vcc";
 
 type PathPart = string | number;
 
-export class Koji extends Actor<void> {
-  private static _instance: Koji;
+export type KojiSessionType =
+  | "about"
+  | "admin"
+  | "edit"
+  | "remix"
+  | "screenshot"
+  | "view";
 
-  static get instance(): Koji {
-    if (Koji._instance == null) {
-      Koji._instance = new Koji();
-      Koji._instance.activate();
+export class KojiTools extends Actor<void> {
+  private static _instance: KojiTools;
+
+  static get instance(): KojiTools {
+    if (KojiTools._instance == null) {
+      KojiTools._instance = new KojiTools();
+      KojiTools._instance.activate();
     }
 
-    return Koji._instance;
+    return KojiTools._instance;
   }
 
-  private _isRemixing = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
-  private _isEditing = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  private _isRemixingNow = Observable.ofEmpty<boolean>(
+    Observable.isStrictEqual
+  );
+  private _sessionType = Observable.ofEmpty<KojiSessionType>(
+    Observable.isStrictEqual
+  );
   private _vccData: ObservableState;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
@@ -35,8 +46,9 @@ export class Koji extends Actor<void> {
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
   readonly allPlaybackShouldStop = new TypedEvent();
 
-  readonly isRemixing = ReadOnlyObservable.givenObservable(this._isRemixing);
-  readonly isEditing = ReadOnlyObservable.givenObservable(this._isEditing);
+  readonly isRemixingNow = ReadOnlyObservable.givenObservable(
+    this._isRemixingNow
+  );
 
   private constructor() {
     super();
@@ -44,6 +56,17 @@ export class Koji extends Actor<void> {
     if (typeof window !== "undefined") {
       this._instantRemixing = new InstantRemixing();
       this._feedSdk = new FeedSdk();
+
+      const query = LocationUtil.objectOfCurrentQueryString();
+      if (query["koji-screenshot"] == "1") {
+        this._sessionType.setValue("screenshot");
+      } else if (query["context"] === "about") {
+        this._sessionType.setValue("about");
+      } else if (query["context"] === "admin") {
+        this._sessionType.setValue("admin");
+      } else {
+        this._sessionType.setValue("view");
+      }
     }
 
     this._updateKojiLater = new Debounce({
@@ -89,19 +112,19 @@ export class Koji extends Actor<void> {
       });
 
       this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-        if (this._isEditing.value == null) {
+        if (this._sessionType.value === "view") {
           if (editorAttributes?.mode === "edit") {
-            this._isEditing.setValue(true);
+            this._sessionType.setValue("edit");
           } else if (editorAttributes?.mode === "new") {
-            this._isEditing.setValue(false);
+            this._sessionType.setValue("remix");
           }
         }
 
         if (isRemixing === false) {
           this._selectedPath.setValue(undefined);
-          this._isRemixing.setValue(false);
+          this._isRemixingNow.setValue(false);
         } else {
-          this._isRemixing.setValue(true);
+          this._isRemixingNow.setValue(true);
         }
       });
 
