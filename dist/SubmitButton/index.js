@@ -56,23 +56,25 @@ class SubmitButton extends skytree_1.Actor {
         const observableMode = observable_1.Observable.givenValueOrObservable(this.props.buttonMode);
         let loader;
         this.cancelOnDeactivate(observableMode.didChange.subscribe((mode) => {
+            let className;
             switch (mode) {
                 case "ready":
-                    button.className = ButtonStyle.toCombinedClassName();
+                    className = ButtonStyle.toCombinedClassName();
                     button.disabled = false;
                     break;
                 case "busy":
-                    button.className = ButtonStyle.toCombinedClassName("isTextHidden");
+                    className = ButtonStyle.toCombinedClassName("isTextHidden");
                     button.disabled = true;
                     break;
                 case "success":
-                    button.className = ButtonStyle.toCombinedClassName([
+                    className = ButtonStyle.toCombinedClassName([
                         "isTextHidden",
                         "isSuccess",
                     ]);
                     button.disabled = true;
                     break;
             }
+            button.className = `kft-control ${className}`;
             if (loader != null) {
                 this.removeActor(loader);
                 loader = undefined;
