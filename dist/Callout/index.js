@@ -52,7 +52,7 @@ class Callout extends skytree_1.Actor {
             if (availableSize == null) {
                 return;
             }
-            const availableWidth = availableSize.width - 20;
+            const availableWidth = availableSize.width - 10;
             const wrapperBounds = wrapper.element.getBoundingClientRect();
             const wrapperSize = geometry_1.Size2.givenWidthHeight(wrapperBounds.width, wrapperBounds.height);
             const leftPoint = targetBox.toLeft() - wrapperSize.width - 15;

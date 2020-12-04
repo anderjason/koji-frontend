@@ -77,7 +77,7 @@ export class Callout extends Actor<CalloutProps> {
           return;
         }
 
-        const availableWidth = availableSize.width - 20;
+        const availableWidth = availableSize.width - 10;
 
         const wrapperBounds = wrapper.element.getBoundingClientRect();
         const wrapperSize = Size2.givenWidthHeight(
