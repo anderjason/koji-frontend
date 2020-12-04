@@ -65,11 +65,13 @@ class Koji extends skytree_1.Actor {
                 this.onValueChanged(path, newValue);
             });
             this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-                if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {
-                    this._isEditing.setValue(true);
-                }
-                else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
-                    this._isEditing.setValue(false);
+                if (this._isEditing.value == null) {
+                    if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {
+                        this._isEditing.setValue(true);
+                    }
+                    else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
+                        this._isEditing.setValue(false);
+                    }
                 }
                 if (isRemixing === false) {
                     this._selectedPath.setValue(undefined);

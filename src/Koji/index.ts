@@ -89,10 +89,12 @@ export class Koji extends Actor<void> {
       });
 
       this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-        if (editorAttributes?.mode === "edit") {
-          this._isEditing.setValue(true);
-        } else if (editorAttributes?.mode === "new") {
-          this._isEditing.setValue(false);
+        if (this._isEditing.value == null) {
+          if (editorAttributes?.mode === "edit") {
+            this._isEditing.setValue(true);
+          } else if (editorAttributes?.mode === "new") {
+            this._isEditing.setValue(false);
+          }
         }
 
         if (isRemixing === false) {
