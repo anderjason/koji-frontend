@@ -3,12 +3,12 @@ import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { ObservableState } from "@anderjason/web";
 import { Actor } from "skytree";
-export declare type KojiSessionType = "about" | "admin" | "edit" | "remix" | "screenshot" | "view";
+export declare type KojiMode = "about" | "admin" | "edit" | "remix" | "screenshot" | "view";
 export declare class KojiTools extends Actor<void> {
     private static _instance;
     static get instance(): KojiTools;
-    private _isRemixingNow;
-    private _sessionType;
+    private _currentMode;
+    private _sessionMode;
     private _vccData;
     private _selectedPath;
     private _instantRemixing;
@@ -16,8 +16,8 @@ export declare class KojiTools extends Actor<void> {
     private _updateKojiLater;
     readonly willReceiveExternalData: TypedEvent<ValuePath>;
     readonly allPlaybackShouldStop: TypedEvent<void>;
-    readonly isRemixingNow: ReadOnlyObservable<boolean>;
-    readonly sessionType: ReadOnlyObservable<KojiSessionType>;
+    readonly currentMode: ReadOnlyObservable<KojiMode>;
+    readonly sessionMode: ReadOnlyObservable<KojiMode>;
     private constructor();
     get vccData(): ObservableState;
     get selectedPath(): Observable<ValuePath>;

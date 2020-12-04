@@ -10,13 +10,13 @@ const skytree_1 = require("skytree");
 class KojiTools extends skytree_1.Actor {
     constructor() {
         super();
-        this._isRemixingNow = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
-        this._sessionType = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this._currentMode = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this._sessionMode = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._selectedPath = observable_1.Observable.ofEmpty(util_1.ValuePath.isEqual);
         this.willReceiveExternalData = new observable_1.TypedEvent();
         this.allPlaybackShouldStop = new observable_1.TypedEvent();
-        this.isRemixingNow = observable_1.ReadOnlyObservable.givenObservable(this._isRemixingNow);
-        this.sessionType = observable_1.ReadOnlyObservable.givenObservable(this._sessionType);
+        this.currentMode = observable_1.ReadOnlyObservable.givenObservable(this._currentMode);
+        this.sessionMode = observable_1.ReadOnlyObservable.givenObservable(this._sessionMode);
         this.onValueChanged = (path, newValue) => {
             const valuePath = util_1.ValuePath.givenParts(path.slice(1));
             this.willReceiveExternalData.emit(valuePath);
@@ -27,16 +27,20 @@ class KojiTools extends skytree_1.Actor {
             this._feedSdk = new vcc_1.FeedSdk();
             const query = web_1.LocationUtil.objectOfCurrentQueryString();
             if (query["koji-screenshot"] == "1") {
-                this._sessionType.setValue("screenshot");
+                this._sessionMode.setValue("screenshot");
+                this._currentMode.setValue("screenshot");
             }
             else if (query["context"] === "about") {
-                this._sessionType.setValue("about");
+                this._sessionMode.setValue("about");
+                this._currentMode.setValue("about");
             }
             else if (query["context"] === "admin") {
-                this._sessionType.setValue("admin");
+                this._sessionMode.setValue("admin");
+                this._currentMode.setValue("admin");
             }
             else {
-                this._sessionType.setValue("view");
+                this._sessionMode.setValue("view");
+                this._currentMode.setValue("view");
             }
         }
         this._updateKojiLater = new time_1.Debounce({
@@ -78,20 +82,23 @@ class KojiTools extends skytree_1.Actor {
                 this.onValueChanged(path, newValue);
             });
             this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-                if (this._sessionType.value === "view") {
+                if (this._sessionMode.value === "view") {
                     if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {
-                        this._sessionType.setValue("edit");
+                        this._sessionMode.setValue("edit");
                     }
                     else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
-                        this._sessionType.setValue("remix");
+                        this._sessionMode.setValue("remix");
                     }
                 }
                 if (isRemixing === false) {
                     this._selectedPath.setValue(undefined);
-                    this._isRemixingNow.setValue(false);
+                    if (this._sessionMode.value === "remix" ||
+                        this._sessionMode.value === "edit") {
+                        this._currentMode.setValue("view");
+                    }
                 }
                 else {
-                    this._isRemixingNow.setValue(true);
+                    this._currentMode.setValue(this._sessionMode.value);
                 }
             });
             this._instantRemixing.onSetActivePath((externalPath) => {

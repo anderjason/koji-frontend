@@ -11,7 +11,7 @@ import { Actor } from "skytree";
 
 type PathPart = string | number;
 
-export type KojiSessionType =
+export type KojiMode =
   | "about"
   | "admin"
   | "edit"
@@ -31,12 +31,8 @@ export class KojiTools extends Actor<void> {
     return KojiTools._instance;
   }
 
-  private _isRemixingNow = Observable.ofEmpty<boolean>(
-    Observable.isStrictEqual
-  );
-  private _sessionType = Observable.ofEmpty<KojiSessionType>(
-    Observable.isStrictEqual
-  );
+  private _currentMode = Observable.ofEmpty<KojiMode>(Observable.isStrictEqual);
+  private _sessionMode = Observable.ofEmpty<KojiMode>(Observable.isStrictEqual);
   private _vccData: ObservableState;
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
@@ -46,10 +42,8 @@ export class KojiTools extends Actor<void> {
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
   readonly allPlaybackShouldStop = new TypedEvent();
 
-  readonly isRemixingNow = ReadOnlyObservable.givenObservable(
-    this._isRemixingNow
-  );
-  readonly sessionType = ReadOnlyObservable.givenObservable(this._sessionType);
+  readonly currentMode = ReadOnlyObservable.givenObservable(this._currentMode);
+  readonly sessionMode = ReadOnlyObservable.givenObservable(this._sessionMode);
 
   private constructor() {
     super();
@@ -60,13 +54,17 @@ export class KojiTools extends Actor<void> {
 
       const query = LocationUtil.objectOfCurrentQueryString();
       if (query["koji-screenshot"] == "1") {
-        this._sessionType.setValue("screenshot");
+        this._sessionMode.setValue("screenshot");
+        this._currentMode.setValue("screenshot");
       } else if (query["context"] === "about") {
-        this._sessionType.setValue("about");
+        this._sessionMode.setValue("about");
+        this._currentMode.setValue("about");
       } else if (query["context"] === "admin") {
-        this._sessionType.setValue("admin");
+        this._sessionMode.setValue("admin");
+        this._currentMode.setValue("admin");
       } else {
-        this._sessionType.setValue("view");
+        this._sessionMode.setValue("view");
+        this._currentMode.setValue("view");
       }
     }
 
@@ -113,19 +111,25 @@ export class KojiTools extends Actor<void> {
       });
 
       this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-        if (this._sessionType.value === "view") {
+        if (this._sessionMode.value === "view") {
           if (editorAttributes?.mode === "edit") {
-            this._sessionType.setValue("edit");
+            this._sessionMode.setValue("edit");
           } else if (editorAttributes?.mode === "new") {
-            this._sessionType.setValue("remix");
+            this._sessionMode.setValue("remix");
           }
         }
 
         if (isRemixing === false) {
           this._selectedPath.setValue(undefined);
-          this._isRemixingNow.setValue(false);
+
+          if (
+            this._sessionMode.value === "remix" ||
+            this._sessionMode.value === "edit"
+          ) {
+            this._currentMode.setValue("view");
+          }
         } else {
-          this._isRemixingNow.setValue(true);
+          this._currentMode.setValue(this._sessionMode.value);
         }
       });
 
