@@ -52,14 +52,6 @@ export class KojiTools extends Actor<void> {
       this._instantRemixing = new InstantRemixing();
       this._feedSdk = new FeedSdk();
 
-      this._currentMode.didChange.subscribe((mode) => {
-        console.log("currentMode", mode);
-      });
-
-      this._sessionMode.didChange.subscribe((mode) => {
-        console.log("sessionMode", mode);
-      });
-
       const query = LocationUtil.objectOfCurrentQueryString();
       if (query["koji-screenshot"] == "1") {
         this._sessionMode.setValue("screenshot");
@@ -119,7 +111,6 @@ export class KojiTools extends Actor<void> {
       });
 
       this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-        console.log("onSetRemixing", isRemixing, editorAttributes);
         const sessionMode = this._sessionMode.value;
 
         if (

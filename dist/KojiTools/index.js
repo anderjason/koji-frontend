@@ -25,12 +25,6 @@ class KojiTools extends skytree_1.Actor {
         if (typeof window !== "undefined") {
             this._instantRemixing = new vcc_1.InstantRemixing();
             this._feedSdk = new vcc_1.FeedSdk();
-            this._currentMode.didChange.subscribe((mode) => {
-                console.log("currentMode", mode);
-            });
-            this._sessionMode.didChange.subscribe((mode) => {
-                console.log("sessionMode", mode);
-            });
             const query = web_1.LocationUtil.objectOfCurrentQueryString();
             if (query["koji-screenshot"] == "1") {
                 this._sessionMode.setValue("screenshot");
@@ -88,7 +82,6 @@ class KojiTools extends skytree_1.Actor {
                 this.onValueChanged(path, newValue);
             });
             this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-                console.log("onSetRemixing", isRemixing, editorAttributes);
                 const sessionMode = this._sessionMode.value;
                 if (sessionMode === "about" ||
                     sessionMode === "screenshot" ||
