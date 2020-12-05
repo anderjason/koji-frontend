@@ -25,6 +25,12 @@ class KojiTools extends skytree_1.Actor {
         if (typeof window !== "undefined") {
             this._instantRemixing = new vcc_1.InstantRemixing();
             this._feedSdk = new vcc_1.FeedSdk();
+            this._currentMode.didChange.subscribe((mode) => {
+                console.log("currentMode", mode);
+            });
+            this._sessionMode.didChange.subscribe((mode) => {
+                console.log("sessionMode", mode);
+            });
             const query = web_1.LocationUtil.objectOfCurrentQueryString();
             if (query["koji-screenshot"] == "1") {
                 this._sessionMode.setValue("screenshot");
@@ -82,20 +88,22 @@ class KojiTools extends skytree_1.Actor {
                 this.onValueChanged(path, newValue);
             });
             this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-                if (this._sessionMode.value === "view") {
-                    if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {
-                        this._sessionMode.setValue("edit");
-                    }
-                    else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
-                        this._sessionMode.setValue("remix");
-                    }
+                console.log("onSetRemixing", isRemixing, editorAttributes);
+                const sessionMode = this._sessionMode.value;
+                if (sessionMode === "about" ||
+                    sessionMode === "screenshot" ||
+                    sessionMode === "admin") {
+                    return;
+                }
+                if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {
+                    this._sessionMode.setValue("edit");
+                }
+                else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
+                    this._sessionMode.setValue("remix");
                 }
                 if (isRemixing === false) {
                     this._selectedPath.setValue(undefined);
-                    if (this._sessionMode.value === "remix" ||
-                        this._sessionMode.value === "edit") {
-                        this._currentMode.setValue("view");
-                    }
+                    this._currentMode.setValue("view");
                 }
                 else {
                     this._currentMode.setValue(this._sessionMode.value);

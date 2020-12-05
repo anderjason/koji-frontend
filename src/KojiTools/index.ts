@@ -52,6 +52,14 @@ export class KojiTools extends Actor<void> {
       this._instantRemixing = new InstantRemixing();
       this._feedSdk = new FeedSdk();
 
+      this._currentMode.didChange.subscribe((mode) => {
+        console.log("currentMode", mode);
+      });
+
+      this._sessionMode.didChange.subscribe((mode) => {
+        console.log("sessionMode", mode);
+      });
+
       const query = LocationUtil.objectOfCurrentQueryString();
       if (query["koji-screenshot"] == "1") {
         this._sessionMode.setValue("screenshot");
@@ -111,23 +119,26 @@ export class KojiTools extends Actor<void> {
       });
 
       this._instantRemixing.onSetRemixing((isRemixing, editorAttributes) => {
-        if (this._sessionMode.value === "view") {
-          if (editorAttributes?.mode === "edit") {
-            this._sessionMode.setValue("edit");
-          } else if (editorAttributes?.mode === "new") {
-            this._sessionMode.setValue("remix");
-          }
+        console.log("onSetRemixing", isRemixing, editorAttributes);
+        const sessionMode = this._sessionMode.value;
+
+        if (
+          sessionMode === "about" ||
+          sessionMode === "screenshot" ||
+          sessionMode === "admin"
+        ) {
+          return;
+        }
+
+        if (editorAttributes?.mode === "edit") {
+          this._sessionMode.setValue("edit");
+        } else if (editorAttributes?.mode === "new") {
+          this._sessionMode.setValue("remix");
         }
 
         if (isRemixing === false) {
           this._selectedPath.setValue(undefined);
-
-          if (
-            this._sessionMode.value === "remix" ||
-            this._sessionMode.value === "edit"
-          ) {
-            this._currentMode.setValue("view");
-          }
+          this._currentMode.setValue("view");
         } else {
           this._currentMode.setValue(this._sessionMode.value);
         }
