@@ -35,7 +35,7 @@ export class SubmitButtonDemo extends DemoActor<SubmitButtonDemoProps> {
       new SubmitButton({
         target: {
           type: "parentElement",
-          parentElement: card.element,
+          parentElement: card.baseElement,
         },
         text: "Unlock now",
         theme: KojiAppearance.themes.get("kojiBlack"),

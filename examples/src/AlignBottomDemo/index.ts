@@ -44,7 +44,7 @@ export class AlignBottomDemo extends DemoActor<AlignBottomDemoProps> {
     const content = this.addActor(
       PlaceholderContentStyle.toManagedElement({
         tagName: "div",
-        parentElement: card.element,
+        parentElement: card.baseElement,
       })
     );
 

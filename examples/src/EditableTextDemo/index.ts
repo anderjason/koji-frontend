@@ -27,7 +27,7 @@ export class EditableTextDemo extends DemoActor<EditableTextDemoProps> {
 
     this.addActor(
       new EditableText({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         displayType: "title",
         placeholderLabel: "Type a title here",
       })
@@ -35,7 +35,7 @@ export class EditableTextDemo extends DemoActor<EditableTextDemoProps> {
 
     this.addActor(
       new EditableText({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         displayType: "description",
         placeholderLabel: "Type a description here",
       })

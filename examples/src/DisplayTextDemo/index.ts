@@ -29,7 +29,7 @@ export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
 
     this.addActor(
       new DisplayText({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         displayType: "title",
         text: Observable.givenValue("Something is for sale"),
         theme: Observable.givenValue(KojiAppearance.themes.get("kojiBlack")),
@@ -38,7 +38,7 @@ export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
 
     this.addActor(
       new DisplayText({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         displayType: "description",
         text: Observable.givenValue("This is a description of the thing"),
       })
@@ -48,7 +48,7 @@ export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
       new SubmitButton({
         target: {
           type: "parentElement",
-          parentElement: card.element,
+          parentElement: card.baseElement,
         },
         text: "Buy the thing",
         onClick: () => {},

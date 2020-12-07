@@ -2,6 +2,7 @@ import { ExampleDefinition, ExamplesHome } from "@anderjason/example-tools";
 import { ObservableArray } from "@anderjason/observable";
 import { AlignBottomDemo } from "./AlignBottomDemo";
 import { CalloutDemo } from "./CalloutDemo";
+import { CardDemo } from "./CardDemo";
 import { ConfirmationPromptDemo } from "./ConfirmationPromptDemo";
 import { DisplayTextDemo } from "./DisplayTextDemo";
 import { EditableTextDemo } from "./EditableTextDemo";
@@ -14,6 +15,10 @@ import { SubmitButtonDemo } from "./SubmitButtonDemo";
 import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
+  {
+    title: "Card",
+    actor: new CardDemo({}),
+  },
   {
     title: "Align bottom",
     actor: new AlignBottomDemo({}),
@@ -58,7 +63,6 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     title: "Theme toolbar",
     actor: new ThemeToolbarDemo({}),
   },
-
   {
     title: "Remix mode button",
     actor: new RemixModeButtonDemo({}),

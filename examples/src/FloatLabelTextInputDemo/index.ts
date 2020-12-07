@@ -6,9 +6,7 @@ import { FloatLabelTextInput } from "../../../src/FloatLabelTextInput";
 
 export interface FloatLabelTextInputDemoProps {}
 
-export class FloatLabelTextInputDemo extends DemoActor<
-  FloatLabelTextInputDemoProps
-> {
+export class FloatLabelTextInputDemo extends DemoActor<FloatLabelTextInputDemoProps> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({
@@ -33,7 +31,7 @@ export class FloatLabelTextInputDemo extends DemoActor<
 
     this.addActor(
       new FloatLabelTextInput({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         persistentLabel: "Set Title",
         placeholder: "Your title here",
         value,

@@ -31,7 +31,7 @@ export class IntegerInputDemo extends DemoActor<IntegerInputDemoProps> {
 
     this.addActor(
       new IntegerInput({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         placeholder: "Set quantity",
         persistentLabel: "Quantity",
         value,

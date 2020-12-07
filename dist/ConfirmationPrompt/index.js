@@ -133,6 +133,7 @@ const CardStyle = web_1.ElementStyle.givenDefinition({
     color: #111111;
     display: flex;
     flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     max-width: 300px;
     min-width: 300px;
     opacity: 0;
@@ -157,11 +158,9 @@ const MessageAreaStyle = web_1.ElementStyle.givenDefinition({
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    font-family: "Source Sans Pro", sans-serif;
     height: 100%;
     justify-content: center;
-    letter-spacing: 0.02em;
-    line-height: 1.25;
+    line-height: 1.3;
     padding: 24px 18px;
     width: 100%;
 

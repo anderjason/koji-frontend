@@ -37,7 +37,7 @@ export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
 
     this.addActor(
       new DisplayText({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         displayType: "description",
         text: priceText,
       })
@@ -56,7 +56,7 @@ export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
 
     this.addActor(
       new MoneyInput({
-        parentElement: card.element,
+        parentElement: card.baseElement,
         persistentLabel: "Set Price",
         maxValue: new Money(100000, Currency.ofUSD()),
         value: moneyPrice,
