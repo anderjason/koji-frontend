@@ -59,7 +59,7 @@ class Card extends skytree_1.Actor {
         const backLabel = document.createElement("span");
         backLabel.innerHTML = "Back";
         backButton.element.appendChild(backLabel);
-        const stopMoving = new time_1.Debounce({
+        const disableSliderAnimationLater = new time_1.Debounce({
             duration: exports.cardHeightAnimateDuration,
             fn: () => {
                 this._slider.setModifier("isAnimated", false);
@@ -79,12 +79,15 @@ class Card extends skytree_1.Actor {
         const titleDiv = document.createElement("div");
         titleArea.element.appendChild(titleDiv);
         const selectedLayout = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
-        this.cancelOnDeactivate(selectedLayout.didChange.subscribe((layout) => {
+        this.cancelOnDeactivate(selectedLayout.didChange.subscribe((layout, oldLayout) => {
             if (layout == null) {
                 return;
             }
-            this._slider.setModifier("isAnimated", true);
-            stopMoving.invoke();
+            if (oldLayout != null) {
+                // animates height and left/right transition
+                this._slider.setModifier("isAnimated", true);
+                disableSliderAnimationLater.invoke();
+            }
             const index = this._layouts.toIndexOfValue(layout);
             this._slider.style.transform = `translateX(${index * -100}%)`;
             if (index !== 0) {

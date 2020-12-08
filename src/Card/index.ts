@@ -105,7 +105,7 @@ export class Card extends Actor<CardProps> {
     backLabel.innerHTML = "Back";
     backButton.element.appendChild(backLabel);
 
-    const stopMoving = new Debounce({
+    const disableSliderAnimationLater = new Debounce({
       duration: cardHeightAnimateDuration,
       fn: () => {
         this._slider.setModifier("isAnimated", false);
@@ -137,13 +137,16 @@ export class Card extends Actor<CardProps> {
     );
 
     this.cancelOnDeactivate(
-      selectedLayout.didChange.subscribe((layout) => {
+      selectedLayout.didChange.subscribe((layout, oldLayout) => {
         if (layout == null) {
           return;
         }
 
-        this._slider.setModifier("isAnimated", true);
-        stopMoving.invoke();
+        if (oldLayout != null) {
+          // animates height and left/right transition
+          this._slider.setModifier("isAnimated", true);
+          disableSliderAnimationLater.invoke();
+        }
 
         const index = this._layouts.toIndexOfValue(layout);
         this._slider.style.transform = `translateX(${index * -100}%)`;
