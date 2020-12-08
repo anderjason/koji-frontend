@@ -61,10 +61,6 @@ class EditableText extends skytree_1.Actor {
     }
 }
 exports.EditableText = EditableText;
-const WrapperStyle = web_1.ElementStyle.givenDefinition({
-    css: `
-  `,
-});
 const TitleStyle = web_1.ElementStyle.givenDefinition({
     css: `
     -webkit-user-select: auto;
@@ -103,6 +99,7 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     letter-spacing: 0.02em;
     line-height: 25px;
     margin-top: -3px;
+    margin-bottom: -5px;
     outline: none;
     overflow: auto;
     padding: 0;

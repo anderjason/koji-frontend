@@ -106,11 +106,6 @@ export class EditableText extends Actor<EditableTextProps> {
   }
 }
 
-const WrapperStyle = ElementStyle.givenDefinition({
-  css: `
-  `,
-});
-
 const TitleStyle = ElementStyle.givenDefinition({
   css: `
     -webkit-user-select: auto;
@@ -150,6 +145,7 @@ const DescriptionStyle = ElementStyle.givenDefinition({
     letter-spacing: 0.02em;
     line-height: 25px;
     margin-top: -3px;
+    margin-bottom: -5px;
     outline: none;
     overflow: auto;
     padding: 0;
