@@ -50,7 +50,7 @@ export class CardLayout extends Actor<CardLayoutProps> {
     const scrollArea = this.addActor(
       new ScrollArea({
         parentElement: wrapper.element,
-        scrollPositionColor: Color.givenHexString("#000000"),
+        scrollPositionColor: Color.givenHexString("#888888"),
         direction: "vertical",
       })
     );

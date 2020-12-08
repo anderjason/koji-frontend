@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Card = exports.cardTransitionEasing = exports.cardTransitionDuration = exports.totalVerticalPadding = exports.headerAreaHeight = void 0;
+exports.Card = exports.cardTransitionEasing = exports.cardHeightAnimateDuration = exports.cardTransitionDuration = exports.totalVerticalPadding = exports.headerAreaHeight = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
@@ -11,6 +11,7 @@ const CurrentLayoutHeight_1 = require("./_internal/CurrentLayoutHeight");
 exports.headerAreaHeight = 40;
 exports.totalVerticalPadding = 40;
 exports.cardTransitionDuration = time_1.Duration.givenSeconds(0.5);
+exports.cardHeightAnimateDuration = time_1.Duration.givenSeconds(0.6);
 exports.cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";
 const backIconSvg = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="currentColor" /></svg>`;
 class Card extends skytree_1.Actor {
@@ -58,6 +59,12 @@ class Card extends skytree_1.Actor {
         const backLabel = document.createElement("span");
         backLabel.innerHTML = "Back";
         backButton.element.appendChild(backLabel);
+        const stopMoving = new time_1.Debounce({
+            duration: exports.cardHeightAnimateDuration,
+            fn: () => {
+                this._slider.setModifier("isAnimated", false);
+            },
+        });
         this.cancelOnDeactivate(backButton.addManagedEventListener("click", () => {
             const layout = selectedLayout.value;
             if (layout == null || this._layouts.count < 2) {
@@ -76,6 +83,8 @@ class Card extends skytree_1.Actor {
             if (layout == null) {
                 return;
             }
+            this._slider.setModifier("isAnimated", true);
+            stopMoving.invoke();
             const index = this._layouts.toIndexOfValue(layout);
             this._slider.style.transform = `translateX(${index * -100}%)`;
             if (index !== 0) {
@@ -94,11 +103,6 @@ class Card extends skytree_1.Actor {
                 return;
             }
             this._slider.style.height = `${height}px`;
-            if (!this._slider.toModifiers().includes("isAnimated")) {
-                setTimeout(() => {
-                    this._slider.setModifier("isAnimated", true);
-                }, 10);
-            }
         }, true));
         this.cancelOnDeactivate(this._layouts.didChange.subscribe((layouts) => {
             if (layouts == null) {

@@ -3,7 +3,7 @@ import {
   ObservableArray,
   ObservableBase,
 } from "@anderjason/observable";
-import { Duration } from "@anderjason/time";
+import { Debounce, Duration } from "@anderjason/time";
 import { ArrayUtil } from "@anderjason/util";
 import {
   DynamicStyleElement,
@@ -28,6 +28,7 @@ export interface AddPageOptions {
 export const headerAreaHeight = 40;
 export const totalVerticalPadding = 40;
 export const cardTransitionDuration = Duration.givenSeconds(0.5);
+export const cardHeightAnimateDuration = Duration.givenSeconds(0.6);
 export const cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";
 
 const backIconSvg = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="currentColor" /></svg>`;
@@ -104,6 +105,13 @@ export class Card extends Actor<CardProps> {
     backLabel.innerHTML = "Back";
     backButton.element.appendChild(backLabel);
 
+    const stopMoving = new Debounce({
+      duration: cardHeightAnimateDuration,
+      fn: () => {
+        this._slider.setModifier("isAnimated", false);
+      },
+    });
+
     this.cancelOnDeactivate(
       backButton.addManagedEventListener("click", () => {
         const layout = selectedLayout.value;
@@ -134,6 +142,9 @@ export class Card extends Actor<CardProps> {
           return;
         }
 
+        this._slider.setModifier("isAnimated", true);
+        stopMoving.invoke();
+
         const index = this._layouts.toIndexOfValue(layout);
         this._slider.style.transform = `translateX(${index * -100}%)`;
 
@@ -161,12 +172,6 @@ export class Card extends Actor<CardProps> {
         }
 
         this._slider.style.height = `${height}px`;
-
-        if (!this._slider.toModifiers().includes("isAnimated")) {
-          setTimeout(() => {
-            this._slider.setModifier("isAnimated", true);
-          }, 10);
-        }
       }, true)
     );
 

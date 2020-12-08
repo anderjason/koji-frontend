@@ -28,7 +28,7 @@ class CardLayout extends skytree_1.Actor {
         }));
         const scrollArea = this.addActor(new web_1.ScrollArea({
             parentElement: wrapper.element,
-            scrollPositionColor: color_1.Color.givenHexString("#000000"),
+            scrollPositionColor: color_1.Color.givenHexString("#888888"),
             direction: "vertical",
         }));
         const content = this.addActor(ContentStyle.toManagedElement({

@@ -13,6 +13,7 @@ export interface AddPageOptions {
 export declare const headerAreaHeight = 40;
 export declare const totalVerticalPadding = 40;
 export declare const cardTransitionDuration: Duration;
+export declare const cardHeightAnimateDuration: Duration;
 export declare const cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";
 export declare class Card extends Actor<CardProps> {
     private _outer;
