@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Description = void 0;
+const color_1 = require("@anderjason/color");
 const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
@@ -22,9 +23,14 @@ class Description extends skytree_1.Actor {
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
             this.isExpanded.setValue(!this.isExpanded.value);
         }));
+        const scrollArea = this.addActor(new web_1.ScrollArea({
+            parentElement: wrapper.element,
+            scrollPositionColor: color_1.Color.givenHexString("#888888"),
+            direction: "vertical",
+        }));
         const content = this.addActor(ContentStyle.toManagedElement({
             tagName: "div",
-            parentElement: wrapper.element,
+            parentElement: scrollArea.element,
         }));
         const heightBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([this.isExpanded, this.props.text]));
         this.cancelOnDeactivate(heightBinding.didInvalidate.subscribe(() => {
@@ -48,9 +54,12 @@ class Description extends skytree_1.Actor {
             parentBoundsWatcher.output,
         ]));
         this.cancelOnDeactivate(sizeBinding.didInvalidate.subscribe(() => {
-            wrapper.element.scrollTo(0, 0);
-            wrapper.setModifier("isExpanded", this.isExpanded.value);
-            if (this.isExpanded.value == false) {
+            scrollArea.scrollElement.scrollTo(0, 0);
+            if (this.isExpanded.value == true) {
+                content.style.marginRight = `${scrollArea.scrollbarSize.value.width}px`;
+            }
+            else {
+                content.style.marginRight = "0";
                 content.element.innerHTML = this.props.text.value;
                 const words = content.element.textContent.split(" ");
                 const textNode = content.element.firstChild;
@@ -106,14 +115,12 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     overflow: hidden;
     user-select: none;
     white-space: pre-wrap;
-    transition: 0.5s ease height;
+    position: relative;
+    transition: 0.4s cubic-bezier(.5,0,.3,1) height;
   `,
     modifiers: {
         isExpandable: `
       cursor: pointer;
-    `,
-        isExpanded: `
-      overflow-y: auto;
     `,
     },
 });

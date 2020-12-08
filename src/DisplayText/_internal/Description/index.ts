@@ -1,6 +1,12 @@
+import { Color } from "@anderjason/color";
 import { Observable, ObservableBase } from "@anderjason/observable";
 import { NumberUtil } from "@anderjason/util";
-import { ElementSizeWatcher, ElementStyle } from "@anderjason/web";
+import {
+  ElementSizeWatcher,
+  ElementStyle,
+  ScrollArea,
+  VerticalExpander,
+} from "@anderjason/web";
 import { Actor, MultiBinding } from "skytree";
 
 export interface DescriptionInputProps {
@@ -30,10 +36,18 @@ export class Description extends Actor<DescriptionInputProps> {
       })
     );
 
+    const scrollArea = this.addActor(
+      new ScrollArea({
+        parentElement: wrapper.element,
+        scrollPositionColor: Color.givenHexString("#888888"),
+        direction: "vertical",
+      })
+    );
+
     const content = this.addActor(
       ContentStyle.toManagedElement({
         tagName: "div",
-        parentElement: wrapper.element,
+        parentElement: scrollArea.element,
       })
     );
 
@@ -82,10 +96,12 @@ export class Description extends Actor<DescriptionInputProps> {
 
     this.cancelOnDeactivate(
       sizeBinding.didInvalidate.subscribe(() => {
-        wrapper.element.scrollTo(0, 0);
-        wrapper.setModifier("isExpanded", this.isExpanded.value);
+        scrollArea.scrollElement.scrollTo(0, 0);
 
-        if (this.isExpanded.value == false) {
+        if (this.isExpanded.value == true) {
+          content.style.marginRight = `${scrollArea.scrollbarSize.value.width}px`;
+        } else {
+          content.style.marginRight = "0";
           content.element.innerHTML = this.props.text.value;
           const words = content.element.textContent.split(" ");
           const textNode = content.element.firstChild;
@@ -153,14 +169,12 @@ const WrapperStyle = ElementStyle.givenDefinition({
     overflow: hidden;
     user-select: none;
     white-space: pre-wrap;
-    transition: 0.5s ease height;
+    position: relative;
+    transition: 0.4s cubic-bezier(.5,0,.3,1) height;
   `,
   modifiers: {
     isExpandable: `
       cursor: pointer;
-    `,
-    isExpanded: `
-      overflow-y: auto;
     `,
   },
 });

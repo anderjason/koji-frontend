@@ -128,6 +128,31 @@ const TitleStyle = ElementStyle.givenDefinition({
     &::placeholder {
       color: #BDBDBD;
     }
+
+    &::-webkit-scrollbar {
+      width: 22px;
+      height: 22px;
+      border-radius: 13px;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      border-radius: 13px;
+      background-clip: padding-box;
+      border: 8.75px solid transparent;
+      box-shadow: inset 0 0 0 10px;
+      color: #e1e1e1;
+    }
+
+    &:hover, &:focus {
+      &::-webkit-scrollbar-thumb {
+        color: #888;
+      } 
+    }
   `,
 });
 
@@ -155,6 +180,31 @@ const DescriptionStyle = ElementStyle.givenDefinition({
 
     &::placeholder {
       color: #BDBDBD;
+    }
+
+    &::-webkit-scrollbar {
+      width: 22px;
+      height: 22px;
+      border-radius: 13px;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      border-radius: 13px;
+      background-clip: padding-box;
+      border: 8.75px solid transparent;
+      box-shadow: inset 0 0 0 10px;
+      color: #e1e1e1;
+    }
+
+    &:hover, &:focus {
+      &::-webkit-scrollbar-thumb {
+        color: #888;
+      } 
     }
   `,
 });
