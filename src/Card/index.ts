@@ -213,6 +213,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     color: #2D2F30;
     margin: 20px;
     overflow: hidden;
+    pointer-events: auto;
     position: relative;
     width: calc(100% - 40px);
     

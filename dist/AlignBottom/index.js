@@ -58,6 +58,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     flex-direction: column;
     justify-content: flex-end;
     left: 0;
+    pointer-events: none;
     position: absolute;
     right: 0;
     top: 0;
