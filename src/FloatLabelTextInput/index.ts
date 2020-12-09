@@ -199,6 +199,7 @@ const LabelStyle = ElementStyle.givenDefinition({
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.02em;
+    pointer-events: none;
     transition: 0.2s ease color, 0.1s ease opacity, 0.1s ease transform;
     transform: translateY(9px);
     opacity: 0;
