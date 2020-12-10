@@ -5,9 +5,7 @@ import { AlignBottom, DisplayText } from "../../../src";
 import { Card } from "../../../src/Card";
 import { MoneyInput } from "../../../src/MoneyInput";
 
-export interface MoneyInputDemoProps {}
-
-export class MoneyInputDemo extends DemoActor<MoneyInputDemoProps> {
+export class MoneyInputDemo extends DemoActor<void> {
   onActivate() {
     const moneyPrice = Observable.givenValue<Money>(
       new Money(0, Currency.ofUSD()),

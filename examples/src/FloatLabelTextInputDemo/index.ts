@@ -4,9 +4,7 @@ import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 import { FloatLabelTextInput } from "../../../src/FloatLabelTextInput";
 
-export interface FloatLabelTextInputDemoProps {}
-
-export class FloatLabelTextInputDemo extends DemoActor<FloatLabelTextInputDemoProps> {
+export class FloatLabelTextInputDemo extends DemoActor<void> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({

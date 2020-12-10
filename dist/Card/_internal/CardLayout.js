@@ -51,11 +51,17 @@ class CardLayout extends skytree_1.Actor {
             if (size == null || size.height == 0) {
                 return;
             }
+            const requestedContentHeight = size.height + __1.totalVerticalPadding;
             let marginTop = listOrder === 0 ? 0 : __1.headerAreaHeight;
             wrapper.style.marginTop = `${marginTop}px`;
-            const maxContentHeight = maxHeight - marginTop;
-            const requestedContentHeight = size.height + __1.totalVerticalPadding;
-            const actualContentHeight = Math.min(maxContentHeight, requestedContentHeight);
+            let actualContentHeight;
+            if (maxHeight != null) {
+                const maxContentHeight = maxHeight - marginTop;
+                actualContentHeight = Math.min(maxContentHeight, requestedContentHeight);
+            }
+            else {
+                actualContentHeight = requestedContentHeight;
+            }
             this._cardHeight.setValue(marginTop + actualContentHeight);
             wrapper.style.height = `${actualContentHeight}px`;
             wrapper.style.transform = `translateX(${listOrder * 100}%)`;

@@ -2,12 +2,10 @@ import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
-import { IntegerInput } from "../../../src/IntegerInput";
+import { FloatLabelTextarea } from "../../../src/FloatLabelTextarea";
 
-export class IntegerInputDemo extends DemoActor<void> {
+export class FloatLabelTextareaDemo extends DemoActor<void> {
   onActivate() {
-    const value = Observable.givenValue(0, Observable.isStrictEqual);
-
     const alignBottom = this.addActor(
       new AlignBottom({
         target: {
@@ -24,15 +22,20 @@ export class IntegerInputDemo extends DemoActor<void> {
           type: "parentElement",
           parentElement: alignBottom.element,
         },
+        maxHeight: 300
       })
     );
 
+    const value = Observable.ofEmpty<string>();
+
     this.addActor(
-      new IntegerInput({
+      new FloatLabelTextarea({
         parentElement: card.baseElement,
-        placeholder: "Set quantity",
-        persistentLabel: "Quantity",
+        persistentLabel: "Set Title",
+        placeholder: "Your title here",
         value,
+        displayTextGivenValue: (v) => v,
+        valueGivenDisplayText: (v) => v,
       })
     );
   }

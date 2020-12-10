@@ -2,9 +2,7 @@ import { DemoActor } from "@anderjason/example-tools";
 import { ElementStyle } from "@anderjason/web";
 import { RemixModeButton } from "../../../src/RemixModeButton";
 
-export interface RemixModeButtonDemoProps {}
-
-export class RemixModeButtonDemo extends DemoActor<RemixModeButtonDemoProps> {
+export class RemixModeButtonDemo extends DemoActor<void> {
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({

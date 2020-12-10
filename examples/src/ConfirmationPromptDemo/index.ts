@@ -5,10 +5,8 @@ import { ElementStyle } from "@anderjason/web";
 import { ConditionalActivator, Timer } from "skytree";
 import { ConfirmationPrompt } from "../../../src/ConfirmationPrompt";
 
-export interface ConfirmationPromptDemoProps {}
-
 export class ConfirmationPromptDemo extends DemoActor<
-  ConfirmationPromptDemoProps
+  void
 > {
   onActivate() {
     const background = this.addActor(

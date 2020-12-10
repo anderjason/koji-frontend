@@ -1,7 +1,6 @@
 import { Observable, ReadOnlyObservable } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 import {
-  DynamicStyleElement,
   ElementStyle,
   FocusWatcher,
   TextInputBinding,
@@ -10,26 +9,23 @@ import { TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
 import { Actor } from "skytree";
 import { KojiAppearance } from "../KojiAppearance";
 
-export interface FloatLabelTextInputProps<T> {
+export interface FloatLabelTextareaProps<T> {
   displayTextGivenValue: (value: T) => string;
   overrideDisplayText?: (e: TextInputChangingData<T>) => string;
   parentElement: HTMLElement;
   value: Observable<T>;
   valueGivenDisplayText: (displayText: string) => T;
-  shadowTextGivenValue?: (value: T) => string;
-  applyShadowTextOnBlur?: boolean;
-
+  
   persistentLabel?: string;
   placeholder?: string;
-  inputType?: string;
   maxLength?: number;
 }
 
-export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
+export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
   private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
 
-  constructor(props: FloatLabelTextInputProps<T>) {
+  constructor(props: FloatLabelTextareaProps<T>) {
     super(props);
 
     KojiAppearance.preloadFonts();
@@ -44,77 +40,49 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     );
     wrapper.element.classList.add("kft-control");
 
-    let shadowText: DynamicStyleElement<HTMLSpanElement>;
-    if (this.props.shadowTextGivenValue != null) {
-      shadowText = this.addActor(
-        ShadowTextStyle.toManagedElement({
-          tagName: "span",
-          parentElement: wrapper.element,
-        })
-      );
-    }
-
-    const input = this.addActor(
-      InputStyle.toManagedElement({
-        tagName: "input",
+    const textarea = this.addActor(
+      TextareaStyle.toManagedElement({
+        tagName: "textarea",
         parentElement: wrapper.element,
       })
     );
-    const inputType = this.props.inputType || "text";
-    input.element.type = inputType;
-    
-    if (this.props.maxLength != null) {
-      input.element.maxLength = this.props.maxLength;
-    }
 
     if (this.props.placeholder != null) {
-      input.element.placeholder = this.props.placeholder;
+      textarea.element.placeholder = this.props.placeholder;
+    }
+
+    if (this.props.maxLength != null) {
+      textarea.element.maxLength = this.props.maxLength;
     }
 
     this.cancelOnDeactivate(
       wrapper.addManagedEventListener("click", () => {
-        input.element.focus();
+        textarea.element.focus();
       })
     );
 
     this.addActor(
       new FocusWatcher({
-        element: input.element,
+        element: textarea.element,
         output: this._isFocused,
       })
     );
 
-    const applyShadowText = () => {
-      if (
-        this.props.shadowTextGivenValue != null &&
-        this.props.applyShadowTextOnBlur == true
-      ) {
-        const text = this.props.shadowTextGivenValue(this.props.value.value);
-        if (text != null) {
-          input.element.value = text;
+    // setSelectionRange is not supported on number inputs
+    this.cancelOnDeactivate(
+      this._isFocused.didChange.subscribe((isFocused) => {
+        if (isFocused == true) {
+          textarea.element.setSelectionRange(
+            0,
+            (textarea.element.value || "").length
+          );
         }
-      }
-    };
-
-    if (inputType === "text") {
-      // setSelectionRange is not supported on number inputs
-      this.cancelOnDeactivate(
-        this._isFocused.didChange.subscribe((isFocused) => {
-          if (isFocused == true) {
-            input.element.setSelectionRange(
-              0,
-              (input.element.value || "").length
-            );
-          } else {
-            applyShadowText();
-          }
-        })
-      );
-    }
+      })
+    );
 
     const inputBinding = this.addActor(
       new TextInputBinding<T>({
-        inputElement: input.element,
+        inputElement: textarea.element,
         value: this.props.value,
         displayTextGivenValue: this.props.displayTextGivenValue,
         valueGivenDisplayText: this.props.valueGivenDisplayText,
@@ -122,18 +90,15 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       })
     );
 
-    if (shadowText != null && this.props.shadowTextGivenValue != null) {
-      this.cancelOnDeactivate(
-        this.props.value.didChange.subscribe(() => {
-          const text = this.props.shadowTextGivenValue(this.props.value.value);
-          if (text == null) {
-            shadowText.element.innerHTML = "";
-          } else {
-            shadowText.element.innerHTML = text;
-          }
-        }, true)
-      );
-    }
+    this.cancelOnDeactivate(
+      this.props.value.didChange.subscribe(() => {
+        textarea.style.height = "25px";
+
+        const textHeight = textarea.element.scrollHeight;
+        textarea.style.height = `${textHeight}px`;
+        wrapper.style.height = `${textHeight + 25}px`;
+      }, true)
+    );
 
     if (!StringUtil.stringIsEmpty(this.props.persistentLabel)) {
       const label = this.addActor(
@@ -146,17 +111,11 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
 
       this.cancelOnDeactivate(
         inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-          input.setModifier("hasValue", !isEmpty);
+          textarea.setModifier("hasValue", !isEmpty);
           label.setModifier("hasValue", !isEmpty);
-
-          if (shadowText != null) {
-            shadowText.setModifier("hasValue", !isEmpty);
-          }
         }, true)
       );
     }
-
-    applyShadowText();
   }
 }
 
@@ -171,7 +130,6 @@ const WrapperStyle = ElementStyle.givenDefinition({
     display: flex;
     line-height: 25px;
     letter-spacing: 0.02em;
-    height: 50px;
     margin-left: -2px;
     margin-right: -2px;
     outline: none;
@@ -217,7 +175,7 @@ const LabelStyle = ElementStyle.givenDefinition({
   },
 });
 
-const InputStyle = ElementStyle.givenDefinition({
+const TextareaStyle = ElementStyle.givenDefinition({
   elementDescription: "Input",
   css: `
     appearance: none;
@@ -234,6 +192,7 @@ const InputStyle = ElementStyle.givenDefinition({
     outline: none;
     user-select: auto;
     padding: 0;
+    resize: none;
     width: 100%;
     -webkit-user-select: auto;
     transition: 0.1s ease-out transform;
@@ -244,30 +203,6 @@ const InputStyle = ElementStyle.givenDefinition({
   `,
   modifiers: {
     hasValue: `
-      transform: translateY(7px);
-    `,
-  },
-});
-
-const ShadowTextStyle = ElementStyle.givenDefinition({
-  elementDescription: "ShadowText",
-  css: `
-    color: #BDBDBD;
-    position: absolute;
-    font-family: Source Sans Pro;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 20px;
-    line-height: 25px;
-    letter-spacing: 0.02em;
-    margin-left: 12px;
-    transform: translateY(0);
-    opacity: 0;
-    transition: 0.1s ease-out transform;
-  `,
-  modifiers: {
-    hasValue: `
-      opacity: 1;
       transform: translateY(7px);
     `,
   },

@@ -2,9 +2,7 @@ import { DemoActor } from "@anderjason/example-tools";
 import { ElementStyle } from "@anderjason/web";
 import { ThemeToolbar } from "../../../src/ThemeToolbar";
 
-export interface ThemeToolbarDemoProps {}
-
-export class ThemeToolbarDemo extends DemoActor<ThemeToolbarDemoProps> {
+export class ThemeToolbarDemo extends DemoActor<void> {
   onActivate() {
     const themeToolbar = this.addActor(
       new ThemeToolbar({

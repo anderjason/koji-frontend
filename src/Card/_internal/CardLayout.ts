@@ -87,17 +87,23 @@ export class CardLayout extends Actor<CardLayoutProps> {
         if (size == null || size.height == 0) {
           return;
         }
+        
+        const requestedContentHeight = size.height + totalVerticalPadding;
 
         let marginTop = listOrder === 0 ? 0 : headerAreaHeight;
 
         wrapper.style.marginTop = `${marginTop}px`;
 
-        const maxContentHeight = maxHeight - marginTop;
-        const requestedContentHeight = size.height + totalVerticalPadding;
-        const actualContentHeight = Math.min(
-          maxContentHeight,
-          requestedContentHeight
-        );
+        let actualContentHeight: number;
+        if (maxHeight != null) {
+          const maxContentHeight = maxHeight - marginTop;
+          actualContentHeight = Math.min(
+            maxContentHeight,
+            requestedContentHeight
+          );
+        } else {
+          actualContentHeight = requestedContentHeight;
+        }
 
         this._cardHeight.setValue(marginTop + actualContentHeight);
         wrapper.style.height = `${actualContentHeight}px`;

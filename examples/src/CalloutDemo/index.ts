@@ -7,9 +7,7 @@ import { ElementStyle } from "@anderjason/web";
 import { Timer } from "skytree";
 import { Callout } from "../../../src/Callout";
 
-export interface CalloutDemoProps {}
-
-export class CalloutDemo extends DemoActor<CalloutDemoProps> {
+export class CalloutDemo extends DemoActor<void> {
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({

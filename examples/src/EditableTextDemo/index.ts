@@ -2,9 +2,7 @@ import { DemoActor } from "@anderjason/example-tools";
 import { AlignBottom, EditableText } from "../../../src";
 import { Card } from "../../../src/Card";
 
-export interface EditableTextDemoProps {}
-
-export class EditableTextDemo extends DemoActor<EditableTextDemoProps> {
+export class EditableTextDemo extends DemoActor<void> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({
@@ -22,6 +20,7 @@ export class EditableTextDemo extends DemoActor<EditableTextDemoProps> {
           type: "parentElement",
           parentElement: alignBottom.element,
         },
+        maxHeight: 300
       })
     );
 

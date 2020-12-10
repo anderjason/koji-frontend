@@ -6,9 +6,7 @@ import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 import { CardLayout } from "../../../src/Card/_internal/CardLayout";
 
-export interface CardDemoProps {}
-
-export class CardDemo extends DemoActor<CardDemoProps> {
+export class CardDemo extends DemoActor<void> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({

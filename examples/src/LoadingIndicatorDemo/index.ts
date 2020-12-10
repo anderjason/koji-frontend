@@ -2,9 +2,7 @@ import { Color } from "@anderjason/color";
 import { DemoActor } from "@anderjason/example-tools";
 import { LoadingIndicator } from "../../../src/LoadingIndicator";
 
-export interface LoadingIndicatorDemoProps {}
-
-export class LoadingIndicatorDemo extends DemoActor<LoadingIndicatorDemoProps> {
+export class LoadingIndicatorDemo extends DemoActor<void> {
   onActivate() {
     this.addActor(
       new LoadingIndicator({

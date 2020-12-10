@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FloatLabelTextInput = void 0;
+exports.FloatLabelTextarea = void 0;
 const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const KojiAppearance_1 = require("../KojiAppearance");
-class FloatLabelTextInput extends skytree_1.Actor {
+class FloatLabelTextarea extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this._isFocused = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
@@ -19,70 +19,42 @@ class FloatLabelTextInput extends skytree_1.Actor {
             parentElement: this.props.parentElement,
         }));
         wrapper.element.classList.add("kft-control");
-        let shadowText;
-        if (this.props.shadowTextGivenValue != null) {
-            shadowText = this.addActor(ShadowTextStyle.toManagedElement({
-                tagName: "span",
-                parentElement: wrapper.element,
-            }));
-        }
-        const input = this.addActor(InputStyle.toManagedElement({
-            tagName: "input",
+        const textarea = this.addActor(TextareaStyle.toManagedElement({
+            tagName: "textarea",
             parentElement: wrapper.element,
         }));
-        const inputType = this.props.inputType || "text";
-        input.element.type = inputType;
-        if (this.props.maxLength != null) {
-            input.element.maxLength = this.props.maxLength;
-        }
         if (this.props.placeholder != null) {
-            input.element.placeholder = this.props.placeholder;
+            textarea.element.placeholder = this.props.placeholder;
+        }
+        if (this.props.maxLength != null) {
+            textarea.element.maxLength = this.props.maxLength;
         }
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-            input.element.focus();
+            textarea.element.focus();
         }));
         this.addActor(new web_1.FocusWatcher({
-            element: input.element,
+            element: textarea.element,
             output: this._isFocused,
         }));
-        const applyShadowText = () => {
-            if (this.props.shadowTextGivenValue != null &&
-                this.props.applyShadowTextOnBlur == true) {
-                const text = this.props.shadowTextGivenValue(this.props.value.value);
-                if (text != null) {
-                    input.element.value = text;
-                }
+        // setSelectionRange is not supported on number inputs
+        this.cancelOnDeactivate(this._isFocused.didChange.subscribe((isFocused) => {
+            if (isFocused == true) {
+                textarea.element.setSelectionRange(0, (textarea.element.value || "").length);
             }
-        };
-        if (inputType === "text") {
-            // setSelectionRange is not supported on number inputs
-            this.cancelOnDeactivate(this._isFocused.didChange.subscribe((isFocused) => {
-                if (isFocused == true) {
-                    input.element.setSelectionRange(0, (input.element.value || "").length);
-                }
-                else {
-                    applyShadowText();
-                }
-            }));
-        }
+        }));
         const inputBinding = this.addActor(new web_1.TextInputBinding({
-            inputElement: input.element,
+            inputElement: textarea.element,
             value: this.props.value,
             displayTextGivenValue: this.props.displayTextGivenValue,
             valueGivenDisplayText: this.props.valueGivenDisplayText,
             overrideDisplayText: this.props.overrideDisplayText,
         }));
-        if (shadowText != null && this.props.shadowTextGivenValue != null) {
-            this.cancelOnDeactivate(this.props.value.didChange.subscribe(() => {
-                const text = this.props.shadowTextGivenValue(this.props.value.value);
-                if (text == null) {
-                    shadowText.element.innerHTML = "";
-                }
-                else {
-                    shadowText.element.innerHTML = text;
-                }
-            }, true));
-        }
+        this.cancelOnDeactivate(this.props.value.didChange.subscribe(() => {
+            textarea.style.height = "25px";
+            const textHeight = textarea.element.scrollHeight;
+            textarea.style.height = `${textHeight}px`;
+            wrapper.style.height = `${textHeight + 25}px`;
+        }, true));
         if (!util_1.StringUtil.stringIsEmpty(this.props.persistentLabel)) {
             const label = this.addActor(LabelStyle.toManagedElement({
                 tagName: "label",
@@ -90,17 +62,13 @@ class FloatLabelTextInput extends skytree_1.Actor {
             }));
             label.element.innerHTML = this.props.persistentLabel;
             this.cancelOnDeactivate(inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-                input.setModifier("hasValue", !isEmpty);
+                textarea.setModifier("hasValue", !isEmpty);
                 label.setModifier("hasValue", !isEmpty);
-                if (shadowText != null) {
-                    shadowText.setModifier("hasValue", !isEmpty);
-                }
             }, true));
         }
-        applyShadowText();
     }
 }
-exports.FloatLabelTextInput = FloatLabelTextInput;
+exports.FloatLabelTextarea = FloatLabelTextarea;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
     css: `
@@ -112,7 +80,6 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     display: flex;
     line-height: 25px;
     letter-spacing: 0.02em;
-    height: 50px;
     margin-left: -2px;
     margin-right: -2px;
     outline: none;
@@ -156,7 +123,7 @@ const LabelStyle = web_1.ElementStyle.givenDefinition({
     `,
     },
 });
-const InputStyle = web_1.ElementStyle.givenDefinition({
+const TextareaStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Input",
     css: `
     appearance: none;
@@ -173,6 +140,7 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
     outline: none;
     user-select: auto;
     padding: 0;
+    resize: none;
     width: 100%;
     -webkit-user-select: auto;
     transition: 0.1s ease-out transform;
@@ -183,29 +151,6 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
   `,
     modifiers: {
         hasValue: `
-      transform: translateY(7px);
-    `,
-    },
-});
-const ShadowTextStyle = web_1.ElementStyle.givenDefinition({
-    elementDescription: "ShadowText",
-    css: `
-    color: #BDBDBD;
-    position: absolute;
-    font-family: Source Sans Pro;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 20px;
-    line-height: 25px;
-    letter-spacing: 0.02em;
-    margin-left: 12px;
-    transform: translateY(0);
-    opacity: 0;
-    transition: 0.1s ease-out transform;
-  `,
-    modifiers: {
-        hasValue: `
-      opacity: 1;
       transform: translateY(7px);
     `,
     },

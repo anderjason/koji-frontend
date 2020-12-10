@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EditableText = void 0;
 const observable_1 = require("@anderjason/observable");
-const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const KojiAppearance_1 = require("../KojiAppearance");
@@ -47,8 +46,7 @@ class EditableText extends skytree_1.Actor {
         }));
         this.cancelOnDeactivate(this.output.didChange.subscribe(() => {
             input.style.height = "25px";
-            const height = util_1.NumberUtil.numberWithHardLimit(input.element.scrollHeight, 25, 100);
-            input.style.height = `${height}px`;
+            input.style.height = `${input.element.scrollHeight}px`;
         }, true));
         this.cancelOnDeactivate(observableTheme.didChange.subscribe((theme) => {
             if (theme == null) {

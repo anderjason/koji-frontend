@@ -44,7 +44,7 @@ export class Card extends Actor<CardProps> {
     super(props);
 
     this._maxHeight = Observable.givenValueOrObservable(
-      this.props.maxHeight || 500,
+      this.props.maxHeight,
       Observable.isStrictEqual
     );
   }
@@ -216,6 +216,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     pointer-events: auto;
     position: relative;
     width: calc(100% - 40px);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
     
     .kft-text + .kft-control {
       margin-top: 11px;

@@ -82,13 +82,7 @@ export class EditableText extends Actor<EditableTextProps> {
     this.cancelOnDeactivate(
       this.output.didChange.subscribe(() => {
         input.style.height = "25px";
-
-        const height = NumberUtil.numberWithHardLimit(
-          input.element.scrollHeight,
-          25,
-          100
-        );
-        input.style.height = `${height}px`;
+        input.style.height = `${input.element.scrollHeight}px`;
       }, true)
     );
 

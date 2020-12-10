@@ -5,7 +5,6 @@ import {
   ElementSizeWatcher,
   ElementStyle,
   ScrollArea,
-  VerticalExpander,
 } from "@anderjason/web";
 import { Actor, MultiBinding } from "skytree";
 
@@ -16,7 +15,6 @@ export interface DescriptionInputProps {
 
 const lineHeight = 25;
 const collapsedMaxHeight = 50;
-const expandedMaxHeight = 150;
 
 export class Description extends Actor<DescriptionInputProps> {
   readonly isExpanded = Observable.givenValue(false, Observable.isStrictEqual);
@@ -36,18 +34,10 @@ export class Description extends Actor<DescriptionInputProps> {
       })
     );
 
-    const scrollArea = this.addActor(
-      new ScrollArea({
-        parentElement: wrapper.element,
-        scrollPositionColor: Color.givenHexString("#888888"),
-        direction: "vertical",
-      })
-    );
-
     const content = this.addActor(
       ContentStyle.toManagedElement({
         tagName: "div",
-        parentElement: scrollArea.element,
+        parentElement: wrapper.element,
       })
     );
 
@@ -64,16 +54,17 @@ export class Description extends Actor<DescriptionInputProps> {
 
         content.style.height = "100%";
 
-        const maxHeight =
-          this.isExpanded.value == true
-            ? expandedMaxHeight
-            : collapsedMaxHeight;
+        let wrapperHeight: number = contentHeight;
+        console.log("wrapperHeight", contentHeight)
 
-        const wrapperHeight = NumberUtil.numberWithHardLimit(
-          contentHeight,
-          25,
-          maxHeight
-        );
+        if (this.isExpanded.value == false) {
+          wrapperHeight = NumberUtil.numberWithHardLimit(
+            contentHeight,
+            25,
+            collapsedMaxHeight
+          );
+        }
+
         wrapper.style.height = `${wrapperHeight}px`;
       }, true)
     );
@@ -96,12 +87,7 @@ export class Description extends Actor<DescriptionInputProps> {
 
     this.cancelOnDeactivate(
       sizeBinding.didInvalidate.subscribe(() => {
-        scrollArea.scrollElement.scrollTo(0, 0);
-
-        if (this.isExpanded.value == true) {
-          content.style.marginRight = `${scrollArea.scrollbarSize.value.width}px`;
-        } else {
-          content.style.marginRight = "0";
+        if (this.isExpanded.value == false) {
           content.element.innerHTML = this.props.text.value;
           const words = content.element.textContent.split(" ");
           const textNode = content.element.firstChild;

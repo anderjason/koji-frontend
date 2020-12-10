@@ -1,14 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Description = void 0;
-const color_1 = require("@anderjason/color");
 const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const lineHeight = 25;
 const collapsedMaxHeight = 50;
-const expandedMaxHeight = 150;
 class Description extends skytree_1.Actor {
     constructor() {
         super(...arguments);
@@ -23,14 +21,9 @@ class Description extends skytree_1.Actor {
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
             this.isExpanded.setValue(!this.isExpanded.value);
         }));
-        const scrollArea = this.addActor(new web_1.ScrollArea({
-            parentElement: wrapper.element,
-            scrollPositionColor: color_1.Color.givenHexString("#888888"),
-            direction: "vertical",
-        }));
         const content = this.addActor(ContentStyle.toManagedElement({
             tagName: "div",
-            parentElement: scrollArea.element,
+            parentElement: wrapper.element,
         }));
         const heightBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([this.isExpanded, this.props.text]));
         this.cancelOnDeactivate(heightBinding.didInvalidate.subscribe(() => {
@@ -38,10 +31,11 @@ class Description extends skytree_1.Actor {
             content.style.height = `${lineHeight}px`;
             const contentHeight = content.element.scrollHeight;
             content.style.height = "100%";
-            const maxHeight = this.isExpanded.value == true
-                ? expandedMaxHeight
-                : collapsedMaxHeight;
-            const wrapperHeight = util_1.NumberUtil.numberWithHardLimit(contentHeight, 25, maxHeight);
+            let wrapperHeight = contentHeight;
+            console.log("wrapperHeight", contentHeight);
+            if (this.isExpanded.value == false) {
+                wrapperHeight = util_1.NumberUtil.numberWithHardLimit(contentHeight, 25, collapsedMaxHeight);
+            }
             wrapper.style.height = `${wrapperHeight}px`;
         }, true));
         const range = document.createRange();
@@ -54,12 +48,7 @@ class Description extends skytree_1.Actor {
             parentBoundsWatcher.output,
         ]));
         this.cancelOnDeactivate(sizeBinding.didInvalidate.subscribe(() => {
-            scrollArea.scrollElement.scrollTo(0, 0);
-            if (this.isExpanded.value == true) {
-                content.style.marginRight = `${scrollArea.scrollbarSize.value.width}px`;
-            }
-            else {
-                content.style.marginRight = "0";
+            if (this.isExpanded.value == false) {
                 content.element.innerHTML = this.props.text.value;
                 const words = content.element.textContent.split(" ");
                 const textNode = content.element.firstChild;

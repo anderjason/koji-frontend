@@ -6,9 +6,7 @@ import { Card } from "../../../src/Card";
 import { KojiAppearance } from "../../../src/KojiAppearance";
 import { SubmitButton, SubmitButtonMode } from "../../../src/SubmitButton";
 
-export interface SubmitButtonDemoProps {}
-
-export class SubmitButtonDemo extends DemoActor<SubmitButtonDemoProps> {
+export class SubmitButtonDemo extends DemoActor<void> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({

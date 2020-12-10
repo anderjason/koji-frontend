@@ -6,9 +6,7 @@ import { ConditionalActivator, Timer } from "skytree";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 
-export interface AlignBottomDemoProps {}
-
-export class AlignBottomDemo extends DemoActor<AlignBottomDemoProps> {
+export class AlignBottomDemo extends DemoActor<void> {
   onActivate() {
     const isRemixing = Observable.givenValue(false);
 

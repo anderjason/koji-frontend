@@ -18,7 +18,7 @@ class Card extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this._layouts = observable_1.ObservableArray.ofEmpty();
-        this._maxHeight = observable_1.Observable.givenValueOrObservable(this.props.maxHeight || 500, observable_1.Observable.isStrictEqual);
+        this._maxHeight = observable_1.Observable.givenValueOrObservable(this.props.maxHeight, observable_1.Observable.isStrictEqual);
     }
     get baseElement() {
         return this._baseLayout.element;
@@ -138,6 +138,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     pointer-events: auto;
     position: relative;
     width: calc(100% - 40px);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
     
     .kft-text + .kft-control {
       margin-top: 11px;

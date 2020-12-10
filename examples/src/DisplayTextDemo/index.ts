@@ -4,9 +4,7 @@ import { AlignBottom, KojiAppearance, SubmitButton } from "../../../src";
 import { Card } from "../../../src/Card";
 import { DisplayText } from "../../../src/DisplayText";
 
-export interface DisplayTextDemoProps {}
-
-export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
+export class DisplayTextDemo extends DemoActor<void> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({
@@ -24,6 +22,7 @@ export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
           type: "parentElement",
           parentElement: alignBottom.element,
         },
+        maxHeight: 300
       })
     );
 
@@ -31,7 +30,7 @@ export class DisplayTextDemo extends DemoActor<DisplayTextDemoProps> {
       new DisplayText({
         parentElement: card.baseElement,
         displayType: "title",
-        text: Observable.givenValue("Something is for sale"),
+        text: Observable.givenValue("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"),
         theme: Observable.givenValue(KojiAppearance.themes.get("kojiBlack")),
       })
     );
