@@ -35,7 +35,12 @@ class FloatLabelTextInput extends skytree_1.Actor {
         const inputType = this.props.inputType || "text";
         input.element.type = inputType;
         this.cancelOnDeactivate(this._maxLength.didChange.subscribe(maxLength => {
-            input.element.maxLength = maxLength;
+            if (maxLength == null) {
+                input.element.removeAttribute("maxLength");
+            }
+            else {
+                input.element.maxLength = maxLength;
+            }
         }, true));
         if (this.props.placeholder != null) {
             input.element.placeholder = this.props.placeholder;

@@ -60,9 +60,14 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
 
     this.cancelOnDeactivate(
       this._maxLength.didChange.subscribe(maxLength => {
-        textarea.element.maxLength = maxLength;
+        if (maxLength == null) {
+          textarea.element.removeAttribute("maxLength");
+        } else {
+          textarea.element.maxLength = maxLength;
+        }
       }, true)
     )
+
 
     this.cancelOnDeactivate(
       wrapper.addManagedEventListener("click", () => {

@@ -29,7 +29,12 @@ class FloatLabelTextarea extends skytree_1.Actor {
             textarea.element.placeholder = this.props.placeholder;
         }
         this.cancelOnDeactivate(this._maxLength.didChange.subscribe(maxLength => {
-            textarea.element.maxLength = maxLength;
+            if (maxLength == null) {
+                textarea.element.removeAttribute("maxLength");
+            }
+            else {
+                textarea.element.maxLength = maxLength;
+            }
         }, true));
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
             textarea.element.focus();

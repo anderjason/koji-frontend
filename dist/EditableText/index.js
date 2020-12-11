@@ -36,7 +36,12 @@ class EditableText extends skytree_1.Actor {
         input.element.classList.add("kft-text");
         input.element.placeholder = this.props.placeholderLabel;
         this.cancelOnDeactivate(this._maxLength.didChange.subscribe(maxLength => {
-            input.element.maxLength = maxLength;
+            if (maxLength == null) {
+                input.element.removeAttribute("maxLength");
+            }
+            else {
+                input.element.maxLength = maxLength;
+            }
         }, true));
         this.cancelOnDeactivate(input.addManagedEventListener("focus", () => {
             input.element.setSelectionRange(0, (input.element.value || "").length);

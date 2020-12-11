@@ -69,7 +69,11 @@ export class EditableText extends Actor<EditableTextProps> {
 
     this.cancelOnDeactivate(
       this._maxLength.didChange.subscribe(maxLength => {
-        input.element.maxLength = maxLength;
+        if (maxLength == null) {
+          input.element.removeAttribute("maxLength");
+        } else {
+          input.element.maxLength = maxLength;
+        }
       }, true)
     )
 
