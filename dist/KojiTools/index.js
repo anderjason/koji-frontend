@@ -120,6 +120,9 @@ class KojiTools extends skytree_1.Actor {
                     this.allPlaybackShouldStop.emit();
                 }
             });
+            this.cancelOnDeactivate(web_1.ScrollArea.willScroll.subscribe(() => {
+                this._feedSdk.requestCancelTouch();
+            }));
         }
         this._selectedPath.didChange.subscribe((path) => {
             if (path != null) {

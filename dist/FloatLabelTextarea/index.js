@@ -12,6 +12,7 @@ class FloatLabelTextarea extends skytree_1.Actor {
         this._isFocused = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.isFocused = observable_1.ReadOnlyObservable.givenObservable(this._isFocused);
         KojiAppearance_1.KojiAppearance.preloadFonts();
+        this._isInvalid = this.props.isInvalid || observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
     }
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
@@ -49,6 +50,9 @@ class FloatLabelTextarea extends skytree_1.Actor {
             valueGivenDisplayText: this.props.valueGivenDisplayText,
             overrideDisplayText: this.props.overrideDisplayText,
         }));
+        this.cancelOnDeactivate(this._isInvalid.didChange.subscribe(isInvalid => {
+            wrapper.setModifier("isInvalid", isInvalid);
+        }, true));
         this.cancelOnDeactivate(this.props.value.didChange.subscribe(() => {
             textarea.style.height = "25px";
             const textHeight = textarea.element.scrollHeight;
@@ -87,7 +91,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     position: relative;
     user-select: auto;
     width: calc(100% + 4px);
-    transition: 0.2s ease border-color;
+    transition: 0.2s ease border-color, 0.2s ease background;
 
     &:focus-within {
       border-color: #007AFF;
@@ -97,11 +101,23 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
       }
     }
   `,
+    modifiers: {
+        isInvalid: `
+      background-color: rgba(235, 87, 87, 0.2);
+      border-color: #d64d43a8;
+
+      &:focus-within {
+        label {
+          color: #d64d43;
+        }
+      }
+    `
+    }
 });
 const LabelStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Label",
     css: `
-    color: #BDBDBD;
+    color: #0000004C;
     position: absolute;
     left: 12px;
     top: 4px;
@@ -146,7 +162,7 @@ const TextareaStyle = web_1.ElementStyle.givenDefinition({
     transition: 0.1s ease-out transform;
 
     &::placeholder {
-      color: #BDBDBD;
+      color: #0000004C;
     }
   `,
     modifiers: {

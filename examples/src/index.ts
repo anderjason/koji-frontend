@@ -17,10 +17,6 @@ import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
-    title: "Float label textarea",
-    actor: new FloatLabelTextareaDemo(),
-  },
-  {
     title: "Card",
     actor: new CardDemo(),
   },
@@ -44,7 +40,10 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     title: "Editable text",
     actor: new EditableTextDemo(),
   },
-
+  {
+    title: "Float label textarea",
+    actor: new FloatLabelTextareaDemo(),
+  },
   {
     title: "Float label text input",
     actor: new FloatLabelTextInputDemo(),

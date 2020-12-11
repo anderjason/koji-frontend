@@ -1,11 +1,7 @@
 import { Color } from "@anderjason/color";
 import { Observable, ObservableBase } from "@anderjason/observable";
 import { NumberUtil } from "@anderjason/util";
-import {
-  ElementSizeWatcher,
-  ElementStyle,
-  ScrollArea,
-} from "@anderjason/web";
+import { ElementSizeWatcher, ElementStyle, ScrollArea } from "@anderjason/web";
 import { Actor, MultiBinding } from "skytree";
 
 export interface DescriptionInputProps {
@@ -15,6 +11,36 @@ export interface DescriptionInputProps {
 
 const lineHeight = 25;
 const collapsedMaxHeight = 50;
+
+export interface WordAndWhitespace {
+  word: string;
+  trailingWhitespace: string;
+}
+
+export function wordsAndWhitespaceGivenString(
+  input: string
+): WordAndWhitespace[] {
+  if (input == null) {
+    return [];
+  }
+  
+  const re = /(\S+)(\s*)/g;
+
+  const result: WordAndWhitespace[] = [];
+
+  let match;
+  do {
+    match = re.exec(input);
+    if (match) {
+      result.push({
+        word: match[1],
+        trailingWhitespace: match[2],
+      });
+    }
+  } while (match);
+
+  return result;
+}
 
 export class Description extends Actor<DescriptionInputProps> {
   readonly isExpanded = Observable.givenValue(false, Observable.isStrictEqual);
@@ -55,7 +81,6 @@ export class Description extends Actor<DescriptionInputProps> {
         content.style.height = "100%";
 
         let wrapperHeight: number = contentHeight;
-        console.log("wrapperHeight", contentHeight)
 
         if (this.isExpanded.value == false) {
           wrapperHeight = NumberUtil.numberWithHardLimit(
@@ -89,7 +114,7 @@ export class Description extends Actor<DescriptionInputProps> {
       sizeBinding.didInvalidate.subscribe(() => {
         if (this.isExpanded.value == false) {
           content.element.innerHTML = this.props.text.value;
-          const words = content.element.textContent.split(" ");
+          const wordsAndWhitespace = wordsAndWhitespaceGivenString(content.element.textContent);
           const textNode = content.element.firstChild;
           if (textNode == null) {
             return;
@@ -100,11 +125,12 @@ export class Description extends Actor<DescriptionInputProps> {
           let start = 0;
           let end = 0;
 
-          let collapsedWords: string[] = [];
+          let collapsedWords: WordAndWhitespace[] = [];
 
-          for (let i = 0; i < words.length; i++) {
-            const word = words[i];
-            end = start + word.length;
+          for (let i = 0; i < wordsAndWhitespace.length; i++) {
+            const wordAndWhitespace = wordsAndWhitespace[i];
+
+            end = start + wordAndWhitespace.word.length;
             range.setStart(textNode, start);
             range.setEnd(textNode, end);
 
@@ -113,20 +139,23 @@ export class Description extends Actor<DescriptionInputProps> {
               const x = rect.x - contentBounds.x + rect.width;
               const y = rect.y - contentBounds.y + rect.height;
 
-              if (y == collapsedMaxHeight && x > contentBounds.width - 100) {
+              if (
+                y > collapsedMaxHeight ||
+                (y == collapsedMaxHeight && x > contentBounds.width - 100)
+              ) {
                 break;
               }
 
-              collapsedWords.push(word);
+              collapsedWords.push(wordAndWhitespace);
             }
 
             start = end + 1;
           }
 
-          if (collapsedWords.length < words.length) {
+          if (collapsedWords.length < wordsAndWhitespace.length) {
             wrapper.setModifier("isExpandable", true);
             const span = document.createElement("span");
-            let trimmedText = collapsedWords.join(" ");
+            let trimmedText = collapsedWords.map(ww => ww.word + ww.trailingWhitespace).join("");
             trimmedText = trimmedText.replace(/(.*?)\W+$/, "$1");
 
             span.innerHTML = trimmedText + "...&nbsp;";

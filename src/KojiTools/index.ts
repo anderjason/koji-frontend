@@ -6,7 +6,7 @@ import {
 import { Debounce, Duration } from "@anderjason/time";
 import { ObjectUtil, ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
-import { LocationUtil, ObservableState } from "@anderjason/web";
+import { LocationUtil, ObservableState, ScrollArea } from "@anderjason/web";
 import { Actor } from "skytree";
 
 type PathPart = string | number;
@@ -155,6 +155,10 @@ export class KojiTools extends Actor<void> {
           this.allPlaybackShouldStop.emit();
         }
       });
+
+      this.cancelOnDeactivate(ScrollArea.willScroll.subscribe(() => {
+        this._feedSdk.requestCancelTouch();
+      }));
     }
 
     this._selectedPath.didChange.subscribe((path) => {

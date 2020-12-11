@@ -1,12 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Description = void 0;
+exports.Description = exports.wordsAndWhitespaceGivenString = void 0;
 const observable_1 = require("@anderjason/observable");
 const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const lineHeight = 25;
 const collapsedMaxHeight = 50;
+function wordsAndWhitespaceGivenString(input) {
+    if (input == null) {
+        return [];
+    }
+    const re = /(\S+)(\s*)/g;
+    const result = [];
+    let match;
+    do {
+        match = re.exec(input);
+        if (match) {
+            result.push({
+                word: match[1],
+                trailingWhitespace: match[2],
+            });
+        }
+    } while (match);
+    return result;
+}
+exports.wordsAndWhitespaceGivenString = wordsAndWhitespaceGivenString;
 class Description extends skytree_1.Actor {
     constructor() {
         super(...arguments);
@@ -32,7 +51,6 @@ class Description extends skytree_1.Actor {
             const contentHeight = content.element.scrollHeight;
             content.style.height = "100%";
             let wrapperHeight = contentHeight;
-            console.log("wrapperHeight", contentHeight);
             if (this.isExpanded.value == false) {
                 wrapperHeight = util_1.NumberUtil.numberWithHardLimit(contentHeight, 25, collapsedMaxHeight);
             }
@@ -50,7 +68,7 @@ class Description extends skytree_1.Actor {
         this.cancelOnDeactivate(sizeBinding.didInvalidate.subscribe(() => {
             if (this.isExpanded.value == false) {
                 content.element.innerHTML = this.props.text.value;
-                const words = content.element.textContent.split(" ");
+                const wordsAndWhitespace = wordsAndWhitespaceGivenString(content.element.textContent);
                 const textNode = content.element.firstChild;
                 if (textNode == null) {
                     return;
@@ -59,26 +77,27 @@ class Description extends skytree_1.Actor {
                 let start = 0;
                 let end = 0;
                 let collapsedWords = [];
-                for (let i = 0; i < words.length; i++) {
-                    const word = words[i];
-                    end = start + word.length;
+                for (let i = 0; i < wordsAndWhitespace.length; i++) {
+                    const wordAndWhitespace = wordsAndWhitespace[i];
+                    end = start + wordAndWhitespace.word.length;
                     range.setStart(textNode, start);
                     range.setEnd(textNode, end);
                     const rect = range.getClientRects()[0];
                     if (rect != null) {
                         const x = rect.x - contentBounds.x + rect.width;
                         const y = rect.y - contentBounds.y + rect.height;
-                        if (y == collapsedMaxHeight && x > contentBounds.width - 100) {
+                        if (y > collapsedMaxHeight ||
+                            (y == collapsedMaxHeight && x > contentBounds.width - 100)) {
                             break;
                         }
-                        collapsedWords.push(word);
+                        collapsedWords.push(wordAndWhitespace);
                     }
                     start = end + 1;
                 }
-                if (collapsedWords.length < words.length) {
+                if (collapsedWords.length < wordsAndWhitespace.length) {
                     wrapper.setModifier("isExpandable", true);
                     const span = document.createElement("span");
-                    let trimmedText = collapsedWords.join(" ");
+                    let trimmedText = collapsedWords.map(ww => ww.word + ww.trailingWhitespace).join("");
                     trimmedText = trimmedText.replace(/(.*?)\W+$/, "$1");
                     span.innerHTML = trimmedText + "...&nbsp;";
                     const more = document.createElement("span");

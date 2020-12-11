@@ -142,6 +142,7 @@ const ButtonStyle = ElementStyle.givenDefinition({
     border-radius: 10px;
     border: none;
     color: #FFFFFF;
+    cursor: pointer;
     display: flex;
     font-family: Source Sans Pro;
     font-style: normal;

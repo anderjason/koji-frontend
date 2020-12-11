@@ -1,4 +1,4 @@
-import { Observable, ReadOnlyObservable } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 import {
   DynamicStyleElement,
@@ -19,6 +19,7 @@ export interface FloatLabelTextInputProps<T> {
   shadowTextGivenValue?: (value: T) => string;
   applyShadowTextOnBlur?: boolean;
 
+  isInvalid?: ObservableBase<boolean>;
   persistentLabel?: string;
   placeholder?: string;
   inputType?: string;
@@ -26,6 +27,8 @@ export interface FloatLabelTextInputProps<T> {
 }
 
 export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
+  private _isInvalid: ObservableBase<boolean>;
+
   private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
 
@@ -33,6 +36,8 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     super(props);
 
     KojiAppearance.preloadFonts();
+
+    this._isInvalid = this.props.isInvalid || Observable.givenValue(false, Observable.isStrictEqual);
   }
 
   onActivate() {
@@ -135,6 +140,12 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       );
     }
 
+    this.cancelOnDeactivate(
+      this._isInvalid.didChange.subscribe(isInvalid => {
+        wrapper.setModifier("isInvalid", isInvalid);
+      }, true)
+    );
+
     if (!StringUtil.stringIsEmpty(this.props.persistentLabel)) {
       const label = this.addActor(
         LabelStyle.toManagedElement({
@@ -179,7 +190,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     position: relative;
     user-select: auto;
     width: calc(100% + 4px);
-    transition: 0.2s ease border-color;
+    transition: 0.2s ease border-color, 0.2s ease background;
 
     &:focus-within {
       border-color: #007AFF;
@@ -189,12 +200,24 @@ const WrapperStyle = ElementStyle.givenDefinition({
       }
     }
   `,
+  modifiers: {
+    isInvalid: `
+      background-color: rgba(235, 87, 87, 0.2);
+      border-color: #d64d43a8;
+
+      &:focus-within {
+        label {
+          color: #d64d43;
+        }
+      }
+    `
+  }
 });
 
 const LabelStyle = ElementStyle.givenDefinition({
   elementDescription: "Label",
   css: `
-    color: #BDBDBD;
+    color: #0000004C;
     position: absolute;
     left: 12px;
     top: 4px;
@@ -239,7 +262,7 @@ const InputStyle = ElementStyle.givenDefinition({
     transition: 0.1s ease-out transform;
 
     &::placeholder {
-      color: #BDBDBD;
+      color: #0000004C;
     }
   `,
   modifiers: {

@@ -1,5 +1,7 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
+import { Duration } from "@anderjason/time";
+import { Timer } from "skytree";
 import { AlignBottom } from "../../../src";
 import { Card } from "../../../src/Card";
 import { FloatLabelTextInput } from "../../../src/FloatLabelTextInput";
@@ -27,6 +29,18 @@ export class FloatLabelTextInputDemo extends DemoActor<void> {
 
     const value = Observable.ofEmpty<string>();
 
+    const isInvalid = Observable.givenValue(false);
+
+    this.addActor(
+      new Timer({
+        duration: Duration.givenSeconds(3),
+        isRepeating: true,
+        fn: () => {
+          isInvalid.setValue(!isInvalid.value);
+        }
+      })
+    );
+    
     this.addActor(
       new FloatLabelTextInput({
         parentElement: card.baseElement,
@@ -35,6 +49,7 @@ export class FloatLabelTextInputDemo extends DemoActor<void> {
         value,
         displayTextGivenValue: (v) => v,
         valueGivenDisplayText: (v) => v,
+        isInvalid
       })
     );
   }

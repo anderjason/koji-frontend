@@ -1,4 +1,5 @@
 import { Test } from "@anderjason/tests";
+import "./DisplayText/index.test";
 import "./KojiTools/index.test";
 
 Test.runAll()
