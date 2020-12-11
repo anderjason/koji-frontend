@@ -13,6 +13,7 @@ class FloatLabelTextInput extends skytree_1.Actor {
         this.isFocused = observable_1.ReadOnlyObservable.givenObservable(this._isFocused);
         KojiAppearance_1.KojiAppearance.preloadFonts();
         this._isInvalid = this.props.isInvalid || observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
+        this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
     }
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
@@ -33,9 +34,9 @@ class FloatLabelTextInput extends skytree_1.Actor {
         }));
         const inputType = this.props.inputType || "text";
         input.element.type = inputType;
-        if (this.props.maxLength != null) {
-            input.element.maxLength = this.props.maxLength;
-        }
+        this.cancelOnDeactivate(this._maxLength.didChange.subscribe(maxLength => {
+            input.element.maxLength = maxLength;
+        }, true));
         if (this.props.placeholder != null) {
             input.element.placeholder = this.props.placeholder;
         }

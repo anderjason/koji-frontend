@@ -57,6 +57,7 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     margin-top: -4px;
     text-align: left;
     user-select: none;
+    white-space: pre-wrap;
   `,
 });
 const styleByDisplayType = new Map();

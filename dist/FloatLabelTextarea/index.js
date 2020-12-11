@@ -13,6 +13,7 @@ class FloatLabelTextarea extends skytree_1.Actor {
         this.isFocused = observable_1.ReadOnlyObservable.givenObservable(this._isFocused);
         KojiAppearance_1.KojiAppearance.preloadFonts();
         this._isInvalid = this.props.isInvalid || observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
+        this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
     }
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
@@ -27,9 +28,9 @@ class FloatLabelTextarea extends skytree_1.Actor {
         if (this.props.placeholder != null) {
             textarea.element.placeholder = this.props.placeholder;
         }
-        if (this.props.maxLength != null) {
-            textarea.element.maxLength = this.props.maxLength;
-        }
+        this.cancelOnDeactivate(this._maxLength.didChange.subscribe(maxLength => {
+            textarea.element.maxLength = maxLength;
+        }, true));
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
             textarea.element.focus();
         }));

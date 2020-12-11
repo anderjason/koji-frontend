@@ -1,5 +1,4 @@
-import { Observable, TypedEvent } from "@anderjason/observable";
-import { NumberUtil } from "@anderjason/util";
+import { Observable, ObservableBase, TypedEvent } from "@anderjason/observable";
 import {
   DynamicStyleElement,
   ElementStyle,
@@ -16,9 +15,12 @@ export interface EditableTextProps {
 
   output?: Observable<string>;
   theme?: KojiTheme | Observable<KojiTheme>;
+  maxLength?: number | ObservableBase<number>;
 }
 
 export class EditableText extends Actor<EditableTextProps> {
+  private _maxLength: ObservableBase<number>;
+
   readonly didFocus = new TypedEvent();
   readonly output: Observable<string>;
 
@@ -27,6 +29,8 @@ export class EditableText extends Actor<EditableTextProps> {
 
     this.output =
       this.props.output || Observable.ofEmpty<string>(Observable.isStrictEqual);
+
+    this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
   }
 
   onActivate() {
@@ -62,6 +66,12 @@ export class EditableText extends Actor<EditableTextProps> {
 
     input.element.classList.add("kft-text");
     input.element.placeholder = this.props.placeholderLabel;
+
+    this.cancelOnDeactivate(
+      this._maxLength.didChange.subscribe(maxLength => {
+        input.element.maxLength = maxLength;
+      }, true)
+    )
 
     this.cancelOnDeactivate(
       input.addManagedEventListener("focus", () => {

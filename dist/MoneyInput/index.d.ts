@@ -1,4 +1,4 @@
-import { Observable } from "@anderjason/observable";
+import { Observable, ObservableBase } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { Money } from "@anderjason/money";
 export interface MoneyInputProps {
@@ -6,6 +6,7 @@ export interface MoneyInputProps {
     value: Observable<Money>;
     persistentLabel: string;
     maxValue?: Money;
+    isInvalid?: ObservableBase<boolean>;
 }
 export declare class MoneyInput extends Actor<MoneyInputProps> {
     onActivate(): void;

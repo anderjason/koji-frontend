@@ -1,12 +1,14 @@
 import { Actor } from "skytree";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
-import { Observable } from "@anderjason/observable";
+import { Observable, ObservableBase } from "@anderjason/observable";
 
 export interface IntegerInputProps {
   parentElement: HTMLElement;
   value: Observable<number>;
   persistentLabel: string;
   placeholder: string;
+
+  isInvalid?: ObservableBase<boolean>;
 }
 
 export class IntegerInput extends Actor<IntegerInputProps> {
@@ -17,6 +19,7 @@ export class IntegerInput extends Actor<IntegerInputProps> {
         persistentLabel: this.props.persistentLabel,
         placeholder: this.props.placeholder,
         value: this.props.value,
+        isInvalid: this.props.isInvalid,
         displayTextGivenValue: (value) => {
           if (value == null || isNaN(value)) {
             return "";

@@ -10,10 +10,11 @@ export interface FloatLabelTextareaProps<T> {
     isInvalid?: ObservableBase<boolean>;
     persistentLabel?: string;
     placeholder?: string;
-    maxLength?: number;
+    maxLength?: number | ObservableBase<number>;
 }
 export declare class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
     private _isInvalid;
+    private _maxLength;
     private _isFocused;
     readonly isFocused: ReadOnlyObservable<boolean>;
     constructor(props: FloatLabelTextareaProps<T>);

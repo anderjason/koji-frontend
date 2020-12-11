@@ -11,6 +11,7 @@ class MoneyInput extends skytree_1.Actor {
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
             value: this.props.value,
+            isInvalid: this.props.isInvalid,
             displayTextGivenValue: (price) => {
                 if (price == null) {
                     return "";

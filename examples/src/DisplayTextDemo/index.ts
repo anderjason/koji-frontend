@@ -30,8 +30,7 @@ export class DisplayTextDemo extends DemoActor<void> {
       new DisplayText({
         parentElement: card.baseElement,
         displayType: "title",
-        text: Observable.givenValue("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"),
-        theme: Observable.givenValue(KojiAppearance.themes.get("kojiBlack")),
+        text: Observable.givenValue("First line\nSecond line"),
       })
     );
 
@@ -52,7 +51,6 @@ export class DisplayTextDemo extends DemoActor<void> {
         text: "Buy the thing",
         onClick: () => {},
         buttonMode: "ready",
-        theme: KojiAppearance.themes.get("kojiBlack"),
       })
     );
   }

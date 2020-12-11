@@ -27,7 +27,6 @@ class ConfirmationPrompt extends skytree_1.Actor {
             },
         }));
         this.cancelOnDeactivate(overlay.addManagedEventListener("click", () => {
-            console.log("click");
             this.props.onCancel();
         }));
         const modalContainer = this.addActor(ModalContainerStyle.toManagedElement({

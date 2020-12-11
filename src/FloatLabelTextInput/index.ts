@@ -23,11 +23,12 @@ export interface FloatLabelTextInputProps<T> {
   persistentLabel?: string;
   placeholder?: string;
   inputType?: string;
-  maxLength?: number;
+  maxLength?: number | ObservableBase<number>;
 }
 
 export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
   private _isInvalid: ObservableBase<boolean>;
+  private _maxLength: ObservableBase<number>;
 
   private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
@@ -38,6 +39,7 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     KojiAppearance.preloadFonts();
 
     this._isInvalid = this.props.isInvalid || Observable.givenValue(false, Observable.isStrictEqual);
+    this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
   }
 
   onActivate() {
@@ -68,9 +70,11 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     const inputType = this.props.inputType || "text";
     input.element.type = inputType;
     
-    if (this.props.maxLength != null) {
-      input.element.maxLength = this.props.maxLength;
-    }
+    this.cancelOnDeactivate(
+      this._maxLength.didChange.subscribe(maxLength => {
+        input.element.maxLength = maxLength;
+      }, true)
+    )
 
     if (this.props.placeholder != null) {
       input.element.placeholder = this.props.placeholder;

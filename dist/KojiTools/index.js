@@ -38,6 +38,10 @@ class KojiTools extends skytree_1.Actor {
                 this._sessionMode.setValue("admin");
                 this._currentMode.setValue("admin");
             }
+            else if (query["context"] === "remix") {
+                this._sessionMode.setValue("remix");
+                this._currentMode.setValue("remix");
+            }
             else {
                 this._sessionMode.setValue("view");
                 this._currentMode.setValue("view");
@@ -54,6 +58,9 @@ class KojiTools extends skytree_1.Actor {
         if (KojiTools._instance == null) {
             KojiTools._instance = new KojiTools();
             KojiTools._instance.activate();
+        }
+        if (typeof window !== "undefined") {
+            window.koji = KojiTools._instance;
         }
         return KojiTools._instance;
     }

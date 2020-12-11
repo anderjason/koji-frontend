@@ -28,6 +28,7 @@ export class SubmitButtonDemo extends DemoActor<void> {
     );
 
     const buttonMode = Observable.givenValue<SubmitButtonMode>("ready");
+    const buttonText = Observable.givenValue<string>("Unlock now");
 
     this.addActor(
       new SubmitButton({
@@ -35,8 +36,7 @@ export class SubmitButtonDemo extends DemoActor<void> {
           type: "parentElement",
           parentElement: card.baseElement,
         },
-        text: "Unlock now",
-        theme: KojiAppearance.themes.get("kojiBlack"),
+        text: buttonText,
         buttonMode,
         onClick: async () => {
           buttonMode.setValue("busy");
@@ -44,8 +44,13 @@ export class SubmitButtonDemo extends DemoActor<void> {
           await Duration.givenSeconds(1.5).toDelay();
           buttonMode.setValue("success");
 
-          await Duration.givenSeconds(2).toDelay();
+          await Duration.givenSeconds(2.5).toDelay();
+          buttonMode.setValue("disabled");
+          buttonText.setValue("Sold out")
+
+          await Duration.givenSeconds(4).toDelay();
           buttonMode.setValue("ready");
+          buttonText.setValue("Unlock now")
         },
       })
     );

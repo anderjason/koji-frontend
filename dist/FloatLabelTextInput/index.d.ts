@@ -13,10 +13,11 @@ export interface FloatLabelTextInputProps<T> {
     persistentLabel?: string;
     placeholder?: string;
     inputType?: string;
-    maxLength?: number;
+    maxLength?: number | ObservableBase<number>;
 }
 export declare class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     private _isInvalid;
+    private _maxLength;
     private _isFocused;
     readonly isFocused: ReadOnlyObservable<boolean>;
     constructor(props: FloatLabelTextInputProps<T>);

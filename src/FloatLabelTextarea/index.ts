@@ -19,11 +19,12 @@ export interface FloatLabelTextareaProps<T> {
   isInvalid?: ObservableBase<boolean>;
   persistentLabel?: string;
   placeholder?: string;
-  maxLength?: number;
+  maxLength?: number | ObservableBase<number>;
 }
 
 export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
   private _isInvalid: ObservableBase<boolean>;
+  private _maxLength: ObservableBase<number>;
 
   private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
@@ -34,6 +35,7 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
     KojiAppearance.preloadFonts();
 
     this._isInvalid = this.props.isInvalid || Observable.givenValue(false, Observable.isStrictEqual);
+    this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
   }
 
   onActivate() {
@@ -56,9 +58,11 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
       textarea.element.placeholder = this.props.placeholder;
     }
 
-    if (this.props.maxLength != null) {
-      textarea.element.maxLength = this.props.maxLength;
-    }
+    this.cancelOnDeactivate(
+      this._maxLength.didChange.subscribe(maxLength => {
+        textarea.element.maxLength = maxLength;
+      }, true)
+    )
 
     this.cancelOnDeactivate(
       wrapper.addManagedEventListener("click", () => {

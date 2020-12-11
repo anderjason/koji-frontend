@@ -11,6 +11,7 @@ class EditableText extends skytree_1.Actor {
         this.didFocus = new observable_1.TypedEvent();
         this.output =
             this.props.output || observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
     }
     onActivate() {
         const style = styleByDisplayType.get(this.props.displayType);
@@ -34,6 +35,9 @@ class EditableText extends skytree_1.Actor {
         }
         input.element.classList.add("kft-text");
         input.element.placeholder = this.props.placeholderLabel;
+        this.cancelOnDeactivate(this._maxLength.didChange.subscribe(maxLength => {
+            input.element.maxLength = maxLength;
+        }, true));
         this.cancelOnDeactivate(input.addManagedEventListener("focus", () => {
             input.element.setSelectionRange(0, (input.element.value || "").length);
             this.didFocus.emit();

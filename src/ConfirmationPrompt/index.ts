@@ -46,7 +46,6 @@ export class ConfirmationPrompt extends Actor<ConfirmationPromptProps> {
 
     this.cancelOnDeactivate(
       overlay.addManagedEventListener("click", () => {
-        console.log("click");
         this.props.onCancel();
       })
     );

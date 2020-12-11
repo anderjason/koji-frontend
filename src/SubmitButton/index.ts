@@ -1,19 +1,20 @@
 import { Color } from "@anderjason/color";
 import { Observable, ObservableBase, Receipt } from "@anderjason/observable";
 import { ElementStyle, ManagedElement } from "@anderjason/web";
-import { Actor } from "skytree";
+import { Actor, ConditionalActivator, MultiBinding } from "skytree";
 import { ThisOrParentElement } from "..";
-import { KojiTheme } from "../KojiAppearance";
+import { KojiAppearance, KojiTheme } from "../KojiAppearance";
 import { LoadingIndicator } from "../LoadingIndicator";
 
-export type SubmitButtonMode = "ready" | "busy" | "success";
+export type SubmitButtonMode = "ready" | "busy" | "success" | "disabled";
 
 export interface SubmitButtonProps {
   buttonMode: SubmitButtonMode | ObservableBase<SubmitButtonMode>;
   onClick: () => void;
   target: ThisOrParentElement<HTMLButtonElement>;
   text: string | ObservableBase<string>;
-  theme: KojiTheme | ObservableBase<KojiTheme>;
+
+  theme?: KojiTheme | ObservableBase<KojiTheme>;
 }
 
 const checkSvg = `
@@ -23,6 +24,18 @@ const checkSvg = `
 `;
 
 export class SubmitButton extends Actor<SubmitButtonProps> {
+  private _text: ObservableBase<string>;
+  private _buttonMode: ObservableBase<SubmitButtonMode>;
+  private _theme: ObservableBase<KojiTheme>;
+
+  constructor(props: SubmitButtonProps) {
+    super(props);
+
+    this._text = Observable.givenValueOrObservable(this.props.text);
+    this._buttonMode = Observable.givenValueOrObservable(this.props.buttonMode);
+    this._theme = Observable.givenValueOrObservable(this.props.theme);
+  }
+
   onActivate() {
     let button: HTMLButtonElement;
 
@@ -42,14 +55,22 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
         throw new Error("An element is required (this or parent)");
     }
 
+    const onClick = () => {
+      if (this._buttonMode.value !== "ready") {
+        return;
+      }
+
+      this.props.onClick();
+    }
+
     button.classList.add(ButtonStyle.toCombinedClassName());
     button.classList.add("kft-control");
-    button.addEventListener("click", this.props.onClick);
+    button.addEventListener("click", onClick);
     button.type = "button";
 
     this.cancelOnDeactivate(
       new Receipt(() => {
-        button.removeEventListener("click", this.props.onClick);
+        button.removeEventListener("click", onClick);
       })
     );
 
@@ -57,9 +78,8 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     textElement.className = "text";
     button.appendChild(textElement);
 
-    const observableText = Observable.givenValueOrObservable(this.props.text);
     this.cancelOnDeactivate(
-      observableText.didChange.subscribe((text) => {
+      this._text.didChange.subscribe((text) => {
         if (text == null) {
           textElement.innerHTML = "";
         } else {
@@ -77,53 +97,15 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     completeIcon.innerHTML = checkSvg;
     button.appendChild(completeIcon);
 
-    const observableMode = Observable.givenValueOrObservable(
-      this.props.buttonMode
+    const appearanceBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        this._theme,
+        this._buttonMode
+      ])
     );
 
-    let loader: LoadingIndicator;
     this.cancelOnDeactivate(
-      observableMode.didChange.subscribe((mode) => {
-        let className: string;
-        switch (mode) {
-          case "ready":
-            className = ButtonStyle.toCombinedClassName();
-            button.disabled = false;
-            break;
-          case "busy":
-            className = ButtonStyle.toCombinedClassName("isTextHidden");
-            button.disabled = true;
-            break;
-          case "success":
-            className = ButtonStyle.toCombinedClassName([
-              "isTextHidden",
-              "isSuccess",
-            ]);
-            button.disabled = true;
-            break;
-        }
-
-        button.className = `kft-control ${className}`;
-
-        if (loader != null) {
-          this.removeActor(loader);
-          loader = undefined;
-        }
-
-        if (mode === "busy") {
-          loader = this.addActor(
-            new LoadingIndicator({
-              parentElement: loadingWrapper,
-              color: Color.givenHexString("#FFFFFF"),
-            })
-          );
-        }
-      })
-    );
-
-    const observableTheme = Observable.givenValueOrObservable(this.props.theme);
-    this.cancelOnDeactivate(
-      observableTheme.didChange.subscribe((theme) => {
+      this._theme.didChange.subscribe((theme) => {
         if (theme == null) {
           return;
         }
@@ -131,6 +113,57 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
         theme.applyBackgroundStyle(button);
       }, true)
     );
+
+    this.cancelOnDeactivate(
+      appearanceBinding.didInvalidate.subscribe(() => {
+        const mode = this._buttonMode.value;
+        const theme = this._theme.value || KojiAppearance.themes.get("kojiBlue");
+
+        if (mode == null) {
+          return;
+        }
+        
+        let className: string;
+        switch (mode) {
+          case "ready":
+            className = ButtonStyle.toCombinedClassName();
+            button.disabled = false;
+            theme.applyBackgroundStyle(button);
+            break;
+          case "busy":
+            className = ButtonStyle.toCombinedClassName("isTextHidden");
+            button.disabled = true;
+            theme.applyBackgroundStyle(button);
+            break;
+          case "success":
+            className = ButtonStyle.toCombinedClassName([
+              "isTextHidden",
+              "isSuccess",
+            ]);
+            button.disabled = true;
+            theme.applyBackgroundStyle(button);
+            break;
+          case "disabled":
+            className = ButtonStyle.toCombinedClassName("isDisabled");
+            button.disabled = true;
+            button.style.background = "#00000022";
+            break;
+        }
+
+        button.className = `kft-control ${className}`;
+      }, true)
+    );
+
+    this.addActor(
+      new ConditionalActivator({
+        input: this._buttonMode,
+        fn: mode => mode === "busy",
+        actor: new LoadingIndicator({
+          parentElement: loadingWrapper,
+          color: Color.givenHexString("#FFFFFF"),
+        })
+      })
+    )
   }
 }
 
@@ -138,7 +171,7 @@ const ButtonStyle = ElementStyle.givenDefinition({
   elementDescription: "Button",
   css: `
     align-items: center;
-    background: #2D2F30;
+    background: #007AFF;
     border-radius: 10px;
     border: none;
     color: #FFFFFF;
@@ -158,7 +191,7 @@ const ButtonStyle = ElementStyle.givenDefinition({
     padding: 1em 0;
     position: relative;
     text-align: center;
-    transition: 0.2s ease transform;
+    transition: 0.2s ease transform, 0.2s ease background;
     width: calc(100% + 4px);
 
     &:active:enabled {
@@ -202,8 +235,6 @@ const ButtonStyle = ElementStyle.givenDefinition({
       }
     `,
     isSuccess: `
-      background-position: 1px -110px;
-
       .text {
         opacity: 0;
       }
@@ -212,6 +243,14 @@ const ButtonStyle = ElementStyle.givenDefinition({
         transition: 0.3s ease all;
         opacity: 1;
         transform: scale(0.6);
+      }
+    `,
+    isDisabled: `
+      background: #00000022;
+      cursor: auto;
+
+      .text {
+        color: #2D2F3055;
       }
     `,
   },

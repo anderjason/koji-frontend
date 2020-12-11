@@ -10,6 +10,7 @@ class IntegerInput extends skytree_1.Actor {
             persistentLabel: this.props.persistentLabel,
             placeholder: this.props.placeholder,
             value: this.props.value,
+            isInvalid: this.props.isInvalid,
             displayTextGivenValue: (value) => {
                 if (value == null || isNaN(value)) {
                     return "";
