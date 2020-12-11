@@ -136,7 +136,6 @@ export class KojiTools extends Actor<void> {
         }
 
         if (editorAttributes?.type === "full") {
-          console.log("Running in the editor")
           this._isKojiEditor = true;
         }
 
@@ -204,7 +203,6 @@ export class KojiTools extends Actor<void> {
 
       if (this._isKojiEditor == true) {
         // don't send VCC updates to Koji when running in the editor
-        console.log("Skipping VCC update")
         return;
       }
 
