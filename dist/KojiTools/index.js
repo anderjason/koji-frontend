@@ -101,6 +101,9 @@ class KojiTools extends skytree_1.Actor {
                 else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
                     this._sessionMode.setValue("remix");
                 }
+                if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.type) === "full") {
+                    this._isKojiEditor = true;
+                }
                 if (isRemixing === false) {
                     this._selectedPath.setValue(undefined);
                     this._currentMode.setValue("view");
@@ -150,6 +153,10 @@ class KojiTools extends skytree_1.Actor {
             const currentValue = this._instantRemixing.get(["general"]);
             if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, this._vccData.state.value)) {
                 return; // nothing to update
+            }
+            if (this._isKojiEditor == true) {
+                // don't send VCC updates to Koji when running in the editor
+                return;
             }
             this._instantRemixing.onSetValue(["general"], util_1.ObjectUtil.objectWithDeepMerge({}, this._vccData.state.value), // make sure to pass a clone to instant remixing
             true);

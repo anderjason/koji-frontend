@@ -42,6 +42,7 @@ export class KojiTools extends Actor<void> {
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
   private _updateKojiLater: Debounce<void>;
+  private _isKojiEditor: boolean;
 
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
   readonly allPlaybackShouldStop = new TypedEvent();
@@ -134,6 +135,10 @@ export class KojiTools extends Actor<void> {
           this._sessionMode.setValue("remix");
         }
 
+        if (editorAttributes?.type === "full") {
+          this._isKojiEditor = true;
+        }
+
         if (isRemixing === false) {
           this._selectedPath.setValue(undefined);
           this._currentMode.setValue("view");
@@ -194,6 +199,11 @@ export class KojiTools extends Actor<void> {
         ObjectUtil.objectIsDeepEqual(currentValue, this._vccData.state.value)
       ) {
         return; // nothing to update
+      }
+
+      if (this._isKojiEditor == true) {
+        // don't send VCC updates to Koji when running in the editor
+        return;
       }
 
       (this._instantRemixing as any).onSetValue(

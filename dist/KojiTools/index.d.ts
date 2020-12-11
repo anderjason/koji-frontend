@@ -14,6 +14,7 @@ export declare class KojiTools extends Actor<void> {
     private _instantRemixing;
     private _feedSdk;
     private _updateKojiLater;
+    private _isKojiEditor;
     readonly willReceiveExternalData: TypedEvent<ValuePath>;
     readonly allPlaybackShouldStop: TypedEvent<void>;
     readonly currentMode: ReadOnlyObservable<KojiMode>;
