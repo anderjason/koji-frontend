@@ -38,10 +38,6 @@ class KojiTools extends skytree_1.Actor {
                 this._sessionMode.setValue("admin");
                 this._currentMode.setValue("admin");
             }
-            else if (query["context"] === "remix") {
-                this._sessionMode.setValue("remix");
-                this._currentMode.setValue("remix");
-            }
             else {
                 this._sessionMode.setValue("view");
                 this._currentMode.setValue("view");
