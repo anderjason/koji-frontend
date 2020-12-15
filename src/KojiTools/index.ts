@@ -151,6 +151,10 @@ export class KojiTools extends Actor<void> {
         if (externalPath == null) {
           this._selectedPath.setValue(undefined);
         } else {
+          if (externalPath[0] !== "general") {
+            return;
+          }
+          
           const internalPath = externalPath.slice(1);
           this._selectedPath.setValue(ValuePath.givenParts(internalPath));
         }

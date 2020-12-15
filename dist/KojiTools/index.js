@@ -117,6 +117,9 @@ class KojiTools extends skytree_1.Actor {
                     this._selectedPath.setValue(undefined);
                 }
                 else {
+                    if (externalPath[0] !== "general") {
+                        return;
+                    }
                     const internalPath = externalPath.slice(1);
                     this._selectedPath.setValue(util_1.ValuePath.givenParts(internalPath));
                 }
