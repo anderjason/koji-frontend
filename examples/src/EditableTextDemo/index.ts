@@ -1,4 +1,7 @@
 import { DemoActor } from "@anderjason/example-tools";
+import { Observable } from "@anderjason/observable";
+import { Duration } from "@anderjason/time";
+import { Timer } from "skytree";
 import { AlignBottom, EditableText } from "../../../src";
 import { Card } from "../../../src/Card";
 
@@ -24,11 +27,24 @@ export class EditableTextDemo extends DemoActor<void> {
       })
     );
 
+    const isInvalid = Observable.givenValue(false);
+
+    this.addActor(
+      new Timer({
+        duration: Duration.givenSeconds(3),
+        isRepeating: true,
+        fn: () => {
+          isInvalid.setValue(!isInvalid.value);
+        }
+      })
+    );
+
     this.addActor(
       new EditableText({
         parentElement: card.baseElement,
         displayType: "title",
         placeholderLabel: "Type a title here",
+        isInvalid
       })
     );
 
@@ -37,6 +53,7 @@ export class EditableTextDemo extends DemoActor<void> {
         parentElement: card.baseElement,
         displayType: "description",
         placeholderLabel: "Type a description here",
+        isInvalid
       })
     );
   }

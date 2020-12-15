@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KojiTools = void 0;
 const observable_1 = require("@anderjason/observable");
-const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
 const vcc_1 = require("@withkoji/vcc");
 const web_1 = require("@anderjason/web");
@@ -43,12 +42,6 @@ class KojiTools extends skytree_1.Actor {
                 this._currentMode.setValue("view");
             }
         }
-        this._updateKojiLater = new time_1.Debounce({
-            fn: () => {
-                this.sendPendingUpdates();
-            },
-            duration: time_1.Duration.givenSeconds(0.25),
-        });
     }
     static get instance() {
         if (KojiTools._instance == null) {
@@ -77,8 +70,11 @@ class KojiTools extends skytree_1.Actor {
         this._vccData = this.addActor(new web_1.ObservableState({
             initialState: (_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"]),
         }));
-        this.cancelOnDeactivate(this._vccData.state.didChange.subscribe(() => {
-            this._updateKojiLater.invoke();
+        this.cancelOnDeactivate(this._vccData.willChange.subscribe(change => {
+            if (this._instantRemixing == null) {
+                return;
+            }
+            this._instantRemixing.onSetValue(change.valuePath.toParts(), change.newValue, true);
         }));
         if (this._instantRemixing != null) {
             this._instantRemixing.onValueChanged((path, newValue) => {
@@ -96,9 +92,6 @@ class KojiTools extends skytree_1.Actor {
                 }
                 else if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "new") {
                     this._sessionMode.setValue("remix");
-                }
-                if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.type) === "full") {
-                    this._isKojiEditor = true;
                 }
                 if (isRemixing === false) {
                     this._selectedPath.setValue(undefined);
@@ -145,21 +138,6 @@ class KojiTools extends skytree_1.Actor {
                 this._instantRemixing.onPresentControl(undefined);
             }
         });
-    }
-    sendPendingUpdates() {
-        this._updateKojiLater.clear();
-        if (this._instantRemixing != null) {
-            const currentValue = this._instantRemixing.get(["general"]);
-            if (util_1.ObjectUtil.objectIsDeepEqual(currentValue, this._vccData.state.value)) {
-                return; // nothing to update
-            }
-            if (this._isKojiEditor == true) {
-                // don't send VCC updates to Koji when running in the editor
-                return;
-            }
-            this._instantRemixing.onSetValue(["general"], util_1.ObjectUtil.objectWithDeepMerge({}, this._vccData.state.value), // make sure to pass a clone to instant remixing
-            true);
-        }
     }
 }
 exports.KojiTools = KojiTools;

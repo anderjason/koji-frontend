@@ -9,17 +9,19 @@ import { DisplayTextType } from "../DisplayText";
 import { KojiAppearance, KojiTheme } from "../KojiAppearance";
 
 export interface EditableTextProps {
-  parentElement: HTMLElement;
   displayType: DisplayTextType;
+  parentElement: HTMLElement;
   placeholderLabel: string;
 
+  isInvalid?: ObservableBase<boolean>;
+  maxLength?: number | ObservableBase<number>;
   output?: Observable<string>;
   theme?: KojiTheme | Observable<KojiTheme>;
-  maxLength?: number | ObservableBase<number>;
 }
 
 export class EditableText extends Actor<EditableTextProps> {
   private _maxLength: ObservableBase<number>;
+  private _isInvalid: ObservableBase<boolean>;
 
   readonly didFocus = new TypedEvent();
   readonly output: Observable<string>;
@@ -30,14 +32,13 @@ export class EditableText extends Actor<EditableTextProps> {
     this.output =
       this.props.output || Observable.ofEmpty<string>(Observable.isStrictEqual);
 
+    this._isInvalid = this.props.isInvalid || Observable.givenValue(false, Observable.isStrictEqual);
     this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
   }
 
   onActivate() {
     const style = styleByDisplayType.get(this.props.displayType);
-    const observableTheme = Observable.givenValueOrObservable(
-      this.props.theme || KojiAppearance.themes.get("kojiBlack")
-    );
+    const observableTheme = Observable.givenValueOrObservable(this.props.theme);
 
     let input:
       | DynamicStyleElement<HTMLInputElement>
@@ -101,6 +102,12 @@ export class EditableText extends Actor<EditableTextProps> {
     );
 
     this.cancelOnDeactivate(
+      this._isInvalid.didChange.subscribe(isInvalid => {
+        input.setModifier("isInvalid", isInvalid);
+      }, true)
+    );
+
+    this.cancelOnDeactivate(
       observableTheme.didChange.subscribe((theme) => {
         if (theme == null) {
           return;
@@ -120,6 +127,8 @@ const TitleStyle = ElementStyle.givenDefinition({
     appearance: none;
     background: none;
     border: none;
+    border-radius: 6px;
+    color: rgb(45, 47, 48);
     font-family: PT Sans;
     font-size: 26px;
     font-style: normal;
@@ -127,9 +136,12 @@ const TitleStyle = ElementStyle.givenDefinition({
     letter-spacing: 0.02em;
     line-height: 34px;
     margin-top: -6px;
+    margin-left: -6px;
+    margin-right: -6px;
     outline: none;
-    padding: 0;
+    padding: 0 6px;
     resize: none;
+    transition: 0.2s ease color, 0.2s ease background;
     user-select: auto;
     width: 100%;
 
@@ -162,6 +174,17 @@ const TitleStyle = ElementStyle.givenDefinition({
       } 
     }
   `,
+  modifiers: {
+    isInvalid: `
+      background-color: rgba(235, 87, 87, 0.2);
+      border-color: #d64d43a8;
+      color: #d64d43;
+
+      &::placeholder {
+        color: #d64d43a8;
+      }  
+    `
+  }
 });
 
 const DescriptionStyle = ElementStyle.givenDefinition({

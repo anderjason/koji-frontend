@@ -4,18 +4,18 @@ exports.EditableText = void 0;
 const observable_1 = require("@anderjason/observable");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const KojiAppearance_1 = require("../KojiAppearance");
 class EditableText extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this.didFocus = new observable_1.TypedEvent();
         this.output =
             this.props.output || observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this._isInvalid = this.props.isInvalid || observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
         this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
     }
     onActivate() {
         const style = styleByDisplayType.get(this.props.displayType);
-        const observableTheme = observable_1.Observable.givenValueOrObservable(this.props.theme || KojiAppearance_1.KojiAppearance.themes.get("kojiBlack"));
+        const observableTheme = observable_1.Observable.givenValueOrObservable(this.props.theme);
         let input;
         switch (this.props.displayType) {
             case "title":
@@ -57,6 +57,9 @@ class EditableText extends skytree_1.Actor {
             input.style.height = "25px";
             input.style.height = `${input.element.scrollHeight}px`;
         }, true));
+        this.cancelOnDeactivate(this._isInvalid.didChange.subscribe(isInvalid => {
+            input.setModifier("isInvalid", isInvalid);
+        }, true));
         this.cancelOnDeactivate(observableTheme.didChange.subscribe((theme) => {
             if (theme == null) {
                 return;
@@ -74,6 +77,8 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     appearance: none;
     background: none;
     border: none;
+    border-radius: 6px;
+    color: rgb(45, 47, 48);
     font-family: PT Sans;
     font-size: 26px;
     font-style: normal;
@@ -81,9 +86,12 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     letter-spacing: 0.02em;
     line-height: 34px;
     margin-top: -6px;
+    margin-left: -6px;
+    margin-right: -6px;
     outline: none;
-    padding: 0;
+    padding: 0 6px;
     resize: none;
+    transition: 0.2s ease color, 0.2s ease background;
     user-select: auto;
     width: 100%;
 
@@ -116,6 +124,17 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
       } 
     }
   `,
+    modifiers: {
+        isInvalid: `
+      background-color: rgba(235, 87, 87, 0.2);
+      border-color: #d64d43a8;
+      color: #d64d43;
+
+      &::placeholder {
+        color: #d64d43a8;
+      }  
+    `
+    }
 });
 const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     css: `

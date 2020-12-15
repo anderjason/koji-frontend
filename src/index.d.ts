@@ -1,3 +1,5 @@
+import { PathPart } from "@anderjason/util/dist/ValuePath";
+
 declare module "@withkoji/vcc" {
   export namespace Koji {
     const config: Config;
@@ -10,22 +12,22 @@ declare module "@withkoji/vcc" {
 
   export class InstantRemixing {
     constructor();
-    get(path: string[]): any;
-    onSetValue(fn: (path: string[], newValue: any) => void): void;
-    onValueChanged(fn: (path: string[], newValue: any) => void): void;
+    get(path: PathPart[]): any;
+    onSetValue(path: PathPart[], newValue: any, skipUpdate: boolean): void;
+    onValueChanged(fn: (path: PathPart[], newValue: any) => void): void;
 
     onSetRemixing(
       fn: (isRemixing: boolean, editorAttributes: EditorAttributes) => void
     ): void;
 
-    onSetActivePath(fn: (activePath: string[] | null) => void): void;
+    onSetActivePath(fn: (activePath: PathPart[] | null) => void): void;
     ready(): void;
     addVisibilityListener(fn: (isVisible: boolean) => void): void;
 
     remixingActivePath: string[] | null;
     isRemixing: boolean;
     onPresentControl(
-      path: string[],
+      path: PathPart[],
       attributes: { [index: string]: any }
     ): void;
   }

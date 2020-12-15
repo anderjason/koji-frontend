@@ -13,8 +13,6 @@ export declare class KojiTools extends Actor<void> {
     private _selectedPath;
     private _instantRemixing;
     private _feedSdk;
-    private _updateKojiLater;
-    private _isKojiEditor;
     readonly willReceiveExternalData: TypedEvent<ValuePath>;
     readonly allPlaybackShouldStop: TypedEvent<void>;
     readonly currentMode: ReadOnlyObservable<KojiMode>;
@@ -25,6 +23,5 @@ export declare class KojiTools extends Actor<void> {
     get instantRemixing(): InstantRemixing;
     get feedSdk(): FeedSdk;
     onActivate(): void;
-    sendPendingUpdates(): void;
     private onValueChanged;
 }

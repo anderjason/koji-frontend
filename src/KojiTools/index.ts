@@ -3,8 +3,7 @@ import {
   ReadOnlyObservable,
   TypedEvent,
 } from "@anderjason/observable";
-import { Debounce, Duration } from "@anderjason/time";
-import { ObjectUtil, ValuePath } from "@anderjason/util";
+import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { LocationUtil, ObservableState, ScrollArea } from "@anderjason/web";
 import { Actor } from "skytree";
@@ -41,8 +40,6 @@ export class KojiTools extends Actor<void> {
   private _selectedPath = Observable.ofEmpty<ValuePath>(ValuePath.isEqual);
   private _instantRemixing: InstantRemixing;
   private _feedSdk: FeedSdk;
-  private _updateKojiLater: Debounce<void>;
-  private _isKojiEditor: boolean;
 
   readonly willReceiveExternalData = new TypedEvent<ValuePath>();
   readonly allPlaybackShouldStop = new TypedEvent();
@@ -72,13 +69,6 @@ export class KojiTools extends Actor<void> {
         this._currentMode.setValue("view");
       }
     }
-
-    this._updateKojiLater = new Debounce({
-      fn: () => {
-        this.sendPendingUpdates();
-      },
-      duration: Duration.givenSeconds(0.25),
-    });
   }
 
   get vccData(): ObservableState {
@@ -105,8 +95,16 @@ export class KojiTools extends Actor<void> {
     );
 
     this.cancelOnDeactivate(
-      this._vccData.state.didChange.subscribe(() => {
-        this._updateKojiLater.invoke();
+      this._vccData.willChange.subscribe(change => {
+        if (this._instantRemixing == null) {
+          return;
+        }
+      
+        this._instantRemixing.onSetValue(
+          change.valuePath.toParts(),
+          change.newValue,
+          true
+        );
       })
     );
 
@@ -130,10 +128,6 @@ export class KojiTools extends Actor<void> {
           this._sessionMode.setValue("edit");
         } else if (editorAttributes?.mode === "new") {
           this._sessionMode.setValue("remix");
-        }
-
-        if (editorAttributes?.type === "full") {
-          this._isKojiEditor = true;
         }
 
         if (isRemixing === false) {
@@ -189,30 +183,6 @@ export class KojiTools extends Actor<void> {
         (this._instantRemixing as any).onPresentControl(undefined);
       }
     });
-  }
-
-  sendPendingUpdates() {
-    this._updateKojiLater.clear();
-
-    if (this._instantRemixing != null) {
-      const currentValue = this._instantRemixing.get(["general"]);
-      if (
-        ObjectUtil.objectIsDeepEqual(currentValue, this._vccData.state.value)
-      ) {
-        return; // nothing to update
-      }
-
-      if (this._isKojiEditor == true) {
-        // don't send VCC updates to Koji when running in the editor
-        return;
-      }
-
-      (this._instantRemixing as any).onSetValue(
-        ["general"],
-        ObjectUtil.objectWithDeepMerge({}, this._vccData.state.value), // make sure to pass a clone to instant remixing
-        true
-      );
-    }
   }
 
   private onValueChanged = (path: PathPart[], newValue: any): void => {
