@@ -31,7 +31,7 @@ export class EditableTextDemo extends DemoActor<void> {
 
     this.addActor(
       new Timer({
-        duration: Duration.givenSeconds(3),
+        duration: Duration.givenSeconds(5),
         isRepeating: true,
         fn: () => {
           isInvalid.setValue(!isInvalid.value);

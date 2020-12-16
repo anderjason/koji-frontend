@@ -6,7 +6,7 @@ import {
 } from "@anderjason/web";
 import { Actor } from "skytree";
 import { DisplayTextType } from "../DisplayText";
-import { KojiAppearance, KojiTheme } from "../KojiAppearance";
+import { KojiTheme } from "../KojiAppearance";
 
 export interface EditableTextProps {
   displayType: DisplayTextType;
@@ -178,10 +178,9 @@ const TitleStyle = ElementStyle.givenDefinition({
     isInvalid: `
       background-color: rgba(235, 87, 87, 0.2);
       border-color: #d64d43a8;
-      color: #d64d43;
 
       &::placeholder {
-        color: #d64d43a8;
+        color: #af6e6a66;
       }  
     `
   }
@@ -192,6 +191,7 @@ const DescriptionStyle = ElementStyle.givenDefinition({
     -webkit-user-select: auto;
     appearance: none;
     border: none;
+    border-radius: 6px;
     color: #2D2F30;
     font-family: Source Sans Pro;
     font-size: 20px;
@@ -202,10 +202,13 @@ const DescriptionStyle = ElementStyle.givenDefinition({
     line-height: 25px;
     margin-top: -3px;
     margin-bottom: -5px;
+    margin-left: -6px;
+    margin-right: -6px;
     outline: none;
     overflow: auto;
-    padding: 0;
+    padding: 0 6px;
     resize: none;
+    transition: 0.2s ease color, 0.2s ease background;
     user-select: auto;
     width: 100%;
 
@@ -238,6 +241,16 @@ const DescriptionStyle = ElementStyle.givenDefinition({
       } 
     }
   `,
+  modifiers: {
+    isInvalid: `
+      background-color: rgba(235, 87, 87, 0.2);
+      border-color: #d64d43a8;
+
+      &::placeholder {
+        color: #af6e6a66;
+      }
+    `
+  }
 });
 
 const styleByDisplayType = new Map<DisplayTextType, ElementStyle>();

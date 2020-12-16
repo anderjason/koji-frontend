@@ -19,9 +19,13 @@ class Card extends skytree_1.Actor {
         super(props);
         this._layouts = observable_1.ObservableArray.ofEmpty();
         this._maxHeight = observable_1.Observable.givenValueOrObservable(this.props.maxHeight, observable_1.Observable.isStrictEqual);
+        this._mode = observable_1.Observable.givenValueOrObservable(this.props.mode || "visible", observable_1.Observable.isStrictEqual);
     }
     get baseElement() {
         return this._baseLayout.element;
+    }
+    get hiddenElement() {
+        return this._hiddenWrapper.element;
     }
     onActivate() {
         switch (this.props.target.type) {
@@ -37,6 +41,10 @@ class Card extends skytree_1.Actor {
             default:
                 throw new Error("An element is required (this or parent)");
         }
+        this._hiddenWrapper = this.addActor(HiddenWrapperStyle.toManagedElement({
+            tagName: "div",
+            parentElement: this._outer,
+        }));
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this._outer,
@@ -101,6 +109,10 @@ class Card extends skytree_1.Actor {
         const currentLayoutHeight = this.addActor(new CurrentLayoutHeight_1.CurrentLayoutHeight({
             layout: selectedLayout,
         }));
+        this.cancelOnDeactivate(this._mode.didChange.subscribe(mode => {
+            wrapper.setModifier("isHidden", mode === "hidden");
+            this._hiddenWrapper.setModifier("isHidden", mode === "visible");
+        }, true));
         this.cancelOnDeactivate(currentLayoutHeight.output.didChange.subscribe((height) => {
             if (height == null) {
                 return;
@@ -125,6 +137,33 @@ class Card extends skytree_1.Actor {
     }
 }
 exports.Card = Card;
+const HiddenWrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "HiddenWrapper",
+    css: `
+    box-sizing: border-box;
+    color: #2D2F30;
+    pointer-events: auto;
+    position: absolute;
+    bottom: 40px;
+    left: 36px;
+    right: 36px;
+    transition: 0.4s ease opacity;
+    
+    .kft-text + .kft-control {
+      margin-top: 11px;
+    }
+
+    .kft-control + .kft-control {
+      margin-top: 15px;
+    }
+  `,
+    modifiers: {
+        isHidden: `
+      opacity: 0;
+      pointer-events: none;
+    `
+    }
+});
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
     css: `
@@ -133,11 +172,13 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     color: #2D2F30;
-    margin: 20px;
+    margin: 20px 16px;
     overflow: hidden;
     pointer-events: auto;
     position: relative;
-    width: calc(100% - 40px);
+    transition: 0.4s ease opacity;
+    opacity: 1;
+    width: calc(100% - 32px);
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     
     .kft-text + .kft-control {
@@ -148,8 +189,15 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
       margin-top: 15px;
     }
   `,
+    modifiers: {
+        isHidden: `
+      opacity: 0;
+      pointer-events: none;
+    `
+    }
 });
 const SliderStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Slider",
     css: `
     height: 50px;    
   `,
@@ -160,6 +208,7 @@ const SliderStyle = web_1.ElementStyle.givenDefinition({
     },
 });
 const HeaderAreaStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "HeaderArea",
     css: `
     background: #FFF;
     border-bottom: 1px solid #EEE;

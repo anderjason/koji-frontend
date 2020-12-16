@@ -51,16 +51,6 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     );
     wrapper.element.classList.add("kft-control");
 
-    let shadowText: DynamicStyleElement<HTMLSpanElement>;
-    if (this.props.shadowTextGivenValue != null) {
-      shadowText = this.addActor(
-        ShadowTextStyle.toManagedElement({
-          tagName: "span",
-          parentElement: wrapper.element,
-        })
-      );
-    }
-
     const input = this.addActor(
       InputStyle.toManagedElement({
         tagName: "input",
@@ -135,19 +125,6 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       })
     );
 
-    if (shadowText != null && this.props.shadowTextGivenValue != null) {
-      this.cancelOnDeactivate(
-        this.props.value.didChange.subscribe(() => {
-          const text = this.props.shadowTextGivenValue(this.props.value.value);
-          if (text == null) {
-            shadowText.element.innerHTML = "";
-          } else {
-            shadowText.element.innerHTML = text;
-          }
-        }, true)
-      );
-    }
-
     this.cancelOnDeactivate(
       this._isInvalid.didChange.subscribe(isInvalid => {
         wrapper.setModifier("isInvalid", isInvalid);
@@ -167,10 +144,6 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
         inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
           input.setModifier("hasValue", !isEmpty);
           label.setModifier("hasValue", !isEmpty);
-
-          if (shadowText != null) {
-            shadowText.setModifier("hasValue", !isEmpty);
-          }
         }, true)
       );
     }
@@ -217,6 +190,10 @@ const WrapperStyle = ElementStyle.givenDefinition({
         label {
           color: #d64d43;
         }
+      }
+
+      &::placeholder {
+        color: #af6e6a66;
       }
     `
   }
@@ -275,30 +252,6 @@ const InputStyle = ElementStyle.givenDefinition({
   `,
   modifiers: {
     hasValue: `
-      transform: translateY(7px);
-    `,
-  },
-});
-
-const ShadowTextStyle = ElementStyle.givenDefinition({
-  elementDescription: "ShadowText",
-  css: `
-    color: #BDBDBD;
-    position: absolute;
-    font-family: Source Sans Pro;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 20px;
-    line-height: 25px;
-    letter-spacing: 0.02em;
-    margin-left: 12px;
-    transform: translateY(0);
-    opacity: 0;
-    transition: 0.1s ease-out transform;
-  `,
-  modifiers: {
-    hasValue: `
-      opacity: 1;
       transform: translateY(7px);
     `,
   },

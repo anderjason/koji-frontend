@@ -15,10 +15,13 @@ import { ThisOrParentElement } from "..";
 import { CardLayout } from "./_internal/CardLayout";
 import { CurrentLayoutHeight } from "./_internal/CurrentLayoutHeight";
 
+export type CardMode = "visible" | "hidden";
+
 export interface CardProps {
   target: ThisOrParentElement<HTMLDivElement>;
 
   maxHeight?: number | ObservableBase<number>;
+  mode?: CardMode | ObservableBase<CardMode>;
 }
 
 export interface AddPageOptions {
@@ -37,8 +40,10 @@ export class Card extends Actor<CardProps> {
   private _outer: HTMLDivElement;
   private _layouts = ObservableArray.ofEmpty<CardLayout>();
   private _slider: DynamicStyleElement<HTMLDivElement>;
+  private _hiddenWrapper: DynamicStyleElement<HTMLDivElement>;
   private _baseLayout: CardLayout;
   private _maxHeight: ObservableBase<number>;
+  private _mode: ObservableBase<CardMode>;
 
   constructor(props: CardProps) {
     super(props);
@@ -47,10 +52,19 @@ export class Card extends Actor<CardProps> {
       this.props.maxHeight,
       Observable.isStrictEqual
     );
+
+    this._mode = Observable.givenValueOrObservable(
+      this.props.mode || "visible",
+      Observable.isStrictEqual
+    );
   }
 
   get baseElement(): HTMLElement {
     return this._baseLayout.element;
+  }
+
+  get hiddenElement(): HTMLElement {
+    return this._hiddenWrapper.element;
   }
 
   onActivate() {
@@ -69,6 +83,13 @@ export class Card extends Actor<CardProps> {
       default:
         throw new Error("An element is required (this or parent)");
     }
+
+    this._hiddenWrapper = this.addActor(
+      HiddenWrapperStyle.toManagedElement({
+        tagName: "div",
+        parentElement: this._outer,
+      })
+    );
 
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
@@ -169,6 +190,13 @@ export class Card extends Actor<CardProps> {
     );
 
     this.cancelOnDeactivate(
+      this._mode.didChange.subscribe(mode => {
+        wrapper.setModifier("isHidden", mode === "hidden");
+        this._hiddenWrapper.setModifier("isHidden", mode === "visible");
+      }, true)
+    );
+
+    this.cancelOnDeactivate(
       currentLayoutHeight.output.didChange.subscribe((height) => {
         if (height == null) {
           return;
@@ -203,6 +231,34 @@ export class Card extends Actor<CardProps> {
   }
 }
 
+const HiddenWrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "HiddenWrapper",
+  css: `
+    box-sizing: border-box;
+    color: #2D2F30;
+    pointer-events: auto;
+    position: absolute;
+    bottom: 40px;
+    left: 36px;
+    right: 36px;
+    transition: 0.4s ease opacity;
+    
+    .kft-text + .kft-control {
+      margin-top: 11px;
+    }
+
+    .kft-control + .kft-control {
+      margin-top: 15px;
+    }
+  `,
+  modifiers: {
+    isHidden: `
+      opacity: 0;
+      pointer-events: none;
+    `
+  }
+});
+
 const WrapperStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
@@ -211,11 +267,13 @@ const WrapperStyle = ElementStyle.givenDefinition({
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     color: #2D2F30;
-    margin: 20px;
+    margin: 20px 16px;
     overflow: hidden;
     pointer-events: auto;
     position: relative;
-    width: calc(100% - 40px);
+    transition: 0.4s ease opacity;
+    opacity: 1;
+    width: calc(100% - 32px);
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     
     .kft-text + .kft-control {
@@ -226,9 +284,16 @@ const WrapperStyle = ElementStyle.givenDefinition({
       margin-top: 15px;
     }
   `,
+  modifiers: {
+    isHidden: `
+      opacity: 0;
+      pointer-events: none;
+    `
+  }
 });
 
 const SliderStyle = ElementStyle.givenDefinition({
+  elementDescription: "Slider",
   css: `
     height: 50px;    
   `,
@@ -240,6 +305,7 @@ const SliderStyle = ElementStyle.givenDefinition({
 });
 
 const HeaderAreaStyle = ElementStyle.givenDefinition({
+  elementDescription: "HeaderArea",
   css: `
     background: #FFF;
     border-bottom: 1px solid #EEE;

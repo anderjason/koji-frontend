@@ -3,6 +3,7 @@ import { ObservableArray } from "@anderjason/observable";
 import { AlignBottomDemo } from "./AlignBottomDemo";
 import { CalloutDemo } from "./CalloutDemo";
 import { CardDemo } from "./CardDemo";
+import { CardVisibilityDemo } from "./CardVisibilityDemo";
 import { ConfirmationPromptDemo } from "./ConfirmationPromptDemo";
 import { DisplayTextDemo } from "./DisplayTextDemo";
 import { EditableTextDemo } from "./EditableTextDemo";
@@ -19,6 +20,10 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
   {
     title: "Card",
     actor: new CardDemo(),
+  },
+  {
+    title: "Card visibility",
+    actor: new CardVisibilityDemo(),
   },
   {
     title: "Align bottom",

@@ -177,6 +177,10 @@ const WrapperStyle = ElementStyle.givenDefinition({
           color: #d64d43;
         }
       }
+
+      &::placeholder {
+        color: #af6e6a66;
+      }
     `
   }
 });
