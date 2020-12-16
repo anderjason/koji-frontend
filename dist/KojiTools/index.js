@@ -74,7 +74,7 @@ class KojiTools extends skytree_1.Actor {
             if (this._instantRemixing == null) {
                 return;
             }
-            this._instantRemixing.onSetValue(change.valuePath.toParts(), change.newValue, true);
+            this._instantRemixing.onSetValue(["general", ...change.valuePath.toParts()], change.newValue, true);
         }));
         if (this._instantRemixing != null) {
             this._instantRemixing.onValueChanged((path, newValue) => {

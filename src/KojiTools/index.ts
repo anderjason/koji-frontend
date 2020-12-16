@@ -101,7 +101,7 @@ export class KojiTools extends Actor<void> {
         }
       
         this._instantRemixing.onSetValue(
-          change.valuePath.toParts(),
+          ["general", ...change.valuePath.toParts()],
           change.newValue,
           true
         );
