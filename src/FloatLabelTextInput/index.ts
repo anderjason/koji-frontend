@@ -1,11 +1,10 @@
-import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
-import { StringUtil } from "@anderjason/util";
 import {
-  DynamicStyleElement,
-  ElementStyle,
-  FocusWatcher,
-  TextInputBinding,
-} from "@anderjason/web";
+  Observable,
+  ObservableBase,
+  ReadOnlyObservable,
+} from "@anderjason/observable";
+import { StringUtil } from "@anderjason/util";
+import { ElementStyle, FocusWatcher, TextInputBinding } from "@anderjason/web";
 import { TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
 import { Actor } from "skytree";
 import { KojiAppearance } from "../KojiAppearance";
@@ -23,6 +22,7 @@ export interface FloatLabelTextInputProps<T> {
   persistentLabel?: string;
   placeholder?: string;
   inputType?: string;
+  inputMode?: "text" | "decimal" | "email" | "numeric" | "search" | "tel" | "url";
   maxLength?: number | ObservableBase<number>;
 }
 
@@ -38,7 +38,9 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
 
     KojiAppearance.preloadFonts();
 
-    this._isInvalid = this.props.isInvalid || Observable.givenValue(false, Observable.isStrictEqual);
+    this._isInvalid =
+      this.props.isInvalid ||
+      Observable.givenValue(false, Observable.isStrictEqual);
     this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
   }
 
@@ -59,16 +61,20 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     );
     const inputType = this.props.inputType || "text";
     input.element.type = inputType;
+
+    if (this.props.inputMode != null) {
+      input.element.inputMode = this.props.inputMode;
+    }
     
     this.cancelOnDeactivate(
-      this._maxLength.didChange.subscribe(maxLength => {
+      this._maxLength.didChange.subscribe((maxLength) => {
         if (maxLength == null) {
           input.element.removeAttribute("maxLength");
         } else {
           input.element.maxLength = maxLength;
         }
       }, true)
-    )
+    );
 
     if (this.props.placeholder != null) {
       input.element.placeholder = this.props.placeholder;
@@ -99,21 +105,21 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       }
     };
 
-    if (inputType === "text") {
-      // setSelectionRange is not supported on number inputs
-      this.cancelOnDeactivate(
-        this._isFocused.didChange.subscribe((isFocused) => {
-          if (isFocused == true) {
+    this.cancelOnDeactivate(
+      this._isFocused.didChange.subscribe((isFocused) => {
+        if (isFocused == true) {
+          // setSelectionRange is not supported on number inputs
+          if (inputType === "text") {
             input.element.setSelectionRange(
               0,
               (input.element.value || "").length
             );
-          } else {
-            applyShadowText();
           }
-        })
-      );
-    }
+        } else {
+          applyShadowText();
+        }
+      })
+    );
 
     const inputBinding = this.addActor(
       new TextInputBinding<T>({
@@ -126,7 +132,7 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     );
 
     this.cancelOnDeactivate(
-      this._isInvalid.didChange.subscribe(isInvalid => {
+      this._isInvalid.didChange.subscribe((isInvalid) => {
         wrapper.setModifier("isInvalid", isInvalid);
       }, true)
     );
@@ -195,8 +201,8 @@ const WrapperStyle = ElementStyle.givenDefinition({
       &::placeholder {
         color: #af6e6a66;
       }
-    `
-  }
+    `,
+  },
 });
 
 const LabelStyle = ElementStyle.givenDefinition({
@@ -240,11 +246,12 @@ const InputStyle = ElementStyle.givenDefinition({
     margin-left: 12px;
     margin-right: 5px;
     outline: none;
+    transition: 0.1s ease-out transform;
     user-select: auto;
     padding: 0;
     width: 100%;
     -webkit-user-select: auto;
-    transition: 0.1s ease-out transform;
+    -webkit-tap-highlight-color: transparent;
 
     &::placeholder {
       color: #0000004C;

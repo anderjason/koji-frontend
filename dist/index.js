@@ -1,7 +1,7 @@
 "use strict";
 /// <reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.KojiTools = exports.IntegerInput = exports.FloatLabelTextInput = exports.FloatLabelTextarea = exports.EditableText = exports.DisplayText = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
+exports.ThemeToolbar = exports.SubmitButton = exports.RemixTarget = exports.RemixModeButton = exports.PublishButton = exports.MoneyInput = exports.LoadingIndicator = exports.KojiNetworkUtil = exports.KojiAppearance = exports.KojiTools = exports.IntegerInput = exports.FloatLabelTextInput = exports.FloatLabelTextarea = exports.EditableText = exports.DisplayText = exports.ConfirmationPrompt = exports.Card = exports.Callout = exports.AlignBottom = void 0;
 const AlignBottom_1 = require("./AlignBottom");
 Object.defineProperty(exports, "AlignBottom", { enumerable: true, get: function () { return AlignBottom_1.AlignBottom; } });
 const Callout_1 = require("./Callout");
@@ -30,6 +30,8 @@ const LoadingIndicator_1 = require("./LoadingIndicator");
 Object.defineProperty(exports, "LoadingIndicator", { enumerable: true, get: function () { return LoadingIndicator_1.LoadingIndicator; } });
 const MoneyInput_1 = require("./MoneyInput");
 Object.defineProperty(exports, "MoneyInput", { enumerable: true, get: function () { return MoneyInput_1.MoneyInput; } });
+const PublishButton_1 = require("./PublishButton");
+Object.defineProperty(exports, "PublishButton", { enumerable: true, get: function () { return PublishButton_1.PublishButton; } });
 const RemixModeButton_1 = require("./RemixModeButton");
 Object.defineProperty(exports, "RemixModeButton", { enumerable: true, get: function () { return RemixModeButton_1.RemixModeButton; } });
 const RemixTarget_1 = require("./RemixTarget");

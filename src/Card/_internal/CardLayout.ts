@@ -52,6 +52,7 @@ export class CardLayout extends Actor<CardLayoutProps> {
         parentElement: wrapper.element,
         scrollPositionColor: Color.givenHexString("#888888"),
         direction: "vertical",
+        anchorBottom: true
       })
     );
 

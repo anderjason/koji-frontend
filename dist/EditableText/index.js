@@ -7,6 +7,8 @@ const skytree_1 = require("skytree");
 class EditableText extends skytree_1.Actor {
     constructor(props) {
         super(props);
+        this._isFocused = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        this.isFocused = observable_1.ReadOnlyObservable.givenObservable(this._isFocused);
         this.didFocus = new observable_1.TypedEvent();
         this.output =
             this.props.output || observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
@@ -43,7 +45,14 @@ class EditableText extends skytree_1.Actor {
                 input.element.maxLength = maxLength;
             }
         }, true));
-        this.cancelOnDeactivate(input.addManagedEventListener("focus", () => {
+        this.addActor(new web_1.FocusWatcher({
+            element: input.element,
+            output: this._isFocused,
+        }));
+        this.cancelOnDeactivate(this._isFocused.didChange.subscribe(isFocused => {
+            if (isFocused != true) {
+                return;
+            }
             input.element.setSelectionRange(0, (input.element.value || "").length);
             this.didFocus.emit();
         }));
@@ -94,6 +103,7 @@ const TitleStyle = web_1.ElementStyle.givenDefinition({
     transition: 0.2s ease color, 0.2s ease background;
     user-select: auto;
     width: 100%;
+    -webkit-tap-highlight-color: transparent;
 
     &::placeholder {
       color: #BDBDBD;
@@ -160,6 +170,7 @@ const DescriptionStyle = web_1.ElementStyle.givenDefinition({
     transition: 0.2s ease color, 0.2s ease background;
     user-select: auto;
     width: 100%;
+    -webkit-tap-highlight-color: transparent;
 
     &::placeholder {
       color: #BDBDBD;

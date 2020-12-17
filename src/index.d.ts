@@ -12,6 +12,7 @@ declare module "@withkoji/vcc" {
 
   export class InstantRemixing {
     constructor();
+    finish(): void;
     get(path: PathPart[]): any;
     onSetValue(path: PathPart[], newValue: any, skipUpdate: boolean): void;
     onValueChanged(fn: (path: PathPart[], newValue: any) => void): void;

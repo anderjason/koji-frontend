@@ -12,7 +12,9 @@ class FloatLabelTextInput extends skytree_1.Actor {
         this._isFocused = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.isFocused = observable_1.ReadOnlyObservable.givenObservable(this._isFocused);
         KojiAppearance_1.KojiAppearance.preloadFonts();
-        this._isInvalid = this.props.isInvalid || observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
+        this._isInvalid =
+            this.props.isInvalid ||
+                observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
         this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
     }
     onActivate() {
@@ -27,7 +29,10 @@ class FloatLabelTextInput extends skytree_1.Actor {
         }));
         const inputType = this.props.inputType || "text";
         input.element.type = inputType;
-        this.cancelOnDeactivate(this._maxLength.didChange.subscribe(maxLength => {
+        if (this.props.inputMode != null) {
+            input.element.inputMode = this.props.inputMode;
+        }
+        this.cancelOnDeactivate(this._maxLength.didChange.subscribe((maxLength) => {
             if (maxLength == null) {
                 input.element.removeAttribute("maxLength");
             }
@@ -54,17 +59,17 @@ class FloatLabelTextInput extends skytree_1.Actor {
                 }
             }
         };
-        if (inputType === "text") {
-            // setSelectionRange is not supported on number inputs
-            this.cancelOnDeactivate(this._isFocused.didChange.subscribe((isFocused) => {
-                if (isFocused == true) {
+        this.cancelOnDeactivate(this._isFocused.didChange.subscribe((isFocused) => {
+            if (isFocused == true) {
+                // setSelectionRange is not supported on number inputs
+                if (inputType === "text") {
                     input.element.setSelectionRange(0, (input.element.value || "").length);
                 }
-                else {
-                    applyShadowText();
-                }
-            }));
-        }
+            }
+            else {
+                applyShadowText();
+            }
+        }));
         const inputBinding = this.addActor(new web_1.TextInputBinding({
             inputElement: input.element,
             value: this.props.value,
@@ -72,7 +77,7 @@ class FloatLabelTextInput extends skytree_1.Actor {
             valueGivenDisplayText: this.props.valueGivenDisplayText,
             overrideDisplayText: this.props.overrideDisplayText,
         }));
-        this.cancelOnDeactivate(this._isInvalid.didChange.subscribe(isInvalid => {
+        this.cancelOnDeactivate(this._isInvalid.didChange.subscribe((isInvalid) => {
             wrapper.setModifier("isInvalid", isInvalid);
         }, true));
         if (!util_1.StringUtil.stringIsEmpty(this.props.persistentLabel)) {
@@ -133,8 +138,8 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
       &::placeholder {
         color: #af6e6a66;
       }
-    `
-    }
+    `,
+    },
 });
 const LabelStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Label",
@@ -176,11 +181,12 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
     margin-left: 12px;
     margin-right: 5px;
     outline: none;
+    transition: 0.1s ease-out transform;
     user-select: auto;
     padding: 0;
     width: 100%;
     -webkit-user-select: auto;
-    transition: 0.1s ease-out transform;
+    -webkit-tap-highlight-color: transparent;
 
     &::placeholder {
       color: #0000004C;

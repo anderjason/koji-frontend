@@ -226,12 +226,13 @@ const TextareaStyle = ElementStyle.givenDefinition({
     margin-left: 12px;
     margin-right: 5px;
     outline: none;
+    transition: 0.1s ease-out transform;
     user-select: auto;
     padding: 0;
     resize: none;
     width: 100%;
     -webkit-user-select: auto;
-    transition: 0.1s ease-out transform;
+    -webkit-tap-highlight-color: transparent;
 
     &::placeholder {
       color: #0000004C;

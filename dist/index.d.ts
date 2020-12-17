@@ -14,6 +14,7 @@ import { KojiTools } from "./KojiTools";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { MoneyInput } from "./MoneyInput";
 import { Observable } from "@anderjason/observable";
+import { PublishButton } from "./PublishButton";
 import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
 import { SubmitButton } from "./SubmitButton";
@@ -27,4 +28,4 @@ export interface ThisElement<T> {
     element: T;
 }
 export declare type ThisOrParentElement<T> = ParentElement | ThisElement<T>;
-export { AlignBottom, Callout, Card, ConfirmationPrompt, DisplayText, EditableText, FloatLabelTextarea, FloatLabelTextInput, IntegerInput, KojiTools, KojiAppearance, KojiNetworkUtil, LoadingIndicator, MoneyInput, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };
+export { AlignBottom, Callout, Card, ConfirmationPrompt, DisplayText, EditableText, FloatLabelTextarea, FloatLabelTextInput, IntegerInput, KojiTools, KojiAppearance, KojiNetworkUtil, LoadingIndicator, MoneyInput, PublishButton, RemixModeButton, RemixTarget, SubmitButton, ThemeToolbar, };

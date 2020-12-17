@@ -1,4 +1,4 @@
-import { Observable, ObservableBase, TypedEvent } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable, TypedEvent } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { DisplayTextType } from "../DisplayText";
 import { KojiTheme } from "../KojiAppearance";
@@ -14,6 +14,8 @@ export interface EditableTextProps {
 export declare class EditableText extends Actor<EditableTextProps> {
     private _maxLength;
     private _isInvalid;
+    private _isFocused;
+    readonly isFocused: ReadOnlyObservable<boolean>;
     readonly didFocus: TypedEvent<void>;
     readonly output: Observable<string>;
     constructor(props: EditableTextProps);

@@ -12,11 +12,20 @@ import { FloatLabelTextInputDemo } from "./FloatLabelTextInputDemo";
 import { IntegerInputDemo } from "./IntegerInputDemo";
 import { LoadingIndicatorDemo } from "./LoadingIndicatorDemo";
 import { MoneyInputDemo } from "./MoneyInputDemo";
+import { PublishButtonDemo } from "./PublishButtonDemo";
 import { RemixModeButtonDemo } from "./RemixModeButtonDemo";
 import { SubmitButtonDemo } from "./SubmitButtonDemo";
 import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
+  {
+    title: "Align bottom",
+    actor: new AlignBottomDemo(),
+  },
+  {
+    title: "Callout",
+    actor: new CalloutDemo(),
+  },
   {
     title: "Card",
     actor: new CardDemo(),
@@ -26,16 +35,8 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new CardVisibilityDemo(),
   },
   {
-    title: "Align bottom",
-    actor: new AlignBottomDemo(),
-  },
-  {
     title: "Confirmation prompt",
     actor: new ConfirmationPromptDemo(),
-  },
-  {
-    title: "Callout",
-    actor: new CalloutDemo(),
   },
   {
     title: "Display text",
@@ -54,8 +55,8 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new FloatLabelTextInputDemo(),
   },
   {
-    title: "Submit button",
-    actor: new SubmitButtonDemo(),
+    title: "Integer input",
+    actor: new IntegerInputDemo(),
   },
   {
     title: "Loading indicator",
@@ -66,16 +67,20 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new MoneyInputDemo(),
   },
   {
-    title: "Integer input",
-    actor: new IntegerInputDemo(),
-  },
-  {
-    title: "Theme toolbar",
-    actor: new ThemeToolbarDemo(),
+    title: "Publish button",
+    actor: new PublishButtonDemo(),
   },
   {
     title: "Remix mode button",
     actor: new RemixModeButtonDemo(),
+  },
+  {
+    title: "Submit button",
+    actor: new SubmitButtonDemo(),
+  },
+  {
+    title: "Theme toolbar",
+    actor: new ThemeToolbarDemo(),
   },
 ]);
 

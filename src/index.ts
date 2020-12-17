@@ -15,6 +15,7 @@ import { KojiTools } from "./KojiTools";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { MoneyInput } from "./MoneyInput";
 import { Observable } from "@anderjason/observable";
+import { PublishButton } from "./PublishButton";
 import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
 import { SubmitButton } from "./SubmitButton";
@@ -47,6 +48,7 @@ export {
   KojiNetworkUtil,
   LoadingIndicator,
   MoneyInput,
+  PublishButton,
   RemixModeButton,
   RemixTarget,
   SubmitButton,

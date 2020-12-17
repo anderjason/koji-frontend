@@ -21,6 +21,7 @@ export class MoneyInput extends Actor<MoneyInputProps> {
         persistentLabel: this.props.persistentLabel,
         value: this.props.value,
         isInvalid: this.props.isInvalid,
+        inputMode: "decimal",
         displayTextGivenValue: (price) => {
           if (price == null) {
             return "";

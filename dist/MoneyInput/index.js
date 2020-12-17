@@ -12,6 +12,7 @@ class MoneyInput extends skytree_1.Actor {
             persistentLabel: this.props.persistentLabel,
             value: this.props.value,
             isInvalid: this.props.isInvalid,
+            inputMode: "decimal",
             displayTextGivenValue: (price) => {
                 if (price == null) {
                     return "";

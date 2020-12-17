@@ -3,7 +3,7 @@ import {
   ObservableBase,
   ObservableSet,
 } from "@anderjason/observable";
-import { ElementStyle, ManagedElement } from "@anderjason/web";
+import { DynamicStyleElement, ElementStyle, ManagedElement } from "@anderjason/web";
 import { Actor } from "skytree";
 import { ThisOrParentElement } from "..";
 
@@ -13,7 +13,8 @@ export interface AlignBottomProps {
 }
 
 export class AlignBottom extends Actor<AlignBottomProps> {
-  private _element: HTMLDivElement;
+  private _parentElement: HTMLElement;
+  private _content: DynamicStyleElement<HTMLDivElement>;
   private _isRemixing: ObservableBase<boolean>;
 
   constructor(props: AlignBottomProps) {
@@ -23,16 +24,16 @@ export class AlignBottom extends Actor<AlignBottomProps> {
   }
 
   get element(): HTMLElement {
-    return this._element;
+    return this._content.element;
   }
 
   onActivate() {
     switch (this.props.target.type) {
       case "thisElement":
-        this._element = this.props.target.element;
+        this._parentElement = this.props.target.element;
         break;
       case "parentElement":
-        this._element = this.addActor(
+        this._parentElement = this.addActor(
           ManagedElement.givenDefinition({
             tagName: "div",
             parentElement: this.props.target.parentElement,
@@ -43,30 +44,18 @@ export class AlignBottom extends Actor<AlignBottomProps> {
         throw new Error("An element is required (this or parent)");
     }
 
-    const classNames = ObservableSet.ofEmpty<string>();
+    this._parentElement.className = WrapperStyle.toCombinedClassName();
 
-    this.cancelOnDeactivate(
-      this._isRemixing.didChange.subscribe((isRemixing) => {
-        if (isRemixing) {
-          classNames.sync(WrapperStyle.toClassNames("isRemixing"));
-        } else {
-          classNames.sync(WrapperStyle.toClassNames());
-        }
-      }, true)
+    this._content = this.addActor(
+      ContentStyle.toManagedElement({
+        tagName: "div",
+        parentElement: this._parentElement,
+      })
     );
 
     this.cancelOnDeactivate(
-      classNames.didChangeSteps.subscribe((steps) => {
-        steps.forEach((step) => {
-          switch (step.type) {
-            case "add":
-              this._element.classList.add(step.value);
-              break;
-            case "remove":
-              this._element.classList.remove(step.value);
-              break;
-          }
-        });
+      this._isRemixing.didChange.subscribe(isRemixing => {
+        this._content.setModifier("isRemixing", isRemixing);
       }, true)
     );
   }
@@ -75,20 +64,28 @@ export class AlignBottom extends Actor<AlignBottomProps> {
 const WrapperStyle = ElementStyle.givenDefinition({
   css: `
     align-items: stretch;
-    bottom: 0;
+    bottom: 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    left: 0;
+    left: 20px;
     pointer-events: none;
     position: absolute;
-    right: 0;
-    top: 0;
-    transition: 0.3s ease bottom;
+    right: 20px;
+    top: 20px;
+  `,
+});
+
+const ContentStyle = ElementStyle.givenDefinition({
+  elementDescription: "Content",
+  css: `
+    background: transparent;
+    transition: 0.3s ease margin-bottom;
+    pointer-events: auto;
   `,
   modifiers: {
     isRemixing: `
-      bottom: 60px;
+      margin-bottom: 60px;
     `,
   },
 });

@@ -13,6 +13,7 @@ export interface FloatLabelTextInputProps<T> {
     persistentLabel?: string;
     placeholder?: string;
     inputType?: string;
+    inputMode?: "text" | "decimal" | "email" | "numeric" | "search" | "tel" | "url";
     maxLength?: number | ObservableBase<number>;
 }
 export declare class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {

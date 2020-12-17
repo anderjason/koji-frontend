@@ -190,9 +190,11 @@ const ButtonStyle = ElementStyle.givenDefinition({
     outline: none;
     padding: 1em 0;
     position: relative;
+    user-select: none;
     text-align: center;
     transition: 0.2s ease transform, 0.2s ease background;
     width: calc(100% + 4px);
+    -webkit-tap-highlight-color: transparent;
 
     &:active:enabled {
       transform: scale(0.98);

@@ -1,7 +1,8 @@
-import { Observable, ObservableBase, TypedEvent } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable, TypedEvent } from "@anderjason/observable";
 import {
   DynamicStyleElement,
   ElementStyle,
+  FocusWatcher,
   TextInputBinding,
 } from "@anderjason/web";
 import { Actor } from "skytree";
@@ -22,6 +23,9 @@ export interface EditableTextProps {
 export class EditableText extends Actor<EditableTextProps> {
   private _maxLength: ObservableBase<number>;
   private _isInvalid: ObservableBase<boolean>;
+
+  private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
 
   readonly didFocus = new TypedEvent();
   readonly output: Observable<string>;
@@ -78,8 +82,19 @@ export class EditableText extends Actor<EditableTextProps> {
       }, true)
     )
 
+    this.addActor(
+      new FocusWatcher({
+        element: input.element,
+        output: this._isFocused,
+      })
+    );
+    
     this.cancelOnDeactivate(
-      input.addManagedEventListener("focus", () => {
+      this._isFocused.didChange.subscribe(isFocused => {
+        if (isFocused != true) {
+          return;
+        }
+
         input.element.setSelectionRange(0, (input.element.value || "").length);
         this.didFocus.emit();
       })
@@ -144,6 +159,7 @@ const TitleStyle = ElementStyle.givenDefinition({
     transition: 0.2s ease color, 0.2s ease background;
     user-select: auto;
     width: 100%;
+    -webkit-tap-highlight-color: transparent;
 
     &::placeholder {
       color: #BDBDBD;
@@ -211,6 +227,7 @@ const DescriptionStyle = ElementStyle.givenDefinition({
     transition: 0.2s ease color, 0.2s ease background;
     user-select: auto;
     width: 100%;
+    -webkit-tap-highlight-color: transparent;
 
     &::placeholder {
       color: #BDBDBD;

@@ -30,6 +30,7 @@ class CardLayout extends skytree_1.Actor {
             parentElement: wrapper.element,
             scrollPositionColor: color_1.Color.givenHexString("#888888"),
             direction: "vertical",
+            anchorBottom: true
         }));
         const content = this.addActor(ContentStyle.toManagedElement({
             tagName: "div",

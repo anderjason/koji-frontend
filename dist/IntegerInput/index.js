@@ -11,6 +11,7 @@ class IntegerInput extends skytree_1.Actor {
             placeholder: this.props.placeholder,
             value: this.props.value,
             isInvalid: this.props.isInvalid,
+            inputMode: "numeric",
             displayTextGivenValue: (value) => {
                 if (value == null || isNaN(value)) {
                     return "";

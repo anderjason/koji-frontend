@@ -6,7 +6,8 @@ export interface AlignBottomProps {
     isRemixing: boolean | ObservableBase<boolean>;
 }
 export declare class AlignBottom extends Actor<AlignBottomProps> {
-    private _element;
+    private _parentElement;
+    private _content;
     private _isRemixing;
     constructor(props: AlignBottomProps);
     get element(): HTMLElement;

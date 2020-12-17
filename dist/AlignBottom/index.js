@@ -10,15 +10,15 @@ class AlignBottom extends skytree_1.Actor {
         this._isRemixing = observable_1.Observable.givenValueOrObservable(this.props.isRemixing);
     }
     get element() {
-        return this._element;
+        return this._content.element;
     }
     onActivate() {
         switch (this.props.target.type) {
             case "thisElement":
-                this._element = this.props.target.element;
+                this._parentElement = this.props.target.element;
                 break;
             case "parentElement":
-                this._element = this.addActor(web_1.ManagedElement.givenDefinition({
+                this._parentElement = this.addActor(web_1.ManagedElement.givenDefinition({
                     tagName: "div",
                     parentElement: this.props.target.parentElement,
                 })).element;
@@ -26,26 +26,13 @@ class AlignBottom extends skytree_1.Actor {
             default:
                 throw new Error("An element is required (this or parent)");
         }
-        const classNames = observable_1.ObservableSet.ofEmpty();
-        this.cancelOnDeactivate(this._isRemixing.didChange.subscribe((isRemixing) => {
-            if (isRemixing) {
-                classNames.sync(WrapperStyle.toClassNames("isRemixing"));
-            }
-            else {
-                classNames.sync(WrapperStyle.toClassNames());
-            }
-        }, true));
-        this.cancelOnDeactivate(classNames.didChangeSteps.subscribe((steps) => {
-            steps.forEach((step) => {
-                switch (step.type) {
-                    case "add":
-                        this._element.classList.add(step.value);
-                        break;
-                    case "remove":
-                        this._element.classList.remove(step.value);
-                        break;
-                }
-            });
+        this._parentElement.className = WrapperStyle.toCombinedClassName();
+        this._content = this.addActor(ContentStyle.toManagedElement({
+            tagName: "div",
+            parentElement: this._parentElement,
+        }));
+        this.cancelOnDeactivate(this._isRemixing.didChange.subscribe(isRemixing => {
+            this._content.setModifier("isRemixing", isRemixing);
         }, true));
     }
 }
@@ -53,20 +40,27 @@ exports.AlignBottom = AlignBottom;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     css: `
     align-items: stretch;
-    bottom: 0;
+    bottom: 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    left: 0;
+    left: 20px;
     pointer-events: none;
     position: absolute;
-    right: 0;
-    top: 0;
-    transition: 0.3s ease bottom;
+    right: 20px;
+    top: 20px;
+  `,
+});
+const ContentStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Content",
+    css: `
+    background: transparent;
+    transition: 0.3s ease margin-bottom;
+    pointer-events: auto;
   `,
     modifiers: {
         isRemixing: `
-      bottom: 60px;
+      margin-bottom: 60px;
     `,
     },
 });
