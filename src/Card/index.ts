@@ -243,9 +243,9 @@ const HiddenWrapperStyle = ElementStyle.givenDefinition({
     color: #2D2F30;
     pointer-events: auto;
     position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
+    bottom: 40px;
+    left: 36px;
+    right: 36px;
     transition: 0.4s ease opacity;
     
     .kft-text + .kft-control {
@@ -272,12 +272,12 @@ const WrapperStyle = ElementStyle.givenDefinition({
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     color: #2D2F30;
-    margin: 0;
+    margin: 20px 16px;
     overflow: hidden;
     position: relative;
     transition: 0.4s ease opacity;
     opacity: 1;
-    width: 100%;
+    width: calc(100% - 32px);
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     
     .kft-text + .kft-control {

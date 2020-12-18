@@ -40,15 +40,15 @@ exports.AlignBottom = AlignBottom;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     css: `
     align-items: stretch;
-    bottom: 20px;
+    bottom: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    left: 20px;
+    left: 0;
     pointer-events: none;
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 0;
+    top: 0;
   `,
 });
 const ContentStyle = web_1.ElementStyle.givenDefinition({
