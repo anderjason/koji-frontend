@@ -26,6 +26,8 @@ export interface CardProps {
 
 export interface AddPageOptions {
   title?: string;
+
+  anchorBottom?: boolean;
 }
 
 export const headerAreaHeight = 40;
@@ -216,13 +218,16 @@ export class Card extends Actor<CardProps> {
       }, true)
     );
 
-    this._baseLayout = this.addPage();
+    this._baseLayout = this.addPage({
+      anchorBottom: true
+    });
   }
 
   addPage(options: AddPageOptions = {}): CardLayout {
     return this.addActor(
       new CardLayout({
         title: options.title,
+        anchorBottom: options.anchorBottom,
         layouts: this._layouts,
         parentElement: this._slider.element,
         maxHeight: this._maxHeight,

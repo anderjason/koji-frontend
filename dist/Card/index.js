@@ -125,11 +125,14 @@ class Card extends skytree_1.Actor {
             }
             selectedLayout.setValue(util_1.ArrayUtil.optionalLastValueGivenArray(layouts));
         }, true));
-        this._baseLayout = this.addPage();
+        this._baseLayout = this.addPage({
+            anchorBottom: true
+        });
     }
     addPage(options = {}) {
         return this.addActor(new CardLayout_1.CardLayout({
             title: options.title,
+            anchorBottom: options.anchorBottom,
             layouts: this._layouts,
             parentElement: this._slider.element,
             maxHeight: this._maxHeight,

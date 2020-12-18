@@ -1,6 +1,6 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { AlignBottom, KojiAppearance, SubmitButton } from "../../../src";
+import { AlignBottom, SubmitButton } from "../../../src";
 import { Card } from "../../../src/Card";
 import { DisplayText } from "../../../src/DisplayText";
 
@@ -22,7 +22,7 @@ export class DisplayTextDemo extends DemoActor<void> {
           type: "parentElement",
           parentElement: alignBottom.element,
         },
-        maxHeight: 300
+        maxHeight: 300,
       })
     );
 
@@ -30,7 +30,7 @@ export class DisplayTextDemo extends DemoActor<void> {
       new DisplayText({
         parentElement: card.baseElement,
         displayType: "title",
-        text: Observable.givenValue("First line\nSecond line"),
+        text: Observable.givenValue("Unlock our Behind The Scenes Photos"),
       })
     );
 
@@ -38,7 +38,7 @@ export class DisplayTextDemo extends DemoActor<void> {
       new DisplayText({
         parentElement: card.baseElement,
         displayType: "description",
-        text: `Lorem ipsum\ndolor set amet`,
+        text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
       })
     );
 

@@ -65,10 +65,7 @@ class SubmitButton extends skytree_1.Actor {
         completeIcon.className = "complete";
         completeIcon.innerHTML = checkSvg;
         button.appendChild(completeIcon);
-        const appearanceBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
-            this._theme,
-            this._buttonMode
-        ]));
+        const appearanceBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([this._theme, this._buttonMode]));
         this.cancelOnDeactivate(this._theme.didChange.subscribe((theme) => {
             if (theme == null) {
                 return;
@@ -111,11 +108,11 @@ class SubmitButton extends skytree_1.Actor {
         }, true));
         this.addActor(new skytree_1.ConditionalActivator({
             input: this._buttonMode,
-            fn: mode => mode === "busy",
+            fn: (mode) => mode === "busy",
             actor: new LoadingIndicator_1.LoadingIndicator({
                 parentElement: loadingWrapper,
                 color: color_1.Color.givenHexString("#FFFFFF"),
-            })
+            }),
         }));
     }
 }
@@ -138,6 +135,7 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     justify-content: center;
+    margin-bottom: -2px;
     margin-left: -2px;
     margin-right: -2px;
     outline: none;

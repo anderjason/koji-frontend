@@ -61,7 +61,7 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
       }
 
       this.props.onClick();
-    }
+    };
 
     button.classList.add(ButtonStyle.toCombinedClassName());
     button.classList.add("kft-control");
@@ -98,10 +98,7 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     button.appendChild(completeIcon);
 
     const appearanceBinding = this.addActor(
-      MultiBinding.givenAnyChange([
-        this._theme,
-        this._buttonMode
-      ])
+      MultiBinding.givenAnyChange([this._theme, this._buttonMode])
     );
 
     this.cancelOnDeactivate(
@@ -117,12 +114,13 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     this.cancelOnDeactivate(
       appearanceBinding.didInvalidate.subscribe(() => {
         const mode = this._buttonMode.value;
-        const theme = this._theme.value || KojiAppearance.themes.get("kojiBlue");
+        const theme =
+          this._theme.value || KojiAppearance.themes.get("kojiBlue");
 
         if (mode == null) {
           return;
         }
-        
+
         let className: string;
         switch (mode) {
           case "ready":
@@ -157,13 +155,13 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     this.addActor(
       new ConditionalActivator({
         input: this._buttonMode,
-        fn: mode => mode === "busy",
+        fn: (mode) => mode === "busy",
         actor: new LoadingIndicator({
           parentElement: loadingWrapper,
           color: Color.givenHexString("#FFFFFF"),
-        })
+        }),
       })
-    )
+    );
   }
 }
 
@@ -185,6 +183,7 @@ const ButtonStyle = ElementStyle.givenDefinition({
     line-height: 25px;
     letter-spacing: 0.02em;
     justify-content: center;
+    margin-bottom: -2px;
     margin-left: -2px;
     margin-right: -2px;
     outline: none;

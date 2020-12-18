@@ -5,6 +5,7 @@ export interface CardLayoutProps {
     parentElement: HTMLElement;
     maxHeight: ObservableBase<number>;
     title?: string;
+    anchorBottom?: boolean;
 }
 export declare class CardLayout extends Actor<CardLayoutProps> {
     readonly listOrder: Observable<number>;

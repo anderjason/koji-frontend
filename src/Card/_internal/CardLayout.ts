@@ -16,6 +16,7 @@ export interface CardLayoutProps {
   maxHeight: ObservableBase<number>;
 
   title?: string;
+  anchorBottom?: boolean;
 }
 
 export class CardLayout extends Actor<CardLayoutProps> {
@@ -52,7 +53,7 @@ export class CardLayout extends Actor<CardLayoutProps> {
         parentElement: wrapper.element,
         scrollPositionColor: Color.givenHexString("#888888"),
         direction: "vertical",
-        anchorBottom: true
+        anchorBottom: this.props.anchorBottom
       })
     );
 

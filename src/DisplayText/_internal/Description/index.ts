@@ -1,7 +1,6 @@
-import { Color } from "@anderjason/color";
-import { Observable, ObservableBase } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
 import { NumberUtil } from "@anderjason/util";
-import { ElementSizeWatcher, ElementStyle, ScrollArea } from "@anderjason/web";
+import { ElementSizeWatcher, ElementStyle, ManagedElement, Preload } from "@anderjason/web";
 import { Actor, MultiBinding } from "skytree";
 
 export interface DescriptionInputProps {
@@ -23,7 +22,7 @@ export function wordsAndWhitespaceGivenString(
   if (input == null) {
     return [];
   }
-  
+
   const re = /(\S+)(\s*)/g;
 
   const result: WordAndWhitespace[] = [];
@@ -44,6 +43,9 @@ export function wordsAndWhitespaceGivenString(
 
 export class Description extends Actor<DescriptionInputProps> {
   readonly isExpanded = Observable.givenValue(false, Observable.isStrictEqual);
+  
+  private _isContentExpandable = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  readonly isContentExpandable = ReadOnlyObservable.givenObservable(this._isContentExpandable);
 
   onActivate() {
     const wrapper = this.addActor(
@@ -60,38 +62,34 @@ export class Description extends Actor<DescriptionInputProps> {
       })
     );
 
-    const content = this.addActor(
+    const contentArea = this.addActor(
       ContentStyle.toManagedElement({
         tagName: "div",
         parentElement: wrapper.element,
       })
     );
 
-    const heightBinding = this.addActor(
-      MultiBinding.givenAnyChange([this.isExpanded, this.props.text])
+    const textSpan = this.addActor(
+      ManagedElement.givenDefinition({
+        tagName: "span",
+        parentElement: contentArea.element
+      })
+    );
+    
+    const label = this.addActor(
+      LabelStyle.toManagedElement({
+        tagName: "span",
+        parentElement: contentArea.element,
+        innerHTML: "label"
+      })
     );
 
+    const fontLoadedEventCount = Observable.givenValue(0);
+
     this.cancelOnDeactivate(
-      heightBinding.didInvalidate.subscribe(() => {
-        content.element.innerHTML = this.props.text.value;
-
-        content.style.height = `${lineHeight}px`;
-        const contentHeight = content.element.scrollHeight;
-
-        content.style.height = "100%";
-
-        let wrapperHeight: number = contentHeight;
-
-        if (this.isExpanded.value == false) {
-          wrapperHeight = NumberUtil.numberWithHardLimit(
-            contentHeight,
-            25,
-            collapsedMaxHeight
-          );
-        }
-
-        wrapper.style.height = `${wrapperHeight}px`;
-      }, true)
+      Preload.instance.didLoadFont.subscribe(() => {
+        fontLoadedEventCount.setValue(fontLoadedEventCount.value + 1);
+      })
     );
 
     const range = document.createRange();
@@ -102,25 +100,63 @@ export class Description extends Actor<DescriptionInputProps> {
       })
     );
 
-    const sizeBinding = this.addActor(
+    this.cancelOnDeactivate(
+      this._isContentExpandable.didChange.subscribe(isExpandable => {
+        wrapper.setModifier("isExpandable", isExpandable);
+        label.setModifier("isExpandable", isExpandable);
+      }, true)
+    );
+
+    const contentBinding = this.addActor(
       MultiBinding.givenAnyChange([
         this.isExpanded,
+        this.isContentExpandable,
         this.props.text,
         parentBoundsWatcher.output,
+        fontLoadedEventCount
       ])
     );
 
     this.cancelOnDeactivate(
-      sizeBinding.didInvalidate.subscribe(() => {
-        if (this.isExpanded.value == false) {
-          content.element.innerHTML = this.props.text.value;
-          const wordsAndWhitespace = wordsAndWhitespaceGivenString(content.element.textContent);
-          const textNode = content.element.firstChild;
+      contentBinding.didInvalidate.subscribe(() => {
+        textSpan.element.innerHTML = this.props.text.value;
+
+        // set the content area to the minimum height for measurement
+        contentArea.style.height = `${lineHeight}px`;
+        const measuredTextHeight = contentArea.element.scrollHeight;
+
+        // undo height change
+        contentArea.style.height = "100%";
+
+        // limit visible height when collapsed
+        let visibleTextHeight: number;
+        if (this.isExpanded.value == true) {
+          visibleTextHeight = measuredTextHeight;
+        } else  {
+          visibleTextHeight = NumberUtil.numberWithHardLimit(
+            measuredTextHeight,
+            25,
+            collapsedMaxHeight
+          );
+        }
+
+        wrapper.style.height = `${visibleTextHeight}px`;
+
+        this._isContentExpandable.setValue(measuredTextHeight > collapsedMaxHeight);
+        
+        if (this.isExpanded.value == true) {
+          label.element.innerHTML = "&nbsp;less";
+        } else {
+          const wordsAndWhitespace = wordsAndWhitespaceGivenString(
+            textSpan.element.textContent
+          );
+
+          const textNode = textSpan.element.firstChild;
           if (textNode == null) {
             return;
           }
-
-          const contentBounds = content.element.getBoundingClientRect();
+          
+          const contentBounds = contentArea.element.getBoundingClientRect();
 
           let start = 0;
           let end = 0;
@@ -153,22 +189,13 @@ export class Description extends Actor<DescriptionInputProps> {
           }
 
           if (collapsedWords.length < wordsAndWhitespace.length) {
-            wrapper.setModifier("isExpandable", true);
-            const span = document.createElement("span");
-            let trimmedText = collapsedWords.map(ww => ww.word + ww.trailingWhitespace).join("");
+            let trimmedText = collapsedWords
+              .map((ww) => ww.word + ww.trailingWhitespace)
+              .join("");
             trimmedText = trimmedText.replace(/(.*?)\W+$/, "$1");
 
-            span.innerHTML = trimmedText + "...&nbsp;";
-
-            const more = document.createElement("span");
-            more.style.color = "#BDBDBD";
-            more.innerHTML = "more";
-
-            content.element.innerHTML = "";
-            content.element.appendChild(span);
-            content.element.appendChild(more);
-          } else {
-            wrapper.setModifier("isExpandable", false);
+            textSpan.element.innerHTML = trimmedText + "...";
+            label.element.innerHTML = "&nbsp;more";
           }
         }
       }, true)
@@ -186,6 +213,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     white-space: pre-wrap;
     position: relative;
     transition: 0.4s cubic-bezier(.5,0,.3,1) height;
+    -webkit-tap-highlight-color: transparent;
   `,
   modifiers: {
     isExpandable: `
@@ -205,4 +233,17 @@ const ContentStyle = ElementStyle.givenDefinition({
     letter-spacing: 0.02em;
     text-align: left;
   `,
+});
+
+const LabelStyle = ElementStyle.givenDefinition({
+  elementDescription: "Label",
+  css: `
+    color: #BDBDBD;
+    display: none;
+  `,
+  modifiers: {
+    isExpandable: `
+      display: inline;
+    `,
+  },
 });

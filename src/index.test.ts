@@ -1,3 +1,5 @@
+/// <reference path="./index.d.ts" />
+
 import { Test } from "@anderjason/tests";
 import "./DisplayText/index.test";
 import "./KojiTools/index.test";

@@ -11,6 +11,7 @@ export interface CardProps {
 }
 export interface AddPageOptions {
     title?: string;
+    anchorBottom?: boolean;
 }
 export declare const headerAreaHeight = 40;
 export declare const totalVerticalPadding = 40;
