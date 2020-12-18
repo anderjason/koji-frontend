@@ -6,8 +6,11 @@ const skytree_1 = require("skytree");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
 const money_1 = require("@anderjason/money");
 class MoneyInput extends skytree_1.Actor {
+    get isFocused() {
+        return this._textInput.isFocused;
+    }
     onActivate() {
-        this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
+        this._textInput = this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
             value: this.props.value,

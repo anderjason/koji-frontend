@@ -1,4 +1,4 @@
-import { Observable, ObservableBase } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { Money } from "@anderjason/money";
 export interface MoneyInputProps {
@@ -9,5 +9,7 @@ export interface MoneyInputProps {
     isInvalid?: ObservableBase<boolean>;
 }
 export declare class MoneyInput extends Actor<MoneyInputProps> {
+    private _textInput;
+    get isFocused(): ReadOnlyObservable<boolean>;
     onActivate(): void;
 }

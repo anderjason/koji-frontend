@@ -1,4 +1,4 @@
-import { Observable, ObservableBase } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 import { Actor } from "skytree";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
@@ -14,8 +14,14 @@ export interface MoneyInputProps {
 }
 
 export class MoneyInput extends Actor<MoneyInputProps> {
+  private _textInput: FloatLabelTextInput<Money>;
+
+  get isFocused(): ReadOnlyObservable<boolean> {
+    return this._textInput.isFocused;
+  }
+  
   onActivate() {
-    this.addActor(
+    this._textInput = this.addActor(
       new FloatLabelTextInput({
         parentElement: this.props.parentElement,
         persistentLabel: this.props.persistentLabel,

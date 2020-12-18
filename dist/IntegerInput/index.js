@@ -4,8 +4,11 @@ exports.IntegerInput = void 0;
 const skytree_1 = require("skytree");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
 class IntegerInput extends skytree_1.Actor {
+    get isFocused() {
+        return this._textInput.isFocused;
+    }
     onActivate() {
-        this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
+        this._textInput = this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
             placeholder: this.props.placeholder,

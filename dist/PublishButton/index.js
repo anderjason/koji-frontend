@@ -3,20 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PublishButton = void 0;
 const skytree_1 = require("skytree");
 const web_1 = require("@anderjason/web");
-const KojiTools_1 = require("../KojiTools");
 const observable_1 = require("@anderjason/observable");
-const util_1 = require("@anderjason/util");
 const time_1 = require("@anderjason/time");
+const __1 = require("..");
+const color_1 = require("@anderjason/color");
 const svgIcon = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"></path></svg>`;
 class PublishButton extends skytree_1.Actor {
+    constructor(props) {
+        super(props);
+        this._mode = observable_1.Observable.givenValueOrObservable(this.props.mode || { type: "ready" });
+    }
     onActivate() {
-        const error = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
-        const clearErrorLater = new time_1.Debounce({
-            duration: time_1.Duration.givenSeconds(6),
-            fn: () => {
-                error.setValue(undefined);
-            }
-        });
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
@@ -24,22 +21,48 @@ class PublishButton extends skytree_1.Actor {
         const button = this.addActor(ButtonStyle.toManagedElement({
             tagName: "button",
             parentElement: wrapper.element,
-            innerHTML: svgIcon,
         }));
         button.element.type = "button";
-        this.cancelOnDeactivate(error.didChange.subscribe(str => {
-            button.setModifier("hasError", !util_1.StringUtil.stringIsEmpty(str));
+        this.addActor(new skytree_1.ExclusiveActivator({
+            input: this._mode,
+            fn: mode => {
+                switch (mode.type) {
+                    case "busy":
+                        return new __1.LoadingIndicator({
+                            parentElement: button.element,
+                            color: color_1.Color.givenHexString("#FFFFFF")
+                        });
+                    case "ready":
+                        return ArrowStyle.toManagedElement({
+                            tagName: "div",
+                            parentElement: button.element,
+                            innerHTML: svgIcon
+                        });
+                    case "error":
+                        return ArrowStyle.toManagedElement({
+                            tagName: "div",
+                            parentElement: button.element,
+                            innerHTML: svgIcon
+                        });
+                    default:
+                        break;
+                }
+            }
+        }));
+        this.cancelOnDeactivate(this._mode.didChange.subscribe(mode => {
+            button.setModifier("isBusy", mode.type === "busy");
+            button.setModifier("hasError", mode.type === "error");
         }, true));
         this.addActor(new skytree_1.ExclusiveActivator({
-            input: error,
-            fn: (str) => {
-                if (util_1.StringUtil.stringIsEmpty(str)) {
+            input: this._mode,
+            fn: (mode) => {
+                if (mode.type != "error") {
                     return undefined;
                 }
                 return ErrorStyle.toManagedElement({
                     tagName: "div",
                     parentElement: wrapper.element,
-                    innerHTML: str,
+                    innerHTML: mode.errorText,
                     transitionIn: self => {
                         self.setModifier("isVisible", true);
                     },
@@ -51,18 +74,11 @@ class PublishButton extends skytree_1.Actor {
             },
         }));
         this.cancelOnDeactivate(button.addManagedEventListener("click", () => {
-            let validationMessage = undefined;
+            if (this._mode.value.type === "busy") {
+                return;
+            }
             if (this.props.onClick != null) {
-                validationMessage = this.props.onClick();
-            }
-            if (util_1.StringUtil.stringIsEmpty(validationMessage)) {
-                error.setValue(undefined);
-                clearErrorLater.clear();
-                KojiTools_1.KojiTools.instance.instantRemixing.finish();
-            }
-            else {
-                error.setValue(validationMessage);
-                clearErrorLater.invoke();
+                this.props.onClick();
             }
         }));
     }
@@ -95,7 +111,7 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     right: 16px;
     align-items: center;
     justify-content: center;
-    transition: 0.15s ease transform, 0.3s ease opacity;
+    transition: 0.15s ease transform, 0.3s ease background-color;
     -webkit-tap-highlight-color: transparent;
 
     &:hover {
@@ -105,17 +121,17 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     &:active {
       transform: scale(0.9);
     }
-
-    svg {
-      width: 32px;
-      height: 32px;
-      color: white;
-      fill: white;
-    }
   `,
     modifiers: {
+        isBusy: `
+      pointer-events: none;
+    `,
         hasError: `
-      opacity: 0.5;
+      background-color: rgb(22, 72, 142);
+
+      svg {
+        opacity: 0.5;
+      }
     `
     }
 });
@@ -151,5 +167,20 @@ const ErrorStyle = web_1.ElementStyle.givenDefinition({
       transform: translate(0, -50%);
     `
     }
+});
+const ArrowStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Arrow",
+    css: `
+    width: 32px;
+    height: 32px;
+
+    svg {
+      width: 32px;
+      height: 32px;
+      color: white;
+      fill: white;
+      transition: 0.3s ease opacity;
+    }
+  `
 });
 //# sourceMappingURL=index.js.map

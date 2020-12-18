@@ -221,7 +221,7 @@ const DescriptionStyle = ElementStyle.givenDefinition({
     margin-left: -6px;
     margin-right: -6px;
     outline: none;
-    overflow: auto;
+    overflow: hidden;
     padding: 0 6px;
     resize: none;
     transition: 0.2s ease color, 0.2s ease background;

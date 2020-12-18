@@ -1,6 +1,6 @@
 import { Actor } from "skytree";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
-import { Observable, ObservableBase } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
 
 export interface IntegerInputProps {
   parentElement: HTMLElement;
@@ -12,8 +12,14 @@ export interface IntegerInputProps {
 }
 
 export class IntegerInput extends Actor<IntegerInputProps> {
+  private _textInput: FloatLabelTextInput<number>;
+
+  get isFocused(): ReadOnlyObservable<boolean> {
+    return this._textInput.isFocused;
+  }
+  
   onActivate() {
-    this.addActor(
+    this._textInput = this.addActor(
       new FloatLabelTextInput({
         parentElement: this.props.parentElement,
         persistentLabel: this.props.persistentLabel,

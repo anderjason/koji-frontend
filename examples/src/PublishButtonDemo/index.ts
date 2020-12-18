@@ -1,6 +1,10 @@
 import { DemoActor } from "@anderjason/example-tools";
-import { ElementStyle } from "@anderjason/web";
+import { Observable } from "@anderjason/observable";
+import { Duration } from "@anderjason/time";
+import { ElementStyle, SequentialChoice } from "@anderjason/web";
+import { Timer } from "skytree";
 import { PublishButton } from "../../../src";
+import { PublishButtonMode } from "../../../src/PublishButton";
 
 export class PublishButtonDemo extends DemoActor<void> {
   onActivate() {
@@ -11,12 +15,36 @@ export class PublishButtonDemo extends DemoActor<void> {
       })
     );
 
+    const modes = new SequentialChoice<PublishButtonMode>({
+      options: [
+        {
+          type: "ready"
+        },
+        {
+          type: "busy"
+        },
+        {
+          type: "error",
+          errorText: "Please correct errors before continuing"
+        }
+      ]
+    });
+
+    this.addActor(
+      new Timer({
+        duration: Duration.givenSeconds(2),
+        isRepeating: true,
+        fn: () => {
+          modes.selectNextOption();
+        }
+      })
+    );
+    
     this.addActor(
       new PublishButton({
         parentElement: wrapper.element,
-        onClick: () => {
-          return "Please correct errors before continuing";
-        },
+        onClick: () => {},
+        mode: modes.currentOption
       })
     );
   }

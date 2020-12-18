@@ -1,27 +1,43 @@
-import { Actor, DelayActivator, ExclusiveActivator } from "skytree";
+import { Actor, ExclusiveActivator } from "skytree";
 import { ElementStyle } from "@anderjason/web";
-import { KojiTools } from "../KojiTools";
-import { Observable } from "@anderjason/observable";
-import { StringUtil } from "@anderjason/util";
-import { Debounce, Duration } from "@anderjason/time";
+import { Observable, ObservableBase } from "@anderjason/observable";
+import { Duration } from "@anderjason/time";
+import { LoadingIndicator } from "..";
+import { Color } from "@anderjason/color";
+
+export interface PublishButtonReadyMode {
+  type: "ready";
+}
+
+export interface PublishButtonBusyMode {
+  type: "busy";
+}
+
+export interface PublishButtonErrorMode {
+  type: "error";
+  errorText: string;
+}
+
+export type PublishButtonMode = PublishButtonReadyMode | PublishButtonBusyMode | PublishButtonErrorMode;
 
 export interface PublishButtonProps {
   parentElement: HTMLElement;
-  onClick: () => string;
+  onClick: () => void;
+  mode: PublishButtonMode | ObservableBase<PublishButtonMode>;
 }
 
 const svgIcon = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"></path></svg>`;
 
 export class PublishButton extends Actor<PublishButtonProps> {
-  onActivate() {
-    const error = Observable.ofEmpty<string>(Observable.isStrictEqual);
-    const clearErrorLater = new Debounce({
-      duration: Duration.givenSeconds(6),
-      fn: () => {
-        error.setValue(undefined);
-      }
-    });
+  private _mode: ObservableBase<PublishButtonMode>;
 
+  constructor(props: PublishButtonProps) {
+    super(props);
+
+    this._mode = Observable.givenValueOrObservable(this.props.mode || { type: "ready" });
+  }
+
+  onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
         tagName: "div",
@@ -33,29 +49,58 @@ export class PublishButton extends Actor<PublishButtonProps> {
       ButtonStyle.toManagedElement({
         tagName: "button",
         parentElement: wrapper.element,
-        innerHTML: svgIcon,
       })
     );
     button.element.type = "button";
 
+    this.addActor(
+      new ExclusiveActivator({
+        input: this._mode,
+        fn: mode => {
+          switch (mode.type) {
+            case "busy":
+              return new LoadingIndicator({
+                parentElement: button.element,
+                color: Color.givenHexString("#FFFFFF")
+              })
+            case "ready":
+              return ArrowStyle.toManagedElement({
+                tagName: "div",
+                parentElement: button.element,
+                innerHTML: svgIcon
+              });
+            case "error":
+              return ArrowStyle.toManagedElement({
+                tagName: "div",
+                parentElement: button.element,
+                innerHTML: svgIcon
+              });
+            default:
+              break;
+          }
+        }
+      })
+    )
+
     this.cancelOnDeactivate(
-      error.didChange.subscribe(str => {
-        button.setModifier("hasError", !StringUtil.stringIsEmpty(str));
+      this._mode.didChange.subscribe(mode => {
+        button.setModifier("isBusy", mode.type === "busy");
+        button.setModifier("hasError", mode.type === "error");
       }, true)
     );
     
     this.addActor(
       new ExclusiveActivator({
-        input: error,
-        fn: (str) => {
-          if (StringUtil.stringIsEmpty(str)) {
+        input: this._mode,
+        fn: (mode) => {
+          if (mode.type != "error") {
             return undefined;
           }
 
           return ErrorStyle.toManagedElement({
             tagName: "div",
             parentElement: wrapper.element,
-            innerHTML: str,
+            innerHTML: mode.errorText,
             transitionIn: self => {
               self.setModifier("isVisible", true);
             },
@@ -70,20 +115,12 @@ export class PublishButton extends Actor<PublishButtonProps> {
 
     this.cancelOnDeactivate(
       button.addManagedEventListener("click", () => {
-        let validationMessage: string = undefined;
-
-        if (this.props.onClick != null) {
-          validationMessage = this.props.onClick();
+        if (this._mode.value.type === "busy") {
+          return;
         }
 
-        if (StringUtil.stringIsEmpty(validationMessage)) {
-          error.setValue(undefined);
-          clearErrorLater.clear();
-
-          KojiTools.instance.instantRemixing.finish();
-        } else {
-          error.setValue(validationMessage);
-          clearErrorLater.invoke();
+        if (this.props.onClick != null) {
+          this.props.onClick();
         }
       })
     );
@@ -118,7 +155,7 @@ const ButtonStyle = ElementStyle.givenDefinition({
     right: 16px;
     align-items: center;
     justify-content: center;
-    transition: 0.15s ease transform, 0.3s ease opacity;
+    transition: 0.15s ease transform, 0.3s ease background-color;
     -webkit-tap-highlight-color: transparent;
 
     &:hover {
@@ -128,17 +165,17 @@ const ButtonStyle = ElementStyle.givenDefinition({
     &:active {
       transform: scale(0.9);
     }
-
-    svg {
-      width: 32px;
-      height: 32px;
-      color: white;
-      fill: white;
-    }
   `,
   modifiers: {
+    isBusy: `
+      pointer-events: none;
+    `,
     hasError: `
-      opacity: 0.5;
+      background-color: rgb(22, 72, 142);
+
+      svg {
+        opacity: 0.5;
+      }
     `
   }
 });
@@ -175,4 +212,20 @@ const ErrorStyle = ElementStyle.givenDefinition({
       transform: translate(0, -50%);
     `
   }
+});
+
+const ArrowStyle = ElementStyle.givenDefinition({
+  elementDescription: "Arrow",
+  css: `
+    width: 32px;
+    height: 32px;
+
+    svg {
+      width: 32px;
+      height: 32px;
+      color: white;
+      fill: white;
+      transition: 0.3s ease opacity;
+    }
+  `
 });

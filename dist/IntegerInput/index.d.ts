@@ -1,5 +1,5 @@
 import { Actor } from "skytree";
-import { Observable, ObservableBase } from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
 export interface IntegerInputProps {
     parentElement: HTMLElement;
     value: Observable<number>;
@@ -8,5 +8,7 @@ export interface IntegerInputProps {
     isInvalid?: ObservableBase<boolean>;
 }
 export declare class IntegerInput extends Actor<IntegerInputProps> {
+    private _textInput;
+    get isFocused(): ReadOnlyObservable<boolean>;
     onActivate(): void;
 }
