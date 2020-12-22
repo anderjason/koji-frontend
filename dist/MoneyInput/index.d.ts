@@ -4,7 +4,7 @@ import { Money } from "@anderjason/money";
 export interface MoneyInputProps {
     parentElement: HTMLElement;
     value: Observable<Money>;
-    persistentLabel: string;
+    persistentLabel?: string;
     placeholderLabel?: string;
     maxValue?: Money;
     allowEmpty?: boolean;

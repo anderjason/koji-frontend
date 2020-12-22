@@ -11,8 +11,8 @@ import { Currency, Money } from "@anderjason/money";
 export interface MoneyInputProps {
   parentElement: HTMLElement;
   value: Observable<Money>;
-  persistentLabel: string;
-
+  
+  persistentLabel?: string;
   placeholderLabel?: string;
   maxValue?: Money;
   allowEmpty?: boolean;
@@ -101,6 +101,13 @@ export class MoneyInput extends Actor<MoneyInputProps> {
             return e.previousDisplayText;
           }
           
+          if (e.value == null) {
+            return {
+              text: "",
+              caretPosition: null
+            };
+          }
+
           const rawNumber = rawNumberGivenText(e.displayText);
           
           if (this.props.maxValue != null && e.value.rawValue > this.props.maxValue.rawValue) {

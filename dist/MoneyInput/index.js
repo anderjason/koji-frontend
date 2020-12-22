@@ -71,6 +71,12 @@ class MoneyInput extends skytree_1.Actor {
                 if (shouldRejectInput(e.displayText)) {
                     return e.previousDisplayText;
                 }
+                if (e.value == null) {
+                    return {
+                        text: "",
+                        caretPosition: null
+                    };
+                }
                 const rawNumber = rawNumberGivenText(e.displayText);
                 if (this.props.maxValue != null && e.value.rawValue > this.props.maxValue.rawValue) {
                     return e.previousDisplayText;
