@@ -1,9 +1,9 @@
 import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
-import { TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
+import { TextInputBindingOverrideResult, TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
 import { Actor } from "skytree";
 export interface FloatLabelTextInputProps<T> {
     displayTextGivenValue: (value: T) => string;
-    overrideDisplayText?: (e: TextInputChangingData<T>) => string;
+    overrideDisplayText?: (e: TextInputChangingData<T>) => string | TextInputBindingOverrideResult;
     parentElement: HTMLElement;
     value: Observable<T>;
     valueGivenDisplayText: (displayText: string) => T;

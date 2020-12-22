@@ -1,17 +1,17 @@
 import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
-import { StringUtil } from "@anderjason/util";
+import { NumberUtil, StringUtil } from "@anderjason/util";
 import {
   ElementStyle,
   FocusWatcher,
   TextInputBinding,
 } from "@anderjason/web";
-import { TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
-import { Actor } from "skytree";
+import { TextInputBindingOverrideResult, TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
+import { Actor, MultiBinding } from "skytree";
 import { KojiAppearance } from "../KojiAppearance";
 
 export interface FloatLabelTextareaProps<T> {
   displayTextGivenValue: (value: T) => string;
-  overrideDisplayText?: (e: TextInputChangingData<T>) => string;
+  overrideDisplayText?: (e: TextInputChangingData<T>) => string | TextInputBindingOverrideResult;
   parentElement: HTMLElement;
   value: Observable<T>;
   valueGivenDisplayText: (displayText: string) => T;
@@ -20,12 +20,18 @@ export interface FloatLabelTextareaProps<T> {
   persistentLabel?: string;
   placeholder?: string;
   maxLength?: number | ObservableBase<number>;
+  minRows?: number | ObservableBase<number>;
+  maxRows?: number | ObservableBase<number>;
 }
+
+const rowHeight = 25;
 
 export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
   private _isInvalid: ObservableBase<boolean>;
   private _maxLength: ObservableBase<number>;
-
+  private _minRows: ObservableBase<number>;
+  private _maxRows: ObservableBase<number>;
+  
   private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
 
@@ -36,6 +42,8 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
 
     this._isInvalid = this.props.isInvalid || Observable.givenValue(false, Observable.isStrictEqual);
     this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
+    this._minRows = Observable.givenValueOrObservable(this.props.minRows);
+    this._maxRows = Observable.givenValueOrObservable(this.props.maxRows);
   }
 
   onActivate() {
@@ -110,13 +118,29 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
       }, true)
     );
 
-    this.cancelOnDeactivate(
-      this.props.value.didChange.subscribe(() => {
-        textarea.style.height = "25px";
+    const heightBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        this.props.value,
+        this._minRows,
+        this._maxRows
+      ])
+    );
 
-        const textHeight = textarea.element.scrollHeight;
-        textarea.style.height = `${textHeight}px`;
-        wrapper.style.height = `${textHeight + 25}px`;
+    this.cancelOnDeactivate(
+      heightBinding.didInvalidate.subscribe(() => {
+        textarea.style.height = `${rowHeight}px`;
+
+        const minRows = this._minRows.value || 1;
+        const maxRows = this._maxRows.value || 1000;
+
+        const minHeight = minRows * rowHeight;
+        const maxHeight = maxRows * rowHeight;
+        
+        const contentHeight = textarea.element.scrollHeight;
+        const actualHeight = NumberUtil.numberWithHardLimit(contentHeight, minHeight, maxHeight);
+
+        textarea.style.height = `${actualHeight}px`;
+        wrapper.style.height = `${actualHeight + 25}px`;
       }, true)
     );
 
@@ -233,6 +257,25 @@ const TextareaStyle = ElementStyle.givenDefinition({
     width: 100%;
     -webkit-user-select: auto;
     -webkit-tap-highlight-color: transparent;
+
+    &::-webkit-scrollbar {
+      width: 22px;
+      height: 22px;
+      border-radius: 13px;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      border-radius: 13px;
+      background-clip: padding-box;
+      border: 9px solid transparent;
+      box-shadow: inset 0 0 0 10px;
+      color: #222;
+    }
 
     &::placeholder {
       color: #0000004C;

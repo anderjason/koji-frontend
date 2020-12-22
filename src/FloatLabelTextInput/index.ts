@@ -5,13 +5,13 @@ import {
 } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 import { ElementStyle, FocusWatcher, TextInputBinding } from "@anderjason/web";
-import { TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
+import { TextInputBindingOverrideResult, TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
 import { Actor } from "skytree";
 import { KojiAppearance } from "../KojiAppearance";
 
 export interface FloatLabelTextInputProps<T> {
   displayTextGivenValue: (value: T) => string;
-  overrideDisplayText?: (e: TextInputChangingData<T>) => string;
+  overrideDisplayText?: (e: TextInputChangingData<T>) => string | TextInputBindingOverrideResult;
   parentElement: HTMLElement;
   value: Observable<T>;
   valueGivenDisplayText: (displayText: string) => T;
@@ -92,19 +92,7 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
         output: this._isFocused,
       })
     );
-
-    const applyShadowText = () => {
-      if (
-        this.props.shadowTextGivenValue != null &&
-        this.props.applyShadowTextOnBlur == true
-      ) {
-        const text = this.props.shadowTextGivenValue(this.props.value.value);
-        if (text != null) {
-          input.element.value = text;
-        }
-      }
-    };
-
+    
     this.cancelOnDeactivate(
       this._isFocused.didChange.subscribe((isFocused) => {
         if (isFocused == true) {
@@ -115,8 +103,6 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
               (input.element.value || "").length
             );
           }
-        } else {
-          applyShadowText();
         }
       })
     );
@@ -153,8 +139,6 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
         }, true)
       );
     }
-
-    applyShadowText();
   }
 }
 

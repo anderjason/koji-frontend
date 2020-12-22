@@ -6,6 +6,7 @@ const util_1 = require("@anderjason/util");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const KojiAppearance_1 = require("../KojiAppearance");
+const rowHeight = 25;
 class FloatLabelTextarea extends skytree_1.Actor {
     constructor(props) {
         super(props);
@@ -14,6 +15,8 @@ class FloatLabelTextarea extends skytree_1.Actor {
         KojiAppearance_1.KojiAppearance.preloadFonts();
         this._isInvalid = this.props.isInvalid || observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
         this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
+        this._minRows = observable_1.Observable.givenValueOrObservable(this.props.minRows);
+        this._maxRows = observable_1.Observable.givenValueOrObservable(this.props.maxRows);
     }
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
@@ -59,11 +62,21 @@ class FloatLabelTextarea extends skytree_1.Actor {
         this.cancelOnDeactivate(this._isInvalid.didChange.subscribe(isInvalid => {
             wrapper.setModifier("isInvalid", isInvalid);
         }, true));
-        this.cancelOnDeactivate(this.props.value.didChange.subscribe(() => {
-            textarea.style.height = "25px";
-            const textHeight = textarea.element.scrollHeight;
-            textarea.style.height = `${textHeight}px`;
-            wrapper.style.height = `${textHeight + 25}px`;
+        const heightBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
+            this.props.value,
+            this._minRows,
+            this._maxRows
+        ]));
+        this.cancelOnDeactivate(heightBinding.didInvalidate.subscribe(() => {
+            textarea.style.height = `${rowHeight}px`;
+            const minRows = this._minRows.value || 1;
+            const maxRows = this._maxRows.value || 1000;
+            const minHeight = minRows * rowHeight;
+            const maxHeight = maxRows * rowHeight;
+            const contentHeight = textarea.element.scrollHeight;
+            const actualHeight = util_1.NumberUtil.numberWithHardLimit(contentHeight, minHeight, maxHeight);
+            textarea.style.height = `${actualHeight}px`;
+            wrapper.style.height = `${actualHeight + 25}px`;
         }, true));
         if (!util_1.StringUtil.stringIsEmpty(this.props.persistentLabel)) {
             const label = this.addActor(LabelStyle.toManagedElement({
@@ -171,6 +184,25 @@ const TextareaStyle = web_1.ElementStyle.givenDefinition({
     width: 100%;
     -webkit-user-select: auto;
     -webkit-tap-highlight-color: transparent;
+
+    &::-webkit-scrollbar {
+      width: 22px;
+      height: 22px;
+      border-radius: 13px;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      border-radius: 13px;
+      background-clip: padding-box;
+      border: 9px solid transparent;
+      box-shadow: inset 0 0 0 10px;
+      color: #222;
+    }
 
     &::placeholder {
       color: #0000004C;

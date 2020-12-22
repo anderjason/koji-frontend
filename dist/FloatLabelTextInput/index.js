@@ -50,24 +50,12 @@ class FloatLabelTextInput extends skytree_1.Actor {
             element: input.element,
             output: this._isFocused,
         }));
-        const applyShadowText = () => {
-            if (this.props.shadowTextGivenValue != null &&
-                this.props.applyShadowTextOnBlur == true) {
-                const text = this.props.shadowTextGivenValue(this.props.value.value);
-                if (text != null) {
-                    input.element.value = text;
-                }
-            }
-        };
         this.cancelOnDeactivate(this._isFocused.didChange.subscribe((isFocused) => {
             if (isFocused == true) {
                 // setSelectionRange is not supported on number inputs
                 if (inputType === "text") {
                     input.element.setSelectionRange(0, (input.element.value || "").length);
                 }
-            }
-            else {
-                applyShadowText();
             }
         }));
         const inputBinding = this.addActor(new web_1.TextInputBinding({
@@ -91,7 +79,6 @@ class FloatLabelTextInput extends skytree_1.Actor {
                 label.setModifier("hasValue", !isEmpty);
             }, true));
         }
-        applyShadowText();
     }
 }
 exports.FloatLabelTextInput = FloatLabelTextInput;

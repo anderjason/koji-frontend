@@ -55,8 +55,10 @@ export class MoneyInputDemo extends DemoActor<void> {
     this.addActor(
       new MoneyInput({
         parentElement: card.baseElement,
+        placeholderLabel: "Price",
         persistentLabel: "Set Price",
-        maxValue: new Money(100000, Currency.ofUSD()),
+        maxValue: new Money(10000000, Currency.ofUSD()),
+        allowEmpty: true,
         value: moneyPrice,
       })
     );

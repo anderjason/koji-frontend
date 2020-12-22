@@ -5,6 +5,21 @@ const util_1 = require("@anderjason/util");
 const skytree_1 = require("skytree");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
 const money_1 = require("@anderjason/money");
+function rawNumberGivenText(input) {
+    if (util_1.StringUtil.stringIsEmpty(input)) {
+        return 0;
+    }
+    let text = input.replace("$", "");
+    // remove leading zeros and decimal point
+    text = text.replace(/^[0.]*/, "");
+    // remove anything that's not a number
+    text = text.replace(/\D/, "");
+    if (util_1.StringUtil.stringIsEmpty(text)) {
+        return 0;
+    }
+    const result = Math.round(parseFloat(text));
+    return isNaN(result) ? 0 : result;
+}
 class MoneyInput extends skytree_1.Actor {
     get isFocused() {
         return this._textInput.isFocused;
@@ -13,67 +28,84 @@ class MoneyInput extends skytree_1.Actor {
         this._textInput = this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
+            placeholder: this.props.placeholderLabel,
             value: this.props.value,
             isInvalid: this.props.isInvalid,
             inputMode: "decimal",
-            displayTextGivenValue: (price) => {
-                if (price == null) {
+            displayTextGivenValue: (v) => {
+                if (v == null) {
                     return "";
                 }
-                return "$" + price.rawValue.toString();
+                return v.toString("$1.00");
             },
-            shadowTextGivenValue: (price) => {
-                if (price == null || price.isZero) {
-                    return "$0.00";
-                }
-                return price.toString("$1.00");
-            },
-            applyShadowTextOnBlur: true,
             valueGivenDisplayText: (displayText) => {
-                if (util_1.StringUtil.stringIsEmpty(displayText) ||
-                    displayText === "$" ||
-                    displayText === "." ||
-                    displayText === "$.") {
-                    return new money_1.Money(0, money_1.Currency.ofUSD());
-                }
-                try {
-                    let text = displayText.replace("$", "");
-                    if (util_1.StringUtil.stringIsEmpty(text)) {
+                if (util_1.StringUtil.stringIsEmpty(displayText)) {
+                    if (this.props.allowEmpty == true) {
+                        return undefined;
+                    }
+                    else {
                         return new money_1.Money(0, money_1.Currency.ofUSD());
                     }
-                    return new money_1.Money(Math.round(parseFloat(text) * 100), money_1.Currency.ofUSD());
+                }
+                try {
+                    const rawNumber = rawNumberGivenText(displayText);
+                    return new money_1.Money(rawNumber, money_1.Currency.ofUSD());
                 }
                 catch (_a) {
                     return new money_1.Money(0, money_1.Currency.ofUSD());
                 }
             },
             overrideDisplayText: (e) => {
-                if (e.displayText == "") {
-                    return "$";
-                }
-                if (e.displayText === "$." || e.displayText === ".") {
-                    return "$0.";
-                }
-                if (e.displayText === "$00") {
-                    return "$0";
-                }
-                if (e.displayText === "00") {
-                    return "0";
-                }
-                let text = e.displayText;
-                if (!text.startsWith("$")) {
-                    text = "$" + text;
-                }
-                // only allow things that look like a price
-                if (text.match(/^\$[0-9]*\.?[0-9]{0,2}$/gm) == null) {
-                    return e.previousDisplayText;
-                }
-                if (this.props.maxValue != null) {
-                    if (e.value.rawValue > this.props.maxValue.rawValue) {
-                        return e.previousDisplayText;
+                const rawNumber = rawNumberGivenText(e.displayText);
+                if ((e.previousValue == null || e.previousValue.isZero) &&
+                    rawNumber == 0) {
+                    if (this.props.allowEmpty == true) {
+                        return {
+                            text: "",
+                            caretPosition: null,
+                        };
+                    }
+                    else {
+                        return {
+                            text: "$0.00",
+                            caretPosition: null,
+                        };
                     }
                 }
-                return text.replace(/^\$0+([1-9]+)/, "$$$1");
+                if (e.value == null) {
+                    if (this.props.allowEmpty == true) {
+                        return {
+                            text: "",
+                            caretPosition: null,
+                        };
+                    }
+                    else {
+                        return {
+                            text: "$0.00",
+                            caretPosition: null,
+                        };
+                    }
+                }
+                else {
+                    const newPriceString = e.value.toString("$1.00");
+                    let caretPosition = e.caretPosition;
+                    if (caretPosition == 0) {
+                        caretPosition = null;
+                    }
+                    else {
+                        const oldPriceString = e.previousDisplayText;
+                        if (newPriceString.length > oldPriceString.length) {
+                            caretPosition += 1;
+                        }
+                        else if (newPriceString.length < oldPriceString.length) {
+                            caretPosition -= 1;
+                        }
+                    }
+                    return {
+                        text: newPriceString,
+                        caretPosition,
+                    };
+                }
             },
         }));
     }

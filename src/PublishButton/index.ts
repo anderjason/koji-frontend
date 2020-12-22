@@ -76,6 +76,7 @@ export class PublishButton extends Actor<PublishButtonProps> {
                 innerHTML: svgIcon
               });
             default:
+              console.warn(`Unsupported PublishButton mode '${(mode as any).type}'`);
               break;
           }
         }

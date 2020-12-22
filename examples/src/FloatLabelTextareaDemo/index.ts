@@ -49,6 +49,8 @@ export class FloatLabelTextareaDemo extends DemoActor<void> {
         placeholder: "Your title here",
         value,
         isInvalid,
+        minRows: 3,
+        maxRows: 5,
         displayTextGivenValue: (v) => v,
         valueGivenDisplayText: (v) => v,
       })

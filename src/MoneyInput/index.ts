@@ -1,4 +1,8 @@
-import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
+import {
+  Observable,
+  ObservableBase,
+  ReadOnlyObservable,
+} from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 import { Actor } from "skytree";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
@@ -9,8 +13,32 @@ export interface MoneyInputProps {
   value: Observable<Money>;
   persistentLabel: string;
 
+  placeholderLabel?: string;
   maxValue?: Money;
+  allowEmpty?: boolean;
   isInvalid?: ObservableBase<boolean>;
+}
+
+function rawNumberGivenText(input: string): number {
+  if (StringUtil.stringIsEmpty(input)) {
+    return 0;
+  }
+
+  let text = input.replace("$", "");
+
+  // remove leading zeros and decimal point
+  text = text.replace(/^[0.]*/, "");
+
+  // remove anything that's not a number
+  text = text.replace(/\D/, "");
+
+  if (StringUtil.stringIsEmpty(text)) {
+    return 0;
+  }
+
+  const result = Math.round(parseFloat(text));
+
+  return isNaN(result) ? 0 : result;
 }
 
 export class MoneyInput extends Actor<MoneyInputProps> {
@@ -19,88 +47,93 @@ export class MoneyInput extends Actor<MoneyInputProps> {
   get isFocused(): ReadOnlyObservable<boolean> {
     return this._textInput.isFocused;
   }
-  
+
   onActivate() {
     this._textInput = this.addActor(
       new FloatLabelTextInput({
         parentElement: this.props.parentElement,
         persistentLabel: this.props.persistentLabel,
+        placeholder: this.props.placeholderLabel,
         value: this.props.value,
         isInvalid: this.props.isInvalid,
         inputMode: "decimal",
-        displayTextGivenValue: (price) => {
-          if (price == null) {
+        displayTextGivenValue: (v) => {
+          if (v == null) {
             return "";
           }
 
-          return "$" + price.rawValue.toString();
+          return v.toString("$1.00");
         },
-        shadowTextGivenValue: (price) => {
-          if (price == null || price.isZero) {
-            return "$0.00";
-          }
-
-          return price.toString("$1.00");
-        },
-        applyShadowTextOnBlur: true,
         valueGivenDisplayText: (displayText) => {
-          if (
-            StringUtil.stringIsEmpty(displayText) ||
-            displayText === "$" ||
-            displayText === "." ||
-            displayText === "$."
-          ) {
-            return new Money(0, Currency.ofUSD());
+          if (StringUtil.stringIsEmpty(displayText)) {
+            if (this.props.allowEmpty == true) {
+              return undefined;
+            } else {
+              return new Money(0, Currency.ofUSD());
+            }
           }
 
           try {
-            let text = displayText.replace("$", "");
-            if (StringUtil.stringIsEmpty(text)) {
-              return new Money(0, Currency.ofUSD());
-            }
+            const rawNumber = rawNumberGivenText(displayText);
 
-            return new Money(
-              Math.round(parseFloat(text) * 100),
-              Currency.ofUSD()
-            );
+            return new Money(rawNumber, Currency.ofUSD());
           } catch {
             return new Money(0, Currency.ofUSD());
           }
         },
         overrideDisplayText: (e) => {
-          if (e.displayText == "") {
-            return "$";
-          }
+          const rawNumber = rawNumberGivenText(e.displayText);
 
-          if (e.displayText === "$." || e.displayText === ".") {
-            return "$0.";
-          }
-
-          if (e.displayText === "$00") {
-            return "$0";
-          }
-
-          if (e.displayText === "00") {
-            return "0";
-          }
-
-          let text = e.displayText;
-          if (!text.startsWith("$")) {
-            text = "$" + text;
-          }
-
-          // only allow things that look like a price
-          if (text.match(/^\$[0-9]*\.?[0-9]{0,2}$/gm) == null) {
-            return e.previousDisplayText;
-          }
-
-          if (this.props.maxValue != null) {
-            if (e.value.rawValue > this.props.maxValue.rawValue) {
-              return e.previousDisplayText;
+          if (
+            (e.previousValue == null || e.previousValue.isZero) &&
+            rawNumber == 0
+          ) {
+            if (this.props.allowEmpty == true) {
+              return {
+                text: "",
+                caretPosition: null,
+              };
+            } else {
+              return {
+                text: "$0.00",
+                caretPosition: null,
+              };
             }
           }
 
-          return text.replace(/^\$0+([1-9]+)/, "$$$1");
+          if (e.value == null) {
+            if (this.props.allowEmpty == true) {
+              return {
+                text: "",
+                caretPosition: null,
+              };
+            } else {
+              return {
+                text: "$0.00",
+                caretPosition: null,
+              };
+            }
+          } else {
+            const newPriceString: string = e.value.toString("$1.00");
+
+            let caretPosition = (e as any).caretPosition;
+            if (caretPosition == 0) {
+              caretPosition = null;
+            } else {
+              const oldPriceString = e.previousDisplayText;
+
+              if (newPriceString.length > oldPriceString.length) {
+                caretPosition += 1;
+              } else if (newPriceString.length < oldPriceString.length) {
+                caretPosition -= 1;
+              }
+            }
+
+            return {
+              text: newPriceString,
+              caretPosition,
+            };
+          }
         },
       })
     );

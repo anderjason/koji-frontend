@@ -45,6 +45,7 @@ class PublishButton extends skytree_1.Actor {
                             innerHTML: svgIcon
                         });
                     default:
+                        console.warn(`Unsupported PublishButton mode '${mode.type}'`);
                         break;
                 }
             }
