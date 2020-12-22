@@ -10,6 +10,7 @@ export interface MoneyInputProps {
     allowEmpty?: boolean;
     isInvalid?: ObservableBase<boolean>;
 }
+export declare function shouldRejectInput(input: string): boolean;
 export declare class MoneyInput extends Actor<MoneyInputProps> {
     private _textInput;
     get isFocused(): ReadOnlyObservable<boolean>;

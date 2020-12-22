@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MoneyInput = void 0;
+exports.MoneyInput = exports.shouldRejectInput = void 0;
 const util_1 = require("@anderjason/util");
 const skytree_1 = require("skytree");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
@@ -20,6 +20,18 @@ function rawNumberGivenText(input) {
     const result = Math.round(parseFloat(text));
     return isNaN(result) ? 0 : result;
 }
+function shouldRejectInput(input) {
+    if (util_1.StringUtil.stringIsEmpty(input)) {
+        return false;
+    }
+    const inputWithoutMoneySymbols = input.replace(".", "").replace("$", "");
+    // reject if the input contains non-digit characters, excluding money symbols
+    if (/\D/.test(inputWithoutMoneySymbols)) {
+        return true;
+    }
+    return false;
+}
+exports.shouldRejectInput = shouldRejectInput;
 class MoneyInput extends skytree_1.Actor {
     get isFocused() {
         return this._textInput.isFocused;
@@ -56,8 +68,14 @@ class MoneyInput extends skytree_1.Actor {
                 }
             },
             overrideDisplayText: (e) => {
+                if (shouldRejectInput(e.displayText)) {
+                    return e.previousDisplayText;
+                }
                 const rawNumber = rawNumberGivenText(e.displayText);
-                if ((e.previousValue == null || e.previousValue.isZero) &&
+                if (this.props.maxValue != null && e.value.rawValue > this.props.maxValue.rawValue) {
+                    return e.previousDisplayText;
+                }
+                if ((e.previousValue != null && e.previousValue.isZero) &&
                     rawNumber == 0) {
                     if (this.props.allowEmpty == true) {
                         return {

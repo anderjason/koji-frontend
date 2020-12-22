@@ -41,6 +41,21 @@ function rawNumberGivenText(input: string): number {
   return isNaN(result) ? 0 : result;
 }
 
+export function shouldRejectInput(input: string): boolean {
+  if (StringUtil.stringIsEmpty(input)) {
+    return false;
+  }
+
+  const inputWithoutMoneySymbols = input.replace(".", "").replace("$", "");
+
+  // reject if the input contains non-digit characters, excluding money symbols
+  if (/\D/.test(inputWithoutMoneySymbols)) {
+    return true;
+  }
+
+  return false;
+}
+
 export class MoneyInput extends Actor<MoneyInputProps> {
   private _textInput: FloatLabelTextInput<Money>;
 
@@ -82,10 +97,18 @@ export class MoneyInput extends Actor<MoneyInputProps> {
           }
         },
         overrideDisplayText: (e) => {
+          if (shouldRejectInput(e.displayText)) {
+            return e.previousDisplayText;
+          }
+          
           const rawNumber = rawNumberGivenText(e.displayText);
+          
+          if (this.props.maxValue != null && e.value.rawValue > this.props.maxValue.rawValue) {
+            return e.previousDisplayText;
+          }
 
           if (
-            (e.previousValue == null || e.previousValue.isZero) &&
+            (e.previousValue != null && e.previousValue.isZero) &&
             rawNumber == 0
           ) {
             if (this.props.allowEmpty == true) {
