@@ -21,6 +21,8 @@ export declare class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputPro
     private _maxLength;
     private _isFocused;
     readonly isFocused: ReadOnlyObservable<boolean>;
+    private _input;
+    get displayText(): string;
     constructor(props: FloatLabelTextInputProps<T>);
     onActivate(): void;
 }

@@ -7,8 +7,8 @@ export interface MoneyInputProps {
     persistentLabel?: string;
     placeholderLabel?: string;
     maxValue?: Money;
-    allowEmpty?: boolean;
     isInvalid?: ObservableBase<boolean>;
+    allowEmpty?: boolean;
 }
 export declare function shouldRejectInput(input: string): boolean;
 export declare class MoneyInput extends Actor<MoneyInputProps> {

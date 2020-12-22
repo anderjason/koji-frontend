@@ -1,8 +1,4 @@
-import {
-  Observable,
-  ObservableBase,
-  ReadOnlyObservable,
-} from "@anderjason/observable";
+import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 import { Actor } from "skytree";
 import { FloatLabelTextInput } from "../FloatLabelTextInput";
@@ -15,8 +11,8 @@ export interface MoneyInputProps {
   persistentLabel?: string;
   placeholderLabel?: string;
   maxValue?: Money;
-  allowEmpty?: boolean;
   isInvalid?: ObservableBase<boolean>;
+  allowEmpty?: boolean;
 }
 
 function rawNumberGivenText(input: string): number {
@@ -62,7 +58,7 @@ export class MoneyInput extends Actor<MoneyInputProps> {
   get isFocused(): ReadOnlyObservable<boolean> {
     return this._textInput.isFocused;
   }
-
+  
   onActivate() {
     this._textInput = this.addActor(
       new FloatLabelTextInput({
@@ -72,26 +68,37 @@ export class MoneyInput extends Actor<MoneyInputProps> {
         value: this.props.value,
         isInvalid: this.props.isInvalid,
         inputMode: "decimal",
-        displayTextGivenValue: (v) => {
-          if (v == null) {
+        displayTextGivenValue: (price) => {
+          if (price == null) {
             return "";
           }
 
-          return v.toString("$1.00");
+          return price.toString("$1.00");
         },
         valueGivenDisplayText: (displayText) => {
-          if (StringUtil.stringIsEmpty(displayText)) {
+          if (
+            StringUtil.stringIsEmpty(displayText) ||
+            displayText === "$" ||
+            displayText === "." ||
+            displayText === "$."
+          ) {
             if (this.props.allowEmpty == true) {
-              return undefined;
+              return undefined; 
             } else {
               return new Money(0, Currency.ofUSD());
             }
           }
 
           try {
-            const rawNumber = rawNumberGivenText(displayText);
+            let text = displayText.replace("$", "");
+            if (StringUtil.stringIsEmpty(text)) {
+              return new Money(0, Currency.ofUSD());
+            }
 
-            return new Money(rawNumber, Currency.ofUSD());
+            return new Money(
+              Math.round(parseFloat(text) * 100),
+              Currency.ofUSD()
+            );
           } catch {
             return new Money(0, Currency.ofUSD());
           }
@@ -100,71 +107,77 @@ export class MoneyInput extends Actor<MoneyInputProps> {
           if (shouldRejectInput(e.displayText)) {
             return e.previousDisplayText;
           }
-          
-          if (e.value == null) {
+
+          if (e.displayText == "") {
+            if (this.props.allowEmpty == true) {
+              return ""
+            };
+
             return {
-              text: "",
-              caretPosition: null
+              text: "$",
+              caretPosition: 1
             };
           }
 
-          const rawNumber = rawNumberGivenText(e.displayText);
-          
-          if (this.props.maxValue != null && e.value.rawValue > this.props.maxValue.rawValue) {
+          if (e.displayText === "$." || e.displayText === ".") {
+            return {
+              text: "$0.",
+              caretPosition: 3
+            };
+          }
+
+          if (e.displayText === "$00") {
+            return {
+              text: "$0",
+              caretPosition: 2
+            };
+          }
+
+          if (e.displayText === "00") {
+            return {
+              text: "0",
+              caretPosition: 1
+            };
+          }
+
+          let text = e.displayText;
+          let caretPosition = e.caretPosition;
+
+          if (!text.startsWith("$")) {
+            text = "$" + text;
+            caretPosition += 1;
+          }
+
+          // only allow things that look like a price
+          if (text.match(/^\$[0-9]*\.?[0-9]{0,2}$/gm) == null) {
             return e.previousDisplayText;
           }
-
-          if (
-            (e.previousValue != null && e.previousValue.isZero) &&
-            rawNumber == 0
-          ) {
-            if (this.props.allowEmpty == true) {
-              return {
-                text: "",
-                caretPosition: null,
-              };
-            } else {
-              return {
-                text: "$0.00",
-                caretPosition: null,
-              };
+          
+          if (e.value != null && this.props.maxValue != null) {
+            if (e.value.rawValue > this.props.maxValue.rawValue) {
+              return e.previousDisplayText;
             }
           }
 
-          if (e.value == null) {
-            if (this.props.allowEmpty == true) {
-              return {
-                text: "",
-                caretPosition: null,
-              };
-            } else {
-              return {
-                text: "$0.00",
-                caretPosition: null,
-              };
-            }
-          } else {
-            const newPriceString: string = e.value.toString("$1.00");
+          const newPriceString = text.replace(/^\$0+([1-9]+)/, "$$$1");
 
-            let caretPosition = (e as any).caretPosition;
-            if (caretPosition == 0) {
-              caretPosition = null;
-            } else {
-              const oldPriceString = e.previousDisplayText;
-
-              if (newPriceString.length > oldPriceString.length) {
-                caretPosition += 1;
-              } else if (newPriceString.length < oldPriceString.length) {
-                caretPosition -= 1;
-              }
-            }
-
-            return {
-              text: newPriceString,
-              caretPosition,
-            };
-          }
+          return {
+            text: newPriceString,
+            caretPosition,
+          };
         },
+      })
+    );
+
+    this.cancelOnDeactivate(
+      this._textInput.isFocused.didChange.subscribe(isFocused => {
+        if (isFocused == false) {
+          if (this.props.allowEmpty == true && StringUtil.stringIsEmpty(this._textInput.displayText)) {
+            this.props.value.setValue(undefined);
+          } else {
+            this.props.value.didChange.emit(this.props.value.value);
+          }
+        }
       })
     );
   }

@@ -4,7 +4,7 @@ import {
   ReadOnlyObservable,
 } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
-import { ElementStyle, FocusWatcher, TextInputBinding } from "@anderjason/web";
+import { DynamicStyleElement, ElementStyle, FocusWatcher, TextInputBinding } from "@anderjason/web";
 import { TextInputBindingOverrideResult, TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
 import { Actor } from "skytree";
 import { KojiAppearance } from "../KojiAppearance";
@@ -33,6 +33,12 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
   private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
   readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
 
+  private _input: DynamicStyleElement<HTMLInputElement>;
+
+  get displayText(): string {
+    return this._input.element.value;
+  }
+
   constructor(props: FloatLabelTextInputProps<T>) {
     super(props);
 
@@ -53,68 +59,69 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     );
     wrapper.element.classList.add("kft-control");
 
-    const input = this.addActor(
+    this._input = this.addActor(
       InputStyle.toManagedElement({
         tagName: "input",
         parentElement: wrapper.element,
       })
     );
     const inputType = this.props.inputType || "text";
-    input.element.type = inputType;
+    this._input.element.type = inputType;
 
     if (this.props.inputMode != null) {
-      input.element.inputMode = this.props.inputMode;
+      this._input.element.inputMode = this.props.inputMode;
     }
     
     this.cancelOnDeactivate(
       this._maxLength.didChange.subscribe((maxLength) => {
         if (maxLength == null) {
-          input.element.removeAttribute("maxLength");
+          this._input.element.removeAttribute("maxLength");
         } else {
-          input.element.maxLength = maxLength;
+          this._input.element.maxLength = maxLength;
         }
       }, true)
     );
 
     if (this.props.placeholder != null) {
-      input.element.placeholder = this.props.placeholder;
+      this._input.element.placeholder = this.props.placeholder;
     }
 
     this.cancelOnDeactivate(
       wrapper.addManagedEventListener("click", () => {
-        input.element.focus();
+        this._input.element.focus();
       })
     );
 
     this.addActor(
       new FocusWatcher({
-        element: input.element,
+        element: this._input.element,
         output: this._isFocused,
-      })
-    );
-    
-    this.cancelOnDeactivate(
-      this._isFocused.didChange.subscribe((isFocused) => {
-        if (isFocused == true) {
-          // setSelectionRange is not supported on number inputs
-          if (inputType === "text") {
-            input.element.setSelectionRange(
-              0,
-              (input.element.value || "").length
-            );
-          }
-        }
       })
     );
 
     const inputBinding = this.addActor(
       new TextInputBinding<T>({
-        inputElement: input.element,
+        inputElement: this._input.element,
         value: this.props.value,
         displayTextGivenValue: this.props.displayTextGivenValue,
         valueGivenDisplayText: this.props.valueGivenDisplayText,
         overrideDisplayText: this.props.overrideDisplayText,
       })
+    );
+
+    this.cancelOnDeactivate(
+      this._isFocused.didChange.subscribe((isFocused) => {
+        if (isFocused == true) {
+          // setSelectionRange is not supported on number inputs
+          if (inputType === "text") {
+            this._input.element.setSelectionRange(
+              0,
+              (this._input.element.value || "").length
+            );
+          }
+        }
+      })
+
     );
 
     this.cancelOnDeactivate(
@@ -134,7 +141,7 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
 
       this.cancelOnDeactivate(
         inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-          input.setModifier("hasValue", !isEmpty);
+          this._input.setModifier("hasValue", !isEmpty);
           label.setModifier("hasValue", !isEmpty);
         }, true)
       );

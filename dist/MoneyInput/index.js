@@ -44,14 +44,17 @@ class MoneyInput extends skytree_1.Actor {
             value: this.props.value,
             isInvalid: this.props.isInvalid,
             inputMode: "decimal",
-            displayTextGivenValue: (v) => {
-                if (v == null) {
+            displayTextGivenValue: (price) => {
+                if (price == null) {
                     return "";
                 }
-                return v.toString("$1.00");
+                return price.toString("$1.00");
             },
             valueGivenDisplayText: (displayText) => {
-                if (util_1.StringUtil.stringIsEmpty(displayText)) {
+                if (util_1.StringUtil.stringIsEmpty(displayText) ||
+                    displayText === "$" ||
+                    displayText === "." ||
+                    displayText === "$.") {
                     if (this.props.allowEmpty == true) {
                         return undefined;
                     }
@@ -60,8 +63,11 @@ class MoneyInput extends skytree_1.Actor {
                     }
                 }
                 try {
-                    const rawNumber = rawNumberGivenText(displayText);
-                    return new money_1.Money(rawNumber, money_1.Currency.ofUSD());
+                    let text = displayText.replace("$", "");
+                    if (util_1.StringUtil.stringIsEmpty(text)) {
+                        return new money_1.Money(0, money_1.Currency.ofUSD());
+                    }
+                    return new money_1.Money(Math.round(parseFloat(text) * 100), money_1.Currency.ofUSD());
                 }
                 catch (_a) {
                     return new money_1.Money(0, money_1.Currency.ofUSD());
@@ -71,66 +77,65 @@ class MoneyInput extends skytree_1.Actor {
                 if (shouldRejectInput(e.displayText)) {
                     return e.previousDisplayText;
                 }
-                if (e.value == null) {
+                if (e.displayText == "") {
+                    if (this.props.allowEmpty == true) {
+                        return "";
+                    }
+                    ;
                     return {
-                        text: "",
-                        caretPosition: null
+                        text: "$",
+                        caretPosition: 1
                     };
                 }
-                const rawNumber = rawNumberGivenText(e.displayText);
-                if (this.props.maxValue != null && e.value.rawValue > this.props.maxValue.rawValue) {
+                if (e.displayText === "$." || e.displayText === ".") {
+                    return {
+                        text: "$0.",
+                        caretPosition: 3
+                    };
+                }
+                if (e.displayText === "$00") {
+                    return {
+                        text: "$0",
+                        caretPosition: 2
+                    };
+                }
+                if (e.displayText === "00") {
+                    return {
+                        text: "0",
+                        caretPosition: 1
+                    };
+                }
+                let text = e.displayText;
+                let caretPosition = e.caretPosition;
+                if (!text.startsWith("$")) {
+                    text = "$" + text;
+                    caretPosition += 1;
+                }
+                // only allow things that look like a price
+                if (text.match(/^\$[0-9]*\.?[0-9]{0,2}$/gm) == null) {
                     return e.previousDisplayText;
                 }
-                if ((e.previousValue != null && e.previousValue.isZero) &&
-                    rawNumber == 0) {
-                    if (this.props.allowEmpty == true) {
-                        return {
-                            text: "",
-                            caretPosition: null,
-                        };
-                    }
-                    else {
-                        return {
-                            text: "$0.00",
-                            caretPosition: null,
-                        };
+                if (e.value != null && this.props.maxValue != null) {
+                    if (e.value.rawValue > this.props.maxValue.rawValue) {
+                        return e.previousDisplayText;
                     }
                 }
-                if (e.value == null) {
-                    if (this.props.allowEmpty == true) {
-                        return {
-                            text: "",
-                            caretPosition: null,
-                        };
-                    }
-                    else {
-                        return {
-                            text: "$0.00",
-                            caretPosition: null,
-                        };
-                    }
+                const newPriceString = text.replace(/^\$0+([1-9]+)/, "$$$1");
+                return {
+                    text: newPriceString,
+                    caretPosition,
+                };
+            },
+        }));
+        this.cancelOnDeactivate(this._textInput.isFocused.didChange.subscribe(isFocused => {
+            if (isFocused == false) {
+                if (this.props.allowEmpty == true && util_1.StringUtil.stringIsEmpty(this._textInput.displayText)) {
+                    this.props.value.setValue(undefined);
                 }
                 else {
-                    const newPriceString = e.value.toString("$1.00");
-                    let caretPosition = e.caretPosition;
-                    if (caretPosition == 0) {
-                        caretPosition = null;
-                    }
-                    else {
-                        const oldPriceString = e.previousDisplayText;
-                        if (newPriceString.length > oldPriceString.length) {
-                            caretPosition += 1;
-                        }
-                        else if (newPriceString.length < oldPriceString.length) {
-                            caretPosition -= 1;
-                        }
-                    }
-                    return {
-                        text: newPriceString,
-                        caretPosition,
-                    };
+                    this.props.value.didChange.emit(this.props.value.value);
                 }
-            },
+            }
         }));
     }
 }

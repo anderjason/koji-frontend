@@ -17,53 +17,56 @@ class FloatLabelTextInput extends skytree_1.Actor {
                 observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
         this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
     }
+    get displayText() {
+        return this._input.element.value;
+    }
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
         wrapper.element.classList.add("kft-control");
-        const input = this.addActor(InputStyle.toManagedElement({
+        this._input = this.addActor(InputStyle.toManagedElement({
             tagName: "input",
             parentElement: wrapper.element,
         }));
         const inputType = this.props.inputType || "text";
-        input.element.type = inputType;
+        this._input.element.type = inputType;
         if (this.props.inputMode != null) {
-            input.element.inputMode = this.props.inputMode;
+            this._input.element.inputMode = this.props.inputMode;
         }
         this.cancelOnDeactivate(this._maxLength.didChange.subscribe((maxLength) => {
             if (maxLength == null) {
-                input.element.removeAttribute("maxLength");
+                this._input.element.removeAttribute("maxLength");
             }
             else {
-                input.element.maxLength = maxLength;
+                this._input.element.maxLength = maxLength;
             }
         }, true));
         if (this.props.placeholder != null) {
-            input.element.placeholder = this.props.placeholder;
+            this._input.element.placeholder = this.props.placeholder;
         }
         this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-            input.element.focus();
+            this._input.element.focus();
         }));
         this.addActor(new web_1.FocusWatcher({
-            element: input.element,
+            element: this._input.element,
             output: this._isFocused,
+        }));
+        const inputBinding = this.addActor(new web_1.TextInputBinding({
+            inputElement: this._input.element,
+            value: this.props.value,
+            displayTextGivenValue: this.props.displayTextGivenValue,
+            valueGivenDisplayText: this.props.valueGivenDisplayText,
+            overrideDisplayText: this.props.overrideDisplayText,
         }));
         this.cancelOnDeactivate(this._isFocused.didChange.subscribe((isFocused) => {
             if (isFocused == true) {
                 // setSelectionRange is not supported on number inputs
                 if (inputType === "text") {
-                    input.element.setSelectionRange(0, (input.element.value || "").length);
+                    this._input.element.setSelectionRange(0, (this._input.element.value || "").length);
                 }
             }
-        }));
-        const inputBinding = this.addActor(new web_1.TextInputBinding({
-            inputElement: input.element,
-            value: this.props.value,
-            displayTextGivenValue: this.props.displayTextGivenValue,
-            valueGivenDisplayText: this.props.valueGivenDisplayText,
-            overrideDisplayText: this.props.overrideDisplayText,
         }));
         this.cancelOnDeactivate(this._isInvalid.didChange.subscribe((isInvalid) => {
             wrapper.setModifier("isInvalid", isInvalid);
@@ -75,7 +78,7 @@ class FloatLabelTextInput extends skytree_1.Actor {
             }));
             label.element.innerHTML = this.props.persistentLabel;
             this.cancelOnDeactivate(inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-                input.setModifier("hasValue", !isEmpty);
+                this._input.setModifier("hasValue", !isEmpty);
                 label.setModifier("hasValue", !isEmpty);
             }, true));
         }
