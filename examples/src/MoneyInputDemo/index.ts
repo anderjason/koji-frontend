@@ -43,12 +43,12 @@ export class MoneyInputDemo extends DemoActor<void> {
 
     this.cancelOnDeactivate(
       moneyPrice.didChange.subscribe((price) => {
-        if (price == null) {
-          priceText.setValue("No price set");
-        } else {
-          const formattedPrice = price.toString("$1.00");
-          priceText.setValue(`The price is ${formattedPrice}`);
-        }
+        const formattedPrice =
+          price != null
+            ? `The price is ${price.toString("$1.00")}`
+            : "Price is not set";
+            
+        priceText.setValue(formattedPrice);
       }, true)
     );
 

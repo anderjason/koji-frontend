@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/koji-frontend-tools",
-  "version": "5.1.4",
+  "version": "5.1.5",
   "description": "",
   "main": "./dist/index.js",
   "repository": {

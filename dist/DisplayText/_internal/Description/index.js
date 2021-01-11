@@ -119,7 +119,7 @@ class Description extends skytree_1.Actor {
                         }
                         collapsedWords.push(wordAndWhitespace);
                     }
-                    start = end + 1;
+                    start = end;
                 }
                 if (collapsedWords.length < wordsAndWhitespace.length) {
                     let trimmedText = collapsedWords

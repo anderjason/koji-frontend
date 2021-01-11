@@ -185,7 +185,7 @@ export class Description extends Actor<DescriptionInputProps> {
               collapsedWords.push(wordAndWhitespace);
             }
 
-            start = end + 1;
+            start = end;
           }
 
           if (collapsedWords.length < wordsAndWhitespace.length) {
