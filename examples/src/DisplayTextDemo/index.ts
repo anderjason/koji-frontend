@@ -4,6 +4,10 @@ import { AlignBottom, SubmitButton } from "../../../src";
 import { Card } from "../../../src/Card";
 import { DisplayText } from "../../../src/DisplayText";
 
+const demoText = `Welcome to my meme shop!
+
+Make your choice and I'll send you a meme. You can let me know in the description if you want a specific theme or just a random one.`;
+
 export class DisplayTextDemo extends DemoActor<void> {
   onActivate() {
     const alignBottom = this.addActor(
@@ -38,7 +42,7 @@ export class DisplayTextDemo extends DemoActor<void> {
       new DisplayText({
         parentElement: card.baseElement,
         displayType: "description",
-        text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
+        text: demoText,
       })
     );
 

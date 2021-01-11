@@ -106,7 +106,7 @@ class Description extends skytree_1.Actor {
                 let collapsedWords = [];
                 for (let i = 0; i < wordsAndWhitespace.length; i++) {
                     const wordAndWhitespace = wordsAndWhitespace[i];
-                    end = start + wordAndWhitespace.word.length;
+                    end = start + wordAndWhitespace.word.length + wordAndWhitespace.trailingWhitespace.length;
                     range.setStart(textNode, start);
                     range.setEnd(textNode, end);
                     const rect = range.getClientRects()[0];

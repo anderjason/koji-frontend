@@ -166,7 +166,7 @@ export class Description extends Actor<DescriptionInputProps> {
           for (let i = 0; i < wordsAndWhitespace.length; i++) {
             const wordAndWhitespace = wordsAndWhitespace[i];
 
-            end = start + wordAndWhitespace.word.length;
+            end = start + wordAndWhitespace.word.length + wordAndWhitespace.trailingWhitespace.length;
             range.setStart(textNode, start);
             range.setEnd(textNode, end);
 

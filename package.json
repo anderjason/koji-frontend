@@ -1,6 +1,6 @@
 {
   "name": "@anderjason/koji-frontend-tools",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "description": "",
   "main": "./dist/index.js",
   "repository": {
@@ -23,21 +23,21 @@
     "@anderjason/color": "^2.0.0",
     "@anderjason/geometry": "^3.0.0",
     "@anderjason/money": "^1.0.0",
-    "@anderjason/observable": "^3.2.0",
+    "@anderjason/observable": "^3.2.1",
     "@anderjason/tests": "^1.0.1",
     "@anderjason/time": "^2.0.2",
     "@anderjason/util": "^2.0.3",
-    "@anderjason/web": "^7.2.1",
-    "@withkoji/vcc": "^1.1.46",
+    "@anderjason/web": "^7.2.2",
+    "@withkoji/vcc": "^1.1.47",
     "skytree": "^9.3.1"
   },
   "devDependencies": {
     "@anderjason/example-tools": "git+https://github.com/anderjason/example-tools.git",
     "@anderjason/skytree-devtools": "git+https://github.com/anderjason/skytree-devtools.git",
-    "@types/node": "^14.14.12",
+    "@types/node": "^14.14.20",
     "html-webpack-plugin": "^4.5.0",
     "ts-loader": "^8.0.9",
-    "typescript": "^4.1.2",
+    "typescript": "^4.1.3",
     "webpack": "4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
