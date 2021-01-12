@@ -2,6 +2,8 @@ import {
   Observable,
   ObservableArray,
   ObservableBase,
+  ReadOnlyObservable,
+  ReadOnlyObservableArray,
 } from "@anderjason/observable";
 import { Debounce, Duration } from "@anderjason/time";
 import { ArrayUtil } from "@anderjason/util";
@@ -44,6 +46,12 @@ export class Card extends Actor<CardProps> {
   private _baseLayout: CardLayout;
   private _maxHeight: ObservableBase<number>;
   private _mode: ObservableBase<CardMode>;
+  private _selectedLayout = Observable.ofEmpty<CardLayout>(
+    Observable.isStrictEqual
+  );
+
+  readonly layouts: ReadOnlyObservableArray<CardLayout>;
+    readonly selectedLayout: ReadOnlyObservable<CardLayout>;
 
   constructor(props: CardProps) {
     super(props);
@@ -57,6 +65,9 @@ export class Card extends Actor<CardProps> {
       this.props.mode || "visible",
       Observable.isStrictEqual
     );
+
+    this.layouts = ReadOnlyObservableArray.givenObservableArray(this._layouts);
+    this.selectedLayout = ReadOnlyObservable.givenObservable(this._selectedLayout);
   }
 
   get baseElement(): HTMLElement {
@@ -139,7 +150,7 @@ export class Card extends Actor<CardProps> {
 
     this.cancelOnDeactivate(
       backButton.addManagedEventListener("click", () => {
-        const layout = selectedLayout.value;
+        const layout = this._selectedLayout.value;
         if (layout == null || this._layouts.count < 2) {
           return;
         }
@@ -167,16 +178,12 @@ export class Card extends Actor<CardProps> {
 
     this.cancelOnDeactivate(
       title.didChange.subscribe((str) => {
-        titleDiv.innerHTML = str;
+        titleDiv.innerHTML = str || "";
       }, true)
     );
 
-    const selectedLayout = Observable.ofEmpty<CardLayout>(
-      Observable.isStrictEqual
-    );
-
     this.cancelOnDeactivate(
-      selectedLayout.didChange.subscribe((layout, oldLayout) => {
+      this._selectedLayout.didChange.subscribe((layout, oldLayout) => {
         if (layout == null) {
           return;
         }
@@ -203,7 +210,7 @@ export class Card extends Actor<CardProps> {
 
     const currentLayoutHeight = this.addActor(
       new CurrentLayoutHeight({
-        layout: selectedLayout,
+        layout: this._selectedLayout,
       })
     );
 
@@ -230,7 +237,7 @@ export class Card extends Actor<CardProps> {
           return;
         }
 
-        selectedLayout.setValue(ArrayUtil.optionalLastValueGivenArray(layouts));
+        this._selectedLayout.setValue(ArrayUtil.optionalLastValueGivenArray(layouts));
       }, true)
     );
 

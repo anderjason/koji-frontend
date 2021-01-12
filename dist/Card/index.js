@@ -17,8 +17,11 @@ class Card extends skytree_1.Actor {
     constructor(props) {
         super(props);
         this._layouts = observable_1.ObservableArray.ofEmpty();
+        this._selectedLayout = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._maxHeight = observable_1.Observable.givenValueOrObservable(this.props.maxHeight, observable_1.Observable.isStrictEqual);
         this._mode = observable_1.Observable.givenValueOrObservable(this.props.mode || "visible", observable_1.Observable.isStrictEqual);
+        this.layouts = observable_1.ReadOnlyObservableArray.givenObservableArray(this._layouts);
+        this.selectedLayout = observable_1.ReadOnlyObservable.givenObservable(this._selectedLayout);
     }
     get baseElement() {
         return this._baseLayout.element;
@@ -76,7 +79,7 @@ class Card extends skytree_1.Actor {
             },
         });
         this.cancelOnDeactivate(backButton.addManagedEventListener("click", () => {
-            const layout = selectedLayout.value;
+            const layout = this._selectedLayout.value;
             if (layout == null || this._layouts.count < 2) {
                 return;
             }
@@ -93,10 +96,9 @@ class Card extends skytree_1.Actor {
             target: title,
         }));
         this.cancelOnDeactivate(title.didChange.subscribe((str) => {
-            titleDiv.innerHTML = str;
+            titleDiv.innerHTML = str || "";
         }, true));
-        const selectedLayout = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
-        this.cancelOnDeactivate(selectedLayout.didChange.subscribe((layout, oldLayout) => {
+        this.cancelOnDeactivate(this._selectedLayout.didChange.subscribe((layout, oldLayout) => {
             if (layout == null) {
                 return;
             }
@@ -116,7 +118,7 @@ class Card extends skytree_1.Actor {
             titleArea.setModifier("isVisible", index !== 0);
         }, true));
         const currentLayoutHeight = this.addActor(new CurrentLayoutHeight_1.CurrentLayoutHeight({
-            layout: selectedLayout,
+            layout: this._selectedLayout,
         }));
         this.cancelOnDeactivate(this._mode.didChange.subscribe((mode) => {
             wrapper.setModifier("isHidden", mode === "hidden");
@@ -132,7 +134,7 @@ class Card extends skytree_1.Actor {
             if (layouts == null) {
                 return;
             }
-            selectedLayout.setValue(util_1.ArrayUtil.optionalLastValueGivenArray(layouts));
+            this._selectedLayout.setValue(util_1.ArrayUtil.optionalLastValueGivenArray(layouts));
         }, true));
         this._baseLayout = this.addPage({
             anchorBottom: true,

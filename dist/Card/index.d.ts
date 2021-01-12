@@ -1,4 +1,4 @@
-import { ObservableBase } from "@anderjason/observable";
+import { ObservableBase, ReadOnlyObservable, ReadOnlyObservableArray } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
 import { Actor } from "skytree";
 import { ThisOrParentElement } from "..";
@@ -25,6 +25,9 @@ export declare class Card extends Actor<CardProps> {
     private _baseLayout;
     private _maxHeight;
     private _mode;
+    private _selectedLayout;
+    readonly layouts: ReadOnlyObservableArray<CardLayout>;
+    readonly selectedLayout: ReadOnlyObservable<CardLayout>;
     constructor(props: CardProps);
     get baseElement(): HTMLElement;
     get baseFooterElement(): HTMLElement;
