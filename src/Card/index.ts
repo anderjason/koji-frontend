@@ -26,8 +26,7 @@ export interface CardProps {
 
 export interface AddPageOptions {
   title?: string | ObservableBase<string>;
-
-  anchorBottom?: boolean;
+  anchorBottom?: boolean | ObservableBase<boolean>;
 }
 
 export const headerAreaHeight = 40;
