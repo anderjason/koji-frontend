@@ -16,6 +16,7 @@ export type KojiMode =
   | "edit"
   | "remix"
   | "screenshot"
+  | "sticker"
   | "view";
 
 export class KojiTools extends Actor<void> {
@@ -64,6 +65,9 @@ export class KojiTools extends Actor<void> {
       } else if (query["context"] === "admin") {
         this._sessionMode.setValue("admin");
         this._currentMode.setValue("admin");
+      } else if (query["context"] === "sticker") {
+        this._sessionMode.setValue("sticker");
+        this._currentMode.setValue("sticker");
       } else {
         this._sessionMode.setValue("view");
         this._currentMode.setValue("view");
@@ -119,7 +123,8 @@ export class KojiTools extends Actor<void> {
         if (
           sessionMode === "about" ||
           sessionMode === "screenshot" ||
-          sessionMode === "admin"
+          sessionMode === "admin" ||
+          sessionMode === "sticker"
         ) {
           return;
         }

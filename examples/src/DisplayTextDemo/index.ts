@@ -50,7 +50,7 @@ export class DisplayTextDemo extends DemoActor<void> {
       new SubmitButton({
         target: {
           type: "parentElement",
-          parentElement: card.baseElement,
+          parentElement: card.baseFooterElement,
         },
         text: "Buy the thing",
         onClick: () => {},

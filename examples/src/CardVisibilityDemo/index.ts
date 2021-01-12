@@ -29,11 +29,13 @@ export class CardVisibilityDemo extends DemoActor<void> {
       })
     );
 
+    card.baseElement.innerHTML = "This is the card";
+    
     this.addActor(
       new SubmitButton({
         target: {
           type: "parentElement",
-          parentElement: card.baseElement
+          parentElement: card.baseFooterElement
         },
         text: "Hide card",
         buttonMode: "ready",

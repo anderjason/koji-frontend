@@ -10,7 +10,7 @@ import {
   ElementStyle,
   ManagedElement,
 } from "@anderjason/web";
-import { Actor } from "skytree";
+import { Actor, SourceTargetBinding } from "skytree";
 import { ThisOrParentElement } from "..";
 import { CardLayout } from "./_internal/CardLayout";
 import { CurrentLayoutHeight } from "./_internal/CurrentLayoutHeight";
@@ -25,13 +25,12 @@ export interface CardProps {
 }
 
 export interface AddPageOptions {
-  title?: string;
+  title?: string | ObservableBase<string>;
 
   anchorBottom?: boolean;
 }
 
 export const headerAreaHeight = 40;
-export const totalVerticalPadding = 40;
 export const cardTransitionDuration = Duration.givenSeconds(0.5);
 export const cardHeightAnimateDuration = Duration.givenSeconds(0.6);
 export const cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";
@@ -63,6 +62,10 @@ export class Card extends Actor<CardProps> {
 
   get baseElement(): HTMLElement {
     return this._baseLayout.element;
+  }
+
+  get baseFooterElement(): HTMLElement {
+    return this._baseLayout.footerElement;
   }
 
   get hiddenElement(): HTMLElement {
@@ -155,6 +158,20 @@ export class Card extends Actor<CardProps> {
     const titleDiv = document.createElement("div");
     titleArea.element.appendChild(titleDiv);
 
+    const title = Observable.ofEmpty<string>(Observable.isStrictEqual);
+
+    const selectedTitleBinding = this.addActor(
+      new SourceTargetBinding<string>({
+        target: title,
+      })
+    );
+
+    this.cancelOnDeactivate(
+      title.didChange.subscribe((str) => {
+        titleDiv.innerHTML = str;
+      }, true)
+    );
+
     const selectedLayout = Observable.ofEmpty<CardLayout>(
       Observable.isStrictEqual
     );
@@ -174,9 +191,9 @@ export class Card extends Actor<CardProps> {
         const index = this._layouts.toIndexOfValue(layout);
         this._slider.style.transform = `translateX(${index * -100}%)`;
 
+        // leave the title as-is if changing back to the first card, so the text can transition out
         if (index !== 0) {
-          // leave the title as-is if changing back to the first card, so the text can transition out
-          titleDiv.innerHTML = layout.props.title || "";
+          selectedTitleBinding.setSource(layout.title);
         }
 
         headerArea.setModifier("isVisible", index !== 0);
@@ -192,7 +209,7 @@ export class Card extends Actor<CardProps> {
     );
 
     this.cancelOnDeactivate(
-      this._mode.didChange.subscribe(mode => {
+      this._mode.didChange.subscribe((mode) => {
         wrapper.setModifier("isHidden", mode === "hidden");
         this._hiddenWrapper.setModifier("isHidden", mode === "visible");
       }, true)
@@ -219,19 +236,22 @@ export class Card extends Actor<CardProps> {
     );
 
     this._baseLayout = this.addPage({
-      anchorBottom: true
+      anchorBottom: true,
     });
   }
 
   addPage(options: AddPageOptions = {}): CardLayout {
     return this.addActor(
-      new CardLayout({
-        title: options.title,
-        anchorBottom: options.anchorBottom,
-        layouts: this._layouts,
-        parentElement: this._slider.element,
-        maxHeight: this._maxHeight,
-      })
+      Actor.withDescription(
+        "CardLayout",
+        new CardLayout({
+          title: options.title,
+          anchorBottom: options.anchorBottom,
+          layouts: this._layouts,
+          parentElement: this._slider.element,
+          maxHeight: this._maxHeight,
+        })
+      )
     );
   }
 }
@@ -260,8 +280,8 @@ const HiddenWrapperStyle = ElementStyle.givenDefinition({
     isHidden: `
       opacity: 0;
       pointer-events: none;
-    `
-  }
+    `,
+  },
 });
 
 const WrapperStyle = ElementStyle.givenDefinition({
@@ -292,8 +312,8 @@ const WrapperStyle = ElementStyle.givenDefinition({
     isHidden: `
       opacity: 0;
       pointer-events: none;
-    `
-  }
+    `,
+  },
 });
 
 const SliderStyle = ElementStyle.givenDefinition({

@@ -3,7 +3,7 @@ import { ValuePath } from "@anderjason/util";
 import { FeedSdk, InstantRemixing } from "@withkoji/vcc";
 import { ObservableState } from "@anderjason/web";
 import { Actor } from "skytree";
-export declare type KojiMode = "about" | "admin" | "edit" | "remix" | "screenshot" | "view";
+export declare type KojiMode = "about" | "admin" | "edit" | "remix" | "screenshot" | "sticker" | "view";
 export declare class KojiTools extends Actor<void> {
     private static _instance;
     static get instance(): KojiTools;

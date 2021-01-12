@@ -37,13 +37,22 @@ export class CardDemo extends DemoActor<void> {
         isRepeating: true,
         fn: () => {
           if (secondPage == null || !secondPage.isActive.value) {
+            const secondPageTitle = Observable.givenValue("Who can see this?");
+
             secondPage = card.addPage({
-              title: "Who can see this?",
+              title: secondPageTitle,
             });
+
             secondPage.element.innerHTML = `
               <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
             `;
 
+            secondPage.footerElement.innerHTML = "This is the footer";
+            
+            setTimeout(() => {
+              secondPageTitle.setValue("Different title");
+            }, 1000);
+            
             setTimeout(() => {
               secondPage.element.innerHTML = `
               <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</div>

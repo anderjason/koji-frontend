@@ -7,16 +7,16 @@ import {
   Receipt,
 } from "@anderjason/observable";
 import { ElementSizeWatcher, ElementStyle, ScrollArea } from "@anderjason/web";
-import { headerAreaHeight, totalVerticalPadding } from "..";
+import { headerAreaHeight } from "..";
 import { Color } from "@anderjason/color";
 
 export interface CardLayoutProps {
   layouts: ObservableArray<CardLayout>;
   parentElement: HTMLElement;
   maxHeight: ObservableBase<number>;
-
-  title?: string;
-  anchorBottom?: boolean;
+  
+  title?: string | ObservableBase<string>;
+  anchorBottom?: boolean | ObservableBase<boolean>;
 }
 
 export class CardLayout extends Actor<CardLayoutProps> {
@@ -25,10 +25,23 @@ export class CardLayout extends Actor<CardLayoutProps> {
   protected _cardHeight = Observable.ofEmpty<number>(Observable.isStrictEqual);
   readonly cardHeight = ReadOnlyObservable.givenObservable(this._cardHeight);
 
-  private _element: HTMLDivElement;
+  readonly title: ObservableBase<string>;
+
+  private _contentElement: HTMLDivElement;
+  private _footerElement: HTMLDivElement;
 
   get element(): HTMLDivElement {
-    return this._element;
+    return this._contentElement;
+  }
+
+  get footerElement(): HTMLDivElement {
+    return this._footerElement;
+  }
+
+  constructor(props: CardLayoutProps) {
+    super(props);
+
+    this.title = Observable.givenValueOrObservable(props.title);
   }
 
   onActivate() {
@@ -41,40 +54,63 @@ export class CardLayout extends Actor<CardLayoutProps> {
       })
     );
 
-    const wrapper = this.addActor(
-      WrapperStyle.toManagedElement({
+    const cardLayoutWrapper = this.addActor(
+      CardLayoutWrapper.toManagedElement({
         tagName: "div",
         parentElement: this.props.parentElement,
       })
     );
 
+    const outsideScrollArea = this.addActor(
+      OutsideScrollAreaStyle.toManagedElement({
+        tagName: "div",
+        parentElement: cardLayoutWrapper.element,
+      })
+    );
+
+    
+    const footer = this.addActor(
+      FooterStyle.toManagedElement({
+        tagName: "div",
+        parentElement: cardLayoutWrapper.element
+      })
+    );
+
     const scrollArea = this.addActor(
       new ScrollArea({
-        parentElement: wrapper.element,
+        parentElement: outsideScrollArea.element,
         scrollPositionColor: Color.givenHexString("#888888"),
         direction: "vertical",
         anchorBottom: this.props.anchorBottom
       })
     );
 
-    const content = this.addActor(
-      ContentStyle.toManagedElement({
+    const insideScrollArea = this.addActor(
+      InsideScrollAreaStyle.toManagedElement({
         tagName: "div",
         parentElement: scrollArea.element,
       })
     );
 
-    this._element = content.element;
+    this._contentElement = insideScrollArea.element;
+    this._footerElement = footer.element;
 
-    const measure = this.addActor(
+    const measureFooter = this.addActor(
       new ElementSizeWatcher({
-        element: this._element,
+        element: footer.element,
+      })
+    );
+
+    const measureInside = this.addActor(
+      new ElementSizeWatcher({
+        element: insideScrollArea.element,
       })
     );
 
     const heightBinding = this.addActor(
       MultiBinding.givenAnyChange([
-        measure.output,
+        measureFooter.output,
+        measureInside.output,
         this.listOrder,
         this.props.maxHeight,
       ])
@@ -82,54 +118,74 @@ export class CardLayout extends Actor<CardLayoutProps> {
 
     this.cancelOnDeactivate(
       heightBinding.didInvalidate.subscribe(() => {
-        const size = measure.output.value;
+        const contentHeight = measureInside.output.value?.height || 0;
+        const footerHeight = measureFooter.output.value?.height || 0;
         const listOrder = this.listOrder.value;
         const maxHeight = this.props.maxHeight.value;
 
-        if (size == null || size.height == 0) {
-          return;
-        }
-        
-        const requestedContentHeight = size.height + totalVerticalPadding;
+        const requestedFooterHeight = footerHeight == 0 ? 0 : footerHeight + 20;  // footer vertical padding
+        const requestedContentHeight = contentHeight == 0 ? 0 : contentHeight + 20;  // content vertical padding
 
         let marginTop = listOrder === 0 ? 0 : headerAreaHeight;
 
-        wrapper.style.marginTop = `${marginTop}px`;
+        cardLayoutWrapper.style.marginTop = `${marginTop + 10}px`;
 
-        let actualContentHeight: number;
+        let visibleContentHeight: number;
         if (maxHeight != null) {
           const maxContentHeight = maxHeight - marginTop;
-          actualContentHeight = Math.min(
+          visibleContentHeight = Math.min(
             maxContentHeight,
             requestedContentHeight
           );
         } else {
-          actualContentHeight = requestedContentHeight;
+          visibleContentHeight = requestedContentHeight;
         }
 
-        this._cardHeight.setValue(marginTop + actualContentHeight);
-        wrapper.style.height = `${actualContentHeight}px`;
-
-        wrapper.style.transform = `translateX(${listOrder * 100}%)`;
+        this._cardHeight.setValue(marginTop + visibleContentHeight + requestedFooterHeight + 20);
+        outsideScrollArea.style.height = `${visibleContentHeight}px`;
+        cardLayoutWrapper.style.transform = `translateX(${listOrder * 100}%)`;
       }, true)
     );
   }
 }
 
-const WrapperStyle = ElementStyle.givenDefinition({
+const CardLayoutWrapper = ElementStyle.givenDefinition({
+  elementDescription: "CardLayoutWrapper",
   css: `
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
+    display: flex;
+    flex-direction: column;
+    background: #FFF;
   `,
 });
 
-const ContentStyle = ElementStyle.givenDefinition({
+const OutsideScrollAreaStyle = ElementStyle.givenDefinition({
+  elementDescription: "OutsideScrollArea",
+  css: `
+    position: relative;
+    margin: 0;
+    flex-shrink: 0;
+  `,
+});
+
+const InsideScrollAreaStyle = ElementStyle.givenDefinition({
+  elementDescription: "InsideScrollArea",
   css: `
     background: #FFF;
-    padding: 20px;
+    padding: 10px 20px;
     box-sizing: border-box;
     color: #000;
+  `,
+});
+
+const FooterStyle = ElementStyle.givenDefinition({
+  elementDescription: "Footer",
+  css: `
+    padding: 10px 20px;
+    box-sizing: border-box;
+    flex-shrink: 0;
   `,
 });

@@ -10,11 +10,10 @@ export interface CardProps {
     mode?: CardMode | ObservableBase<CardMode>;
 }
 export interface AddPageOptions {
-    title?: string;
+    title?: string | ObservableBase<string>;
     anchorBottom?: boolean;
 }
 export declare const headerAreaHeight = 40;
-export declare const totalVerticalPadding = 40;
 export declare const cardTransitionDuration: Duration;
 export declare const cardHeightAnimateDuration: Duration;
 export declare const cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";
@@ -28,6 +27,7 @@ export declare class Card extends Actor<CardProps> {
     private _mode;
     constructor(props: CardProps);
     get baseElement(): HTMLElement;
+    get baseFooterElement(): HTMLElement;
     get hiddenElement(): HTMLElement;
     onActivate(): void;
     addPage(options?: AddPageOptions): CardLayout;

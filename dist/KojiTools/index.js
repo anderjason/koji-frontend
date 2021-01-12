@@ -37,6 +37,10 @@ class KojiTools extends skytree_1.Actor {
                 this._sessionMode.setValue("admin");
                 this._currentMode.setValue("admin");
             }
+            else if (query["context"] === "sticker") {
+                this._sessionMode.setValue("sticker");
+                this._currentMode.setValue("sticker");
+            }
             else {
                 this._sessionMode.setValue("view");
                 this._currentMode.setValue("view");
@@ -84,7 +88,8 @@ class KojiTools extends skytree_1.Actor {
                 const sessionMode = this._sessionMode.value;
                 if (sessionMode === "about" ||
                     sessionMode === "screenshot" ||
-                    sessionMode === "admin") {
+                    sessionMode === "admin" ||
+                    sessionMode === "sticker") {
                     return;
                 }
                 if ((editorAttributes === null || editorAttributes === void 0 ? void 0 : editorAttributes.mode) === "edit") {

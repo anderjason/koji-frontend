@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Card = exports.cardTransitionEasing = exports.cardHeightAnimateDuration = exports.cardTransitionDuration = exports.totalVerticalPadding = exports.headerAreaHeight = void 0;
+exports.Card = exports.cardTransitionEasing = exports.cardHeightAnimateDuration = exports.cardTransitionDuration = exports.headerAreaHeight = void 0;
 const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const util_1 = require("@anderjason/util");
@@ -9,7 +9,6 @@ const skytree_1 = require("skytree");
 const CardLayout_1 = require("./_internal/CardLayout");
 const CurrentLayoutHeight_1 = require("./_internal/CurrentLayoutHeight");
 exports.headerAreaHeight = 40;
-exports.totalVerticalPadding = 40;
 exports.cardTransitionDuration = time_1.Duration.givenSeconds(0.5);
 exports.cardHeightAnimateDuration = time_1.Duration.givenSeconds(0.6);
 exports.cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";
@@ -23,6 +22,9 @@ class Card extends skytree_1.Actor {
     }
     get baseElement() {
         return this._baseLayout.element;
+    }
+    get baseFooterElement() {
+        return this._baseLayout.footerElement;
     }
     get hiddenElement() {
         return this._hiddenWrapper.element;
@@ -86,6 +88,13 @@ class Card extends skytree_1.Actor {
         }));
         const titleDiv = document.createElement("div");
         titleArea.element.appendChild(titleDiv);
+        const title = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
+        const selectedTitleBinding = this.addActor(new skytree_1.SourceTargetBinding({
+            target: title,
+        }));
+        this.cancelOnDeactivate(title.didChange.subscribe((str) => {
+            titleDiv.innerHTML = str;
+        }, true));
         const selectedLayout = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.cancelOnDeactivate(selectedLayout.didChange.subscribe((layout, oldLayout) => {
             if (layout == null) {
@@ -98,9 +107,9 @@ class Card extends skytree_1.Actor {
             }
             const index = this._layouts.toIndexOfValue(layout);
             this._slider.style.transform = `translateX(${index * -100}%)`;
+            // leave the title as-is if changing back to the first card, so the text can transition out
             if (index !== 0) {
-                // leave the title as-is if changing back to the first card, so the text can transition out
-                titleDiv.innerHTML = layout.props.title || "";
+                selectedTitleBinding.setSource(layout.title);
             }
             headerArea.setModifier("isVisible", index !== 0);
             backButton.setModifier("isVisible", index !== 0);
@@ -109,7 +118,7 @@ class Card extends skytree_1.Actor {
         const currentLayoutHeight = this.addActor(new CurrentLayoutHeight_1.CurrentLayoutHeight({
             layout: selectedLayout,
         }));
-        this.cancelOnDeactivate(this._mode.didChange.subscribe(mode => {
+        this.cancelOnDeactivate(this._mode.didChange.subscribe((mode) => {
             wrapper.setModifier("isHidden", mode === "hidden");
             this._hiddenWrapper.setModifier("isHidden", mode === "visible");
         }, true));
@@ -126,17 +135,17 @@ class Card extends skytree_1.Actor {
             selectedLayout.setValue(util_1.ArrayUtil.optionalLastValueGivenArray(layouts));
         }, true));
         this._baseLayout = this.addPage({
-            anchorBottom: true
+            anchorBottom: true,
         });
     }
     addPage(options = {}) {
-        return this.addActor(new CardLayout_1.CardLayout({
+        return this.addActor(skytree_1.Actor.withDescription("CardLayout", new CardLayout_1.CardLayout({
             title: options.title,
             anchorBottom: options.anchorBottom,
             layouts: this._layouts,
             parentElement: this._slider.element,
             maxHeight: this._maxHeight,
-        }));
+        })));
     }
 }
 exports.Card = Card;
@@ -164,8 +173,8 @@ const HiddenWrapperStyle = web_1.ElementStyle.givenDefinition({
         isHidden: `
       opacity: 0;
       pointer-events: none;
-    `
-    }
+    `,
+    },
 });
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
@@ -195,8 +204,8 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
         isHidden: `
       opacity: 0;
       pointer-events: none;
-    `
-    }
+    `,
+    },
 });
 const SliderStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Slider",
