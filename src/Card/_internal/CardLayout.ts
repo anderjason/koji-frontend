@@ -17,6 +17,7 @@ export interface CardLayoutProps {
   
   title?: string | ObservableBase<string>;
   anchorBottom?: boolean | ObservableBase<boolean>;
+  onRemoved?: () => void;
 }
 
 export class CardLayout extends Actor<CardLayoutProps> {
@@ -114,6 +115,14 @@ export class CardLayout extends Actor<CardLayoutProps> {
         this.listOrder,
         this.props.maxHeight,
       ])
+    );
+
+    this.cancelOnDeactivate(
+      new Receipt(() => {
+        if (this.props.onRemoved != null) {
+          this.props.onRemoved();
+        }
+      })
     );
 
     this.cancelOnDeactivate(

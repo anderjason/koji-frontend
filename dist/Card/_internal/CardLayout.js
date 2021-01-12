@@ -62,6 +62,11 @@ class CardLayout extends skytree_1.Actor {
             this.listOrder,
             this.props.maxHeight,
         ]));
+        this.cancelOnDeactivate(new observable_1.Receipt(() => {
+            if (this.props.onRemoved != null) {
+                this.props.onRemoved();
+            }
+        }));
         this.cancelOnDeactivate(heightBinding.didInvalidate.subscribe(() => {
             var _a, _b;
             const contentHeight = ((_a = measureInside.output.value) === null || _a === void 0 ? void 0 : _a.height) || 0;

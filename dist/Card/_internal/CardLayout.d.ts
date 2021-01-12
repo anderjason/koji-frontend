@@ -6,6 +6,7 @@ export interface CardLayoutProps {
     maxHeight: ObservableBase<number>;
     title?: string | ObservableBase<string>;
     anchorBottom?: boolean | ObservableBase<boolean>;
+    onRemoved?: () => void;
 }
 export declare class CardLayout extends Actor<CardLayoutProps> {
     readonly listOrder: Observable<number>;

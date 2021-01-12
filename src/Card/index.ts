@@ -159,6 +159,7 @@ export class Card extends Actor<CardProps> {
           return;
         }
 
+        
         layout.deactivate();
       })
     );
