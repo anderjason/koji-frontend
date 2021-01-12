@@ -24,6 +24,7 @@ export interface CardProps {
 
   maxHeight?: number | ObservableBase<number>;
   mode?: CardMode | ObservableBase<CardMode>;
+  anchorBottom?: boolean | ObservableBase<boolean>;
 }
 
 export interface AddPageOptions {
@@ -46,6 +47,7 @@ export class Card extends Actor<CardProps> {
   private _baseLayout: CardLayout;
   private _maxHeight: ObservableBase<number>;
   private _mode: ObservableBase<CardMode>;
+  private _anchorBottom: ObservableBase<boolean>;
   private _selectedLayout = Observable.ofEmpty<CardLayout>(
     Observable.isStrictEqual
   );
@@ -65,6 +67,8 @@ export class Card extends Actor<CardProps> {
       this.props.mode || "visible",
       Observable.isStrictEqual
     );
+
+    this._anchorBottom = Observable.givenValueOrObservable(this.props.anchorBottom == null ? true : this.props.anchorBottom);
 
     this.layouts = ReadOnlyObservableArray.givenObservableArray(this._layouts);
     this.selectedLayout = ReadOnlyObservable.givenObservable(this._selectedLayout);
@@ -242,7 +246,7 @@ export class Card extends Actor<CardProps> {
     );
 
     this._baseLayout = this.addPage({
-      anchorBottom: true,
+      anchorBottom: this._anchorBottom,
     });
   }
 

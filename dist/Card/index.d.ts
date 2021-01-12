@@ -8,6 +8,7 @@ export interface CardProps {
     target: ThisOrParentElement<HTMLDivElement>;
     maxHeight?: number | ObservableBase<number>;
     mode?: CardMode | ObservableBase<CardMode>;
+    anchorBottom?: boolean | ObservableBase<boolean>;
 }
 export interface AddPageOptions {
     title?: string | ObservableBase<string>;
@@ -25,6 +26,7 @@ export declare class Card extends Actor<CardProps> {
     private _baseLayout;
     private _maxHeight;
     private _mode;
+    private _anchorBottom;
     private _selectedLayout;
     readonly layouts: ReadOnlyObservableArray<CardLayout>;
     readonly selectedLayout: ReadOnlyObservable<CardLayout>;

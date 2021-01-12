@@ -20,6 +20,7 @@ class Card extends skytree_1.Actor {
         this._selectedLayout = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._maxHeight = observable_1.Observable.givenValueOrObservable(this.props.maxHeight, observable_1.Observable.isStrictEqual);
         this._mode = observable_1.Observable.givenValueOrObservable(this.props.mode || "visible", observable_1.Observable.isStrictEqual);
+        this._anchorBottom = observable_1.Observable.givenValueOrObservable(this.props.anchorBottom == null ? true : this.props.anchorBottom);
         this.layouts = observable_1.ReadOnlyObservableArray.givenObservableArray(this._layouts);
         this.selectedLayout = observable_1.ReadOnlyObservable.givenObservable(this._selectedLayout);
     }
@@ -137,7 +138,7 @@ class Card extends skytree_1.Actor {
             this._selectedLayout.setValue(util_1.ArrayUtil.optionalLastValueGivenArray(layouts));
         }, true));
         this._baseLayout = this.addPage({
-            anchorBottom: true,
+            anchorBottom: this._anchorBottom,
         });
     }
     addPage(options = {}) {
