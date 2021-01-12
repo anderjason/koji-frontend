@@ -4,11 +4,12 @@ import { Money } from "@anderjason/money";
 export interface MoneyInputProps {
     parentElement: HTMLElement;
     value: Observable<Money>;
-    persistentLabel?: string;
-    placeholderLabel?: string;
-    maxValue?: Money;
-    isInvalid?: ObservableBase<boolean>;
     allowEmpty?: boolean;
+    errorLabel?: string | ObservableBase<string>;
+    maxValue?: Money;
+    persistentLabel?: string | ObservableBase<string>;
+    placeholderLabel?: string | ObservableBase<string>;
+    supportLabel?: string | ObservableBase<string>;
 }
 export declare function shouldRejectInput(input: string): boolean;
 export declare class MoneyInput extends Actor<MoneyInputProps> {

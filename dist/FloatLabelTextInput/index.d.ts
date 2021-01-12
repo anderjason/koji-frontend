@@ -9,19 +9,23 @@ export interface FloatLabelTextInputProps<T> {
     valueGivenDisplayText: (displayText: string) => T;
     shadowTextGivenValue?: (value: T) => string;
     applyShadowTextOnBlur?: boolean;
-    isInvalid?: ObservableBase<boolean>;
-    persistentLabel?: string;
-    placeholder?: string;
+    persistentLabel?: string | ObservableBase<string>;
+    placeholderLabel?: string | ObservableBase<string>;
+    supportLabel?: string | ObservableBase<string>;
+    errorLabel?: string | ObservableBase<string>;
     inputType?: string;
     inputMode?: "text" | "decimal" | "email" | "numeric" | "search" | "tel" | "url";
     maxLength?: number | ObservableBase<number>;
 }
 export declare class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
-    private _isInvalid;
-    private _maxLength;
-    private _isFocused;
-    readonly isFocused: ReadOnlyObservable<boolean>;
+    private _errorLabel;
     private _input;
+    private _isFocused;
+    private _maxLength;
+    private _persistentLabel;
+    private _placeholderLabel;
+    private _supportLabel;
+    readonly isFocused: ReadOnlyObservable<boolean>;
     get displayText(): string;
     constructor(props: FloatLabelTextInputProps<T>);
     onActivate(): void;

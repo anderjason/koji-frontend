@@ -28,14 +28,14 @@ export class FloatLabelTextareaDemo extends DemoActor<void> {
       })
     );
 
-    const isInvalid = Observable.givenValue(false);
+    const errorLabel = Observable.ofEmpty<string>();
 
     this.addActor(
       new Timer({
         duration: Duration.givenSeconds(3),
         isRepeating: true,
         fn: () => {
-          isInvalid.setValue(!isInvalid.value);
+          errorLabel.setValue(errorLabel.value == null ? "Please correct errors before continuing" : null);
         }
       })
     );
@@ -46,9 +46,10 @@ export class FloatLabelTextareaDemo extends DemoActor<void> {
       new FloatLabelTextarea({
         parentElement: card.baseElement,
         persistentLabel: "Set Title",
-        placeholder: "Your title here",
+        placeholderLabel: "Your title here",
+        supportLabel: "Something about this field",
         value,
-        isInvalid,
+        errorLabel,
         minRows: 3,
         maxRows: 5,
         displayTextGivenValue: (v) => v,

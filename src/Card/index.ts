@@ -69,7 +69,7 @@ export class Card extends Actor<CardProps> {
       Observable.isStrictEqual
     );
 
-    this._anchorBottom = Observable.givenValueOrObservable(this.props.anchorBottom == null ? true : this.props.anchorBottom);
+    this._anchorBottom = Observable.givenValueOrObservable(this.props.anchorBottom);
 
     this.layouts = ReadOnlyObservableArray.givenObservableArray(this._layouts);
     this.selectedLayout = ReadOnlyObservable.givenObservable(this._selectedLayout);
@@ -408,6 +408,7 @@ const TitleAreaStyle = ElementStyle.givenDefinition({
     align-items: center;
     bottom: 0;
     display: flex;
+    font-size: 16px;
     font-weight: bold;
     justify-content: center;
     left: 80px;

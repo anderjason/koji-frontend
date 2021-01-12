@@ -5,10 +5,11 @@ import { Observable, ObservableBase, ReadOnlyObservable } from "@anderjason/obse
 export interface IntegerInputProps {
   parentElement: HTMLElement;
   value: Observable<number>;
-  persistentLabel: string;
-  placeholder: string;
-
-  isInvalid?: ObservableBase<boolean>;
+  
+  persistentLabel?: string | ObservableBase<string>;
+  placeholderLabel?: string | ObservableBase<string>;
+  supportLabel?: string | ObservableBase<string>;
+  errorLabel?: string | ObservableBase<string>;
 }
 
 export class IntegerInput extends Actor<IntegerInputProps> {
@@ -23,9 +24,10 @@ export class IntegerInput extends Actor<IntegerInputProps> {
       new FloatLabelTextInput({
         parentElement: this.props.parentElement,
         persistentLabel: this.props.persistentLabel,
-        placeholder: this.props.placeholder,
+        placeholderLabel: this.props.placeholderLabel,
         value: this.props.value,
-        isInvalid: this.props.isInvalid,
+        supportLabel: this.props.supportLabel,
+        errorLabel: this.props.errorLabel,
         inputMode: "numeric",
         displayTextGivenValue: (value) => {
           if (value == null || isNaN(value)) {

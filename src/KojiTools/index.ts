@@ -94,7 +94,7 @@ export class KojiTools extends Actor<void> {
   onActivate() {
     this._vccData = this.addActor(
       new ObservableState({
-        initialState: this._instantRemixing?.get(["general"]),
+        initialState: this._instantRemixing?.get([]),
       })
     );
 
@@ -105,7 +105,7 @@ export class KojiTools extends Actor<void> {
         }
       
         this._instantRemixing.onSetValue(
-          ["general", ...change.valuePath.toParts()],
+          [...change.valuePath.toParts()],
           change.newValue,
           true
         );
@@ -147,10 +147,6 @@ export class KojiTools extends Actor<void> {
         if (externalPath == null) {
           this._selectedPath.setValue(undefined);
         } else {
-          if (externalPath[0] !== "general") {
-            return;
-          }
-          
           const internalPath = externalPath.slice(1);
           this._selectedPath.setValue(ValuePath.givenParts(internalPath));
         }
@@ -176,7 +172,6 @@ export class KojiTools extends Actor<void> {
     this._selectedPath.didChange.subscribe((path) => {
       if (path != null) {
         const externalPath = ValuePath.givenParts([
-          "general",
           ...path.toParts(),
         ]);
 

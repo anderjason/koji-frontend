@@ -72,13 +72,13 @@ class KojiTools extends skytree_1.Actor {
     onActivate() {
         var _a;
         this._vccData = this.addActor(new web_1.ObservableState({
-            initialState: (_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get(["general"]),
+            initialState: (_a = this._instantRemixing) === null || _a === void 0 ? void 0 : _a.get([]),
         }));
         this.cancelOnDeactivate(this._vccData.willChange.subscribe(change => {
             if (this._instantRemixing == null) {
                 return;
             }
-            this._instantRemixing.onSetValue(["general", ...change.valuePath.toParts()], change.newValue, true);
+            this._instantRemixing.onSetValue([...change.valuePath.toParts()], change.newValue, true);
         }));
         if (this._instantRemixing != null) {
             this._instantRemixing.onValueChanged((path, newValue) => {
@@ -111,9 +111,6 @@ class KojiTools extends skytree_1.Actor {
                     this._selectedPath.setValue(undefined);
                 }
                 else {
-                    if (externalPath[0] !== "general") {
-                        return;
-                    }
                     const internalPath = externalPath.slice(1);
                     this._selectedPath.setValue(util_1.ValuePath.givenParts(internalPath));
                 }
@@ -134,7 +131,6 @@ class KojiTools extends skytree_1.Actor {
         this._selectedPath.didChange.subscribe((path) => {
             if (path != null) {
                 const externalPath = util_1.ValuePath.givenParts([
-                    "general",
                     ...path.toParts(),
                 ]);
                 this._instantRemixing.onPresentControl(externalPath.toParts(), { preventNavigation: true });

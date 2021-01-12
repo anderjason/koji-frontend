@@ -5,21 +5,6 @@ const util_1 = require("@anderjason/util");
 const skytree_1 = require("skytree");
 const FloatLabelTextInput_1 = require("../FloatLabelTextInput");
 const money_1 = require("@anderjason/money");
-function rawNumberGivenText(input) {
-    if (util_1.StringUtil.stringIsEmpty(input)) {
-        return 0;
-    }
-    let text = input.replace("$", "");
-    // remove leading zeros and decimal point
-    text = text.replace(/^[0.]*/, "");
-    // remove anything that's not a number
-    text = text.replace(/\D/, "");
-    if (util_1.StringUtil.stringIsEmpty(text)) {
-        return 0;
-    }
-    const result = Math.round(parseFloat(text));
-    return isNaN(result) ? 0 : result;
-}
 function shouldRejectInput(input) {
     if (util_1.StringUtil.stringIsEmpty(input)) {
         return false;
@@ -40,9 +25,10 @@ class MoneyInput extends skytree_1.Actor {
         this._textInput = this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
-            placeholder: this.props.placeholderLabel,
+            placeholderLabel: this.props.placeholderLabel,
+            supportLabel: this.props.supportLabel,
+            errorLabel: this.props.errorLabel,
             value: this.props.value,
-            isInvalid: this.props.isInvalid,
             inputMode: "decimal",
             displayTextGivenValue: (price) => {
                 if (price == null) {

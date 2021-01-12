@@ -30,7 +30,7 @@ export class IntegerInputDemo extends DemoActor<void> {
     this.addActor(
       new IntegerInput({
         parentElement: card.baseElement,
-        placeholder: "Set quantity",
+        placeholderLabel: "Set quantity",
         persistentLabel: "Quantity",
         value,
       })

@@ -16,9 +16,10 @@ export interface FloatLabelTextareaProps<T> {
   value: Observable<T>;
   valueGivenDisplayText: (displayText: string) => T;
   
-  isInvalid?: ObservableBase<boolean>;
-  persistentLabel?: string;
-  placeholder?: string;
+  persistentLabel?: string | ObservableBase<string>;
+  placeholderLabel?: string | ObservableBase<string>;
+  supportLabel?: string | ObservableBase<string>;
+  errorLabel?: string | ObservableBase<string>;
   maxLength?: number | ObservableBase<number>;
   minRows?: number | ObservableBase<number>;
   maxRows?: number | ObservableBase<number>;
@@ -27,12 +28,15 @@ export interface FloatLabelTextareaProps<T> {
 const rowHeight = 25;
 
 export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
-  private _isInvalid: ObservableBase<boolean>;
-  private _maxLength: ObservableBase<number>;
-  private _minRows: ObservableBase<number>;
-  private _maxRows: ObservableBase<number>;
-  
+  private _errorLabel: ObservableBase<string>;
   private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  private _maxLength: ObservableBase<number>;
+  private _maxRows: ObservableBase<number>;
+  private _minRows: ObservableBase<number>;
+  private _persistentLabel: ObservableBase<string>;
+  private _placeholderLabel: ObservableBase<string>;
+  private _supportLabel: ObservableBase<string>;
+
   readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
 
   constructor(props: FloatLabelTextareaProps<T>) {
@@ -40,10 +44,13 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
 
     KojiAppearance.preloadFonts();
 
-    this._isInvalid = this.props.isInvalid || Observable.givenValue(false, Observable.isStrictEqual);
+    this._errorLabel = Observable.givenValueOrObservable(this.props.errorLabel);
     this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
-    this._minRows = Observable.givenValueOrObservable(this.props.minRows);
     this._maxRows = Observable.givenValueOrObservable(this.props.maxRows);
+    this._minRows = Observable.givenValueOrObservable(this.props.minRows);
+    this._persistentLabel = Observable.givenValueOrObservable(this.props.persistentLabel);
+    this._placeholderLabel = Observable.givenValueOrObservable(this.props.placeholderLabel);
+    this._supportLabel = Observable.givenValueOrObservable(this.props.supportLabel);
   }
 
   onActivate() {
@@ -55,16 +62,58 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
     );
     wrapper.element.classList.add("kft-control");
 
-    const textarea = this.addActor(
-      TextareaStyle.toManagedElement({
-        tagName: "textarea",
+    const borderArea = this.addActor(
+      BorderAreaStyle.toManagedElement({
+        tagName: "div",
         parentElement: wrapper.element,
       })
     );
 
-    if (this.props.placeholder != null) {
-      textarea.element.placeholder = this.props.placeholder;
-    }
+    const textarea = this.addActor(
+      TextareaStyle.toManagedElement({
+        tagName: "textarea",
+        parentElement: borderArea.element,
+      })
+    );
+
+    const note = this.addActor(
+      NoteStyle.toManagedElement({
+        tagName: "div",
+        parentElement: wrapper.element,
+      })
+    );
+    
+    const noteBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        this._supportLabel,
+        this._errorLabel
+      ])
+    );
+
+    this.cancelOnDeactivate(
+      noteBinding.didInvalidate.subscribe(() => {
+        const errorText = this._errorLabel.value;
+        const noteText = this._supportLabel.value;
+
+        if (!StringUtil.stringIsEmpty(errorText)) {
+          borderArea.setModifier("isInvalid", true);
+          note.setModifier("isInvalid", true);
+          note.setModifier("isVisible", true);
+          note.element.innerHTML = errorText;
+        } else {
+          borderArea.setModifier("isInvalid", false);
+          note.setModifier("isInvalid", false);
+          note.setModifier("isVisible", !StringUtil.stringIsEmpty(noteText));
+          note.element.innerHTML = noteText || "";
+        }
+      }, true)
+    );
+
+    this.cancelOnDeactivate(
+      this._placeholderLabel.didChange.subscribe(text => {
+        textarea.element.placeholder = text || "";
+      }, true)
+    )
 
     this.cancelOnDeactivate(
       this._maxLength.didChange.subscribe(maxLength => {
@@ -78,7 +127,7 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
 
 
     this.cancelOnDeactivate(
-      wrapper.addManagedEventListener("click", () => {
+      borderArea.addManagedEventListener("click", () => {
         textarea.element.focus();
       })
     );
@@ -112,12 +161,6 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
       })
     );
 
-    this.cancelOnDeactivate(
-      this._isInvalid.didChange.subscribe(isInvalid => {
-        wrapper.setModifier("isInvalid", isInvalid);
-      }, true)
-    );
-
     const heightBinding = this.addActor(
       MultiBinding.givenAnyChange([
         this.props.value,
@@ -140,30 +183,39 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
         const actualHeight = NumberUtil.numberWithHardLimit(contentHeight, minHeight, maxHeight);
 
         textarea.style.height = `${actualHeight}px`;
-        wrapper.style.height = `${actualHeight + 25}px`;
+        borderArea.style.height = `${actualHeight + 25}px`;
       }, true)
     );
 
-    if (!StringUtil.stringIsEmpty(this.props.persistentLabel)) {
-      const label = this.addActor(
-        LabelStyle.toManagedElement({
-          tagName: "label",
-          parentElement: wrapper.element,
-        })
-      );
-      label.element.innerHTML = this.props.persistentLabel;
+    const label = this.addActor(
+      LabelStyle.toManagedElement({
+        tagName: "label",
+        parentElement: borderArea.element,
+      })
+    );
 
-      this.cancelOnDeactivate(
-        inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-          textarea.setModifier("hasValue", !isEmpty);
-          label.setModifier("hasValue", !isEmpty);
-        }, true)
-      );
-    }
+    this.cancelOnDeactivate(
+      inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
+        textarea.setModifier("hasValue", !isEmpty);
+        label.setModifier("hasValue", !isEmpty);
+      }, true)
+    );
+
+    this.cancelOnDeactivate(
+      this._persistentLabel.didChange.subscribe(text => {
+        label.element.innerHTML = text || "";
+      }, true)
+    );
   }
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
+  css: `
+  `
+});
+
+const BorderAreaStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
     align-items: center;
@@ -286,4 +338,23 @@ const TextareaStyle = ElementStyle.givenDefinition({
       transform: translateY(7px);
     `,
   },
+});
+
+const NoteStyle = ElementStyle.givenDefinition({
+  elementDescription: "Note",
+  css: `
+    color: #0000004C;
+    display: none;
+    font-size: 14px;
+    padding: 5px 1px 0 1px;
+    transition: 0.2s ease color;
+  `,
+  modifiers: {
+    isVisible: `
+      display: block;
+    `,
+    isInvalid: `
+      color: #d64d43;
+    `
+  }
 });

@@ -12,10 +12,11 @@ class FloatLabelTextInput extends skytree_1.Actor {
         this._isFocused = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this.isFocused = observable_1.ReadOnlyObservable.givenObservable(this._isFocused);
         KojiAppearance_1.KojiAppearance.preloadFonts();
-        this._isInvalid =
-            this.props.isInvalid ||
-                observable_1.Observable.givenValue(false, observable_1.Observable.isStrictEqual);
+        this._errorLabel = observable_1.Observable.givenValueOrObservable(this.props.errorLabel);
         this._maxLength = observable_1.Observable.givenValueOrObservable(this.props.maxLength);
+        this._persistentLabel = observable_1.Observable.givenValueOrObservable(this.props.persistentLabel);
+        this._placeholderLabel = observable_1.Observable.givenValueOrObservable(this.props.placeholderLabel);
+        this._supportLabel = observable_1.Observable.givenValueOrObservable(this.props.supportLabel);
     }
     get displayText() {
         return this._input.element.value;
@@ -26,15 +27,43 @@ class FloatLabelTextInput extends skytree_1.Actor {
             parentElement: this.props.parentElement,
         }));
         wrapper.element.classList.add("kft-control");
+        const borderArea = this.addActor(BorderAreaStyle.toManagedElement({
+            tagName: "div",
+            parentElement: wrapper.element,
+        }));
         this._input = this.addActor(InputStyle.toManagedElement({
             tagName: "input",
-            parentElement: wrapper.element,
+            parentElement: borderArea.element,
         }));
         const inputType = this.props.inputType || "text";
         this._input.element.type = inputType;
         if (this.props.inputMode != null) {
             this._input.element.inputMode = this.props.inputMode;
         }
+        const note = this.addActor(NoteStyle.toManagedElement({
+            tagName: "div",
+            parentElement: wrapper.element,
+        }));
+        const noteBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
+            this._supportLabel,
+            this._errorLabel
+        ]));
+        this.cancelOnDeactivate(noteBinding.didInvalidate.subscribe(() => {
+            const errorText = this._errorLabel.value;
+            const noteText = this._supportLabel.value;
+            if (!util_1.StringUtil.stringIsEmpty(errorText)) {
+                borderArea.setModifier("isInvalid", true);
+                note.setModifier("isInvalid", true);
+                note.setModifier("isVisible", true);
+                note.element.innerHTML = errorText;
+            }
+            else {
+                borderArea.setModifier("isInvalid", false);
+                note.setModifier("isInvalid", false);
+                note.setModifier("isVisible", !util_1.StringUtil.stringIsEmpty(noteText));
+                note.element.innerHTML = noteText || "";
+            }
+        }, true));
         this.cancelOnDeactivate(this._maxLength.didChange.subscribe((maxLength) => {
             if (maxLength == null) {
                 this._input.element.removeAttribute("maxLength");
@@ -43,10 +72,10 @@ class FloatLabelTextInput extends skytree_1.Actor {
                 this._input.element.maxLength = maxLength;
             }
         }, true));
-        if (this.props.placeholder != null) {
-            this._input.element.placeholder = this.props.placeholder;
-        }
-        this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
+        this.cancelOnDeactivate(this._placeholderLabel.didChange.subscribe(text => {
+            this._input.element.placeholder = text || "";
+        }, true));
+        this.cancelOnDeactivate(borderArea.addManagedEventListener("click", () => {
             this._input.element.focus();
         }));
         this.addActor(new web_1.FocusWatcher({
@@ -68,24 +97,26 @@ class FloatLabelTextInput extends skytree_1.Actor {
                 }
             }
         }));
-        this.cancelOnDeactivate(this._isInvalid.didChange.subscribe((isInvalid) => {
-            wrapper.setModifier("isInvalid", isInvalid);
+        const label = this.addActor(LabelStyle.toManagedElement({
+            tagName: "label",
+            parentElement: borderArea.element,
+        }));
+        this.cancelOnDeactivate(inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
+            this._input.setModifier("hasValue", !isEmpty);
+            label.setModifier("hasValue", !isEmpty);
         }, true));
-        if (!util_1.StringUtil.stringIsEmpty(this.props.persistentLabel)) {
-            const label = this.addActor(LabelStyle.toManagedElement({
-                tagName: "label",
-                parentElement: wrapper.element,
-            }));
-            label.element.innerHTML = this.props.persistentLabel;
-            this.cancelOnDeactivate(inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-                this._input.setModifier("hasValue", !isEmpty);
-                label.setModifier("hasValue", !isEmpty);
-            }, true));
-        }
+        this.cancelOnDeactivate(this._persistentLabel.didChange.subscribe(text => {
+            label.element.innerHTML = text || "";
+        }, true));
     }
 }
 exports.FloatLabelTextInput = FloatLabelTextInput;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
+    css: `
+  `
+});
+const BorderAreaStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
     css: `
     align-items: center;
@@ -187,5 +218,23 @@ const InputStyle = web_1.ElementStyle.givenDefinition({
       transform: translateY(7px);
     `,
     },
+});
+const NoteStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Note",
+    css: `
+    color: #0000004C;
+    display: none;
+    font-size: 14px;
+    padding: 5px 1px 0 1px;
+    transition: 0.2s ease color;
+  `,
+    modifiers: {
+        isVisible: `
+      display: block;
+    `,
+        isInvalid: `
+      color: #d64d43;
+    `
+    }
 });
 //# sourceMappingURL=index.js.map

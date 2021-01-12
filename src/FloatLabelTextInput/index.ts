@@ -6,7 +6,7 @@ import {
 import { StringUtil } from "@anderjason/util";
 import { DynamicStyleElement, ElementStyle, FocusWatcher, TextInputBinding } from "@anderjason/web";
 import { TextInputBindingOverrideResult, TextInputChangingData } from "@anderjason/web/dist/TextInputBinding";
-import { Actor } from "skytree";
+import { Actor, MultiBinding } from "skytree";
 import { KojiAppearance } from "../KojiAppearance";
 
 export interface FloatLabelTextInputProps<T> {
@@ -18,23 +18,26 @@ export interface FloatLabelTextInputProps<T> {
   shadowTextGivenValue?: (value: T) => string;
   applyShadowTextOnBlur?: boolean;
 
-  isInvalid?: ObservableBase<boolean>;
-  persistentLabel?: string;
-  placeholder?: string;
+  persistentLabel?: string | ObservableBase<string>;
+  placeholderLabel?: string | ObservableBase<string>;
+  supportLabel?: string | ObservableBase<string>;
+  errorLabel?: string | ObservableBase<string>;
   inputType?: string;
   inputMode?: "text" | "decimal" | "email" | "numeric" | "search" | "tel" | "url";
   maxLength?: number | ObservableBase<number>;
 }
 
 export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
-  private _isInvalid: ObservableBase<boolean>;
-  private _maxLength: ObservableBase<number>;
-
-  private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
-  readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
-
+  private _errorLabel: ObservableBase<string>;
   private _input: DynamicStyleElement<HTMLInputElement>;
+  private _isFocused = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+  private _maxLength: ObservableBase<number>;
+  private _persistentLabel: ObservableBase<string>;
+  private _placeholderLabel: ObservableBase<string>;
+  private _supportLabel: ObservableBase<string>;
 
+  readonly isFocused = ReadOnlyObservable.givenObservable(this._isFocused);
+  
   get displayText(): string {
     return this._input.element.value;
   }
@@ -44,10 +47,11 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
 
     KojiAppearance.preloadFonts();
 
-    this._isInvalid =
-      this.props.isInvalid ||
-      Observable.givenValue(false, Observable.isStrictEqual);
+    this._errorLabel = Observable.givenValueOrObservable(this.props.errorLabel);
     this._maxLength = Observable.givenValueOrObservable(this.props.maxLength);
+    this._persistentLabel = Observable.givenValueOrObservable(this.props.persistentLabel);
+    this._placeholderLabel = Observable.givenValueOrObservable(this.props.placeholderLabel);
+    this._supportLabel = Observable.givenValueOrObservable(this.props.supportLabel);
   }
 
   onActivate() {
@@ -59,10 +63,17 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
     );
     wrapper.element.classList.add("kft-control");
 
+    const borderArea = this.addActor(
+      BorderAreaStyle.toManagedElement({
+        tagName: "div",
+        parentElement: wrapper.element,
+      })
+    );
+    
     this._input = this.addActor(
       InputStyle.toManagedElement({
         tagName: "input",
-        parentElement: wrapper.element,
+        parentElement: borderArea.element,
       })
     );
     const inputType = this.props.inputType || "text";
@@ -72,6 +83,39 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       this._input.element.inputMode = this.props.inputMode;
     }
     
+    const note = this.addActor(
+      NoteStyle.toManagedElement({
+        tagName: "div",
+        parentElement: wrapper.element,
+      })
+    );
+    
+    const noteBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        this._supportLabel,
+        this._errorLabel
+      ])
+    );
+
+    this.cancelOnDeactivate(
+      noteBinding.didInvalidate.subscribe(() => {
+        const errorText = this._errorLabel.value;
+        const noteText = this._supportLabel.value;
+
+        if (!StringUtil.stringIsEmpty(errorText)) {
+          borderArea.setModifier("isInvalid", true);
+          note.setModifier("isInvalid", true);
+          note.setModifier("isVisible", true);
+          note.element.innerHTML = errorText;
+        } else {
+          borderArea.setModifier("isInvalid", false);
+          note.setModifier("isInvalid", false);
+          note.setModifier("isVisible", !StringUtil.stringIsEmpty(noteText));
+          note.element.innerHTML = noteText || "";
+        }
+      }, true)
+    );
+
     this.cancelOnDeactivate(
       this._maxLength.didChange.subscribe((maxLength) => {
         if (maxLength == null) {
@@ -82,12 +126,14 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       }, true)
     );
 
-    if (this.props.placeholder != null) {
-      this._input.element.placeholder = this.props.placeholder;
-    }
-
     this.cancelOnDeactivate(
-      wrapper.addManagedEventListener("click", () => {
+      this._placeholderLabel.didChange.subscribe(text => {
+        this._input.element.placeholder = text || "";
+      }, true)
+    )
+    
+    this.cancelOnDeactivate(
+      borderArea.addManagedEventListener("click", () => {
         this._input.element.focus();
       })
     );
@@ -121,35 +167,37 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
           }
         }
       })
+    );
 
+    const label = this.addActor(
+      LabelStyle.toManagedElement({
+        tagName: "label",
+        parentElement: borderArea.element,
+      })
     );
 
     this.cancelOnDeactivate(
-      this._isInvalid.didChange.subscribe((isInvalid) => {
-        wrapper.setModifier("isInvalid", isInvalid);
+      inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
+        this._input.setModifier("hasValue", !isEmpty);
+        label.setModifier("hasValue", !isEmpty);
       }, true)
     );
 
-    if (!StringUtil.stringIsEmpty(this.props.persistentLabel)) {
-      const label = this.addActor(
-        LabelStyle.toManagedElement({
-          tagName: "label",
-          parentElement: wrapper.element,
-        })
-      );
-      label.element.innerHTML = this.props.persistentLabel;
-
-      this.cancelOnDeactivate(
-        inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-          this._input.setModifier("hasValue", !isEmpty);
-          label.setModifier("hasValue", !isEmpty);
-        }, true)
-      );
-    }
+    this.cancelOnDeactivate(
+      this._persistentLabel.didChange.subscribe(text => {
+        label.element.innerHTML = text || "";
+      }, true)
+    );
   }
 }
 
 const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
+  css: `
+  `
+});
+
+const BorderAreaStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
     align-items: center;
@@ -253,4 +301,23 @@ const InputStyle = ElementStyle.givenDefinition({
       transform: translateY(7px);
     `,
   },
+});
+
+const NoteStyle = ElementStyle.givenDefinition({
+  elementDescription: "Note",
+  css: `
+    color: #0000004C;
+    display: none;
+    font-size: 14px;
+    padding: 5px 1px 0 1px;
+    transition: 0.2s ease color;
+  `,
+  modifiers: {
+    isVisible: `
+      display: block;
+    `,
+    isInvalid: `
+      color: #d64d43;
+    `
+  }
 });

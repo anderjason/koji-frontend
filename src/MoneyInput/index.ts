@@ -8,33 +8,12 @@ export interface MoneyInputProps {
   parentElement: HTMLElement;
   value: Observable<Money>;
   
-  persistentLabel?: string;
-  placeholderLabel?: string;
-  maxValue?: Money;
-  isInvalid?: ObservableBase<boolean>;
   allowEmpty?: boolean;
-}
-
-function rawNumberGivenText(input: string): number {
-  if (StringUtil.stringIsEmpty(input)) {
-    return 0;
-  }
-
-  let text = input.replace("$", "");
-
-  // remove leading zeros and decimal point
-  text = text.replace(/^[0.]*/, "");
-
-  // remove anything that's not a number
-  text = text.replace(/\D/, "");
-
-  if (StringUtil.stringIsEmpty(text)) {
-    return 0;
-  }
-
-  const result = Math.round(parseFloat(text));
-
-  return isNaN(result) ? 0 : result;
+  errorLabel?: string | ObservableBase<string>;
+  maxValue?: Money;
+  persistentLabel?: string | ObservableBase<string>;
+  placeholderLabel?: string | ObservableBase<string>;
+  supportLabel?: string | ObservableBase<string>;
 }
 
 export function shouldRejectInput(input: string): boolean {
@@ -64,9 +43,10 @@ export class MoneyInput extends Actor<MoneyInputProps> {
       new FloatLabelTextInput({
         parentElement: this.props.parentElement,
         persistentLabel: this.props.persistentLabel,
-        placeholder: this.props.placeholderLabel,
+        placeholderLabel: this.props.placeholderLabel,
+        supportLabel: this.props.supportLabel,
+        errorLabel: this.props.errorLabel,
         value: this.props.value,
-        isInvalid: this.props.isInvalid,
         inputMode: "decimal",
         displayTextGivenValue: (price) => {
           if (price == null) {

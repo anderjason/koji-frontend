@@ -11,9 +11,10 @@ class IntegerInput extends skytree_1.Actor {
         this._textInput = this.addActor(new FloatLabelTextInput_1.FloatLabelTextInput({
             parentElement: this.props.parentElement,
             persistentLabel: this.props.persistentLabel,
-            placeholder: this.props.placeholder,
+            placeholderLabel: this.props.placeholderLabel,
             value: this.props.value,
-            isInvalid: this.props.isInvalid,
+            supportLabel: this.props.supportLabel,
+            errorLabel: this.props.errorLabel,
             inputMode: "numeric",
             displayTextGivenValue: (value) => {
                 if (value == null || isNaN(value)) {

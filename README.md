@@ -4,6 +4,17 @@
 
 `npm install --save @anderjason/koji-frontend-tools`
 
+## Breaking changes from v5 to v6
+
+### KojiTools
+
+* When accessing VCC data, the path no longer includes "general" automatically. You'll need to include `general` as the first part of each VCC path when accessing values.
+
+### FloatLabelTextArea, FloatLabelTextInput, IntegerInput, and MoneyInput
+
+* The `placeholder` prop has been renamed to `placeholderLabel`
+* `isInvalid` has been replaced with a new `errorLabel` string prop. Whenever `errorLabel` contains a value, the field will change to an invalid state and display the error message
+
 ## API Reference
 
 ### Koji

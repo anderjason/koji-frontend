@@ -20,7 +20,7 @@ class Card extends skytree_1.Actor {
         this._selectedLayout = observable_1.Observable.ofEmpty(observable_1.Observable.isStrictEqual);
         this._maxHeight = observable_1.Observable.givenValueOrObservable(this.props.maxHeight, observable_1.Observable.isStrictEqual);
         this._mode = observable_1.Observable.givenValueOrObservable(this.props.mode || "visible", observable_1.Observable.isStrictEqual);
-        this._anchorBottom = observable_1.Observable.givenValueOrObservable(this.props.anchorBottom == null ? true : this.props.anchorBottom);
+        this._anchorBottom = observable_1.Observable.givenValueOrObservable(this.props.anchorBottom);
         this.layouts = observable_1.ReadOnlyObservableArray.givenObservableArray(this._layouts);
         this.selectedLayout = observable_1.ReadOnlyObservable.givenObservable(this._selectedLayout);
     }
@@ -287,6 +287,7 @@ const TitleAreaStyle = web_1.ElementStyle.givenDefinition({
     align-items: center;
     bottom: 0;
     display: flex;
+    font-size: 16px;
     font-weight: bold;
     justify-content: center;
     left: 80px;

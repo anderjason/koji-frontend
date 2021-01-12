@@ -28,15 +28,14 @@ export class FloatLabelTextInputDemo extends DemoActor<void> {
     );
 
     const value = Observable.ofEmpty<string>();
-
-    const isInvalid = Observable.givenValue(false);
+    const errorLabel = Observable.ofEmpty<string>();
 
     this.addActor(
       new Timer({
         duration: Duration.givenSeconds(3),
         isRepeating: true,
         fn: () => {
-          isInvalid.setValue(!isInvalid.value);
+          errorLabel.setValue(errorLabel.value == null ? "Please correct errors before continuing" : null);
         }
       })
     );
@@ -45,11 +44,11 @@ export class FloatLabelTextInputDemo extends DemoActor<void> {
       new FloatLabelTextInput({
         parentElement: card.baseElement,
         persistentLabel: "Set Title",
-        placeholder: "Your title here",
+        placeholderLabel: "Your title here",
         value,
         displayTextGivenValue: (v) => v,
         valueGivenDisplayText: (v) => v,
-        isInvalid
+        errorLabel
       })
     );
   }
