@@ -145,6 +145,7 @@ class Card extends skytree_1.Actor {
         return this.addActor(skytree_1.Actor.withDescription("CardLayout", new CardLayout_1.CardLayout({
             title: options.title,
             anchorBottom: options.anchorBottom,
+            onRemoved: options.onRemoved,
             layouts: this._layouts,
             parentElement: this._slider.element,
             maxHeight: this._maxHeight,

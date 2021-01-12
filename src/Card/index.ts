@@ -30,6 +30,7 @@ export interface CardProps {
 export interface AddPageOptions {
   title?: string | ObservableBase<string>;
   anchorBottom?: boolean | ObservableBase<boolean>;
+  onRemoved?: () => void;
 }
 
 export const headerAreaHeight = 40;
@@ -159,7 +160,7 @@ export class Card extends Actor<CardProps> {
           return;
         }
 
-        
+
         layout.deactivate();
       })
     );
@@ -258,6 +259,7 @@ export class Card extends Actor<CardProps> {
         new CardLayout({
           title: options.title,
           anchorBottom: options.anchorBottom,
+          onRemoved: options.onRemoved,
           layouts: this._layouts,
           parentElement: this._slider.element,
           maxHeight: this._maxHeight,

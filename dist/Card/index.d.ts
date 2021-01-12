@@ -13,6 +13,7 @@ export interface CardProps {
 export interface AddPageOptions {
     title?: string | ObservableBase<string>;
     anchorBottom?: boolean | ObservableBase<boolean>;
+    onRemoved?: () => void;
 }
 export declare const headerAreaHeight = 40;
 export declare const cardTransitionDuration: Duration;
