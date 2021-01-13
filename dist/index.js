@@ -30,6 +30,8 @@ const LoadingIndicator_1 = require("./LoadingIndicator");
 Object.defineProperty(exports, "LoadingIndicator", { enumerable: true, get: function () { return LoadingIndicator_1.LoadingIndicator; } });
 const MoneyInput_1 = require("./MoneyInput");
 Object.defineProperty(exports, "MoneyInput", { enumerable: true, get: function () { return MoneyInput_1.MoneyInput; } });
+const OptionsList_1 = require("./OptionsList");
+Object.defineProperty(exports, "OptionsList", { enumerable: true, get: function () { return OptionsList_1.OptionsList; } });
 const PublishButton_1 = require("./PublishButton");
 Object.defineProperty(exports, "PublishButton", { enumerable: true, get: function () { return PublishButton_1.PublishButton; } });
 const RemixModeButton_1 = require("./RemixModeButton");
@@ -40,8 +42,6 @@ const SubmitButton_1 = require("./SubmitButton");
 Object.defineProperty(exports, "SubmitButton", { enumerable: true, get: function () { return SubmitButton_1.SubmitButton; } });
 const ThemeToolbar_1 = require("./ThemeToolbar");
 Object.defineProperty(exports, "ThemeToolbar", { enumerable: true, get: function () { return ThemeToolbar_1.ThemeToolbar; } });
-const OptionsList_1 = require("./OptionsList");
-Object.defineProperty(exports, "OptionsList", { enumerable: true, get: function () { return OptionsList_1.OptionsList; } });
 const ToggleButton_1 = require("./ToggleButton");
 Object.defineProperty(exports, "ToggleButton", { enumerable: true, get: function () { return ToggleButton_1.ToggleButton; } });
 //# sourceMappingURL=index.js.map

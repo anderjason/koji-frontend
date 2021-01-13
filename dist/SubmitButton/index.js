@@ -5,7 +5,6 @@ const color_1 = require("@anderjason/color");
 const observable_1 = require("@anderjason/observable");
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
-const KojiAppearance_1 = require("../KojiAppearance");
 const LoadingIndicator_1 = require("../LoadingIndicator");
 const checkSvg = `
   <svg height="556" viewBox="0 -46 417.813 417" width="556" xmlns="http://www.w3.org/2000/svg">
@@ -17,7 +16,6 @@ class SubmitButton extends skytree_1.Actor {
         super(props);
         this._text = observable_1.Observable.givenValueOrObservable(this.props.text);
         this._buttonMode = observable_1.Observable.givenValueOrObservable(this.props.buttonMode);
-        this._theme = observable_1.Observable.givenValueOrObservable(this.props.theme);
     }
     onActivate() {
         let button;
@@ -65,16 +63,9 @@ class SubmitButton extends skytree_1.Actor {
         completeIcon.className = "complete";
         completeIcon.innerHTML = checkSvg;
         button.appendChild(completeIcon);
-        const appearanceBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([this._theme, this._buttonMode]));
-        this.cancelOnDeactivate(this._theme.didChange.subscribe((theme) => {
-            if (theme == null) {
-                return;
-            }
-            theme.applyBackgroundStyle(button);
-        }, true));
-        this.cancelOnDeactivate(appearanceBinding.didInvalidate.subscribe(() => {
+        const appearanceBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([]));
+        this.cancelOnDeactivate(this._buttonMode.didChange.subscribe(() => {
             const mode = this._buttonMode.value;
-            const theme = this._theme.value || KojiAppearance_1.KojiAppearance.themes.get("kojiBlue");
             if (mode == null) {
                 return;
             }
@@ -83,12 +74,10 @@ class SubmitButton extends skytree_1.Actor {
                 case "ready":
                     className = ButtonStyle.toCombinedClassName();
                     button.disabled = false;
-                    theme.applyBackgroundStyle(button);
                     break;
                 case "busy":
                     className = ButtonStyle.toCombinedClassName("isTextHidden");
                     button.disabled = true;
-                    theme.applyBackgroundStyle(button);
                     break;
                 case "success":
                     className = ButtonStyle.toCombinedClassName([
@@ -96,7 +85,6 @@ class SubmitButton extends skytree_1.Actor {
                         "isSuccess",
                     ]);
                     button.disabled = true;
-                    theme.applyBackgroundStyle(button);
                     break;
                 case "disabled":
                     className = ButtonStyle.toCombinedClassName("isDisabled");

@@ -132,7 +132,7 @@ export class CardLayout extends Actor<CardLayoutProps> {
         const listOrder = this.listOrder.value;
         const maxHeight = this.props.maxHeight.value;
 
-        const requestedFooterHeight = footerHeight == 0 ? 0 : footerHeight + 20;  // footer vertical padding
+        const requestedFooterHeight = footerHeight == 0 ? 0 : footerHeight + 15;  // footer vertical padding
         const requestedContentHeight = contentHeight == 0 ? 0 : contentHeight + 20;  // content vertical padding
 
         let marginTop = listOrder === 0 ? 0 : headerAreaHeight;
@@ -193,7 +193,7 @@ const InsideScrollAreaStyle = ElementStyle.givenDefinition({
 const FooterStyle = ElementStyle.givenDefinition({
   elementDescription: "Footer",
   css: `
-    padding: 10px 20px;
+    padding: 5px 20px 10px 20px;
     box-sizing: border-box;
     flex-shrink: 0;
   `,

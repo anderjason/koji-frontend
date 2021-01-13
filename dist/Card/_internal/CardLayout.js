@@ -73,7 +73,7 @@ class CardLayout extends skytree_1.Actor {
             const footerHeight = ((_b = measureFooter.output.value) === null || _b === void 0 ? void 0 : _b.height) || 0;
             const listOrder = this.listOrder.value;
             const maxHeight = this.props.maxHeight.value;
-            const requestedFooterHeight = footerHeight == 0 ? 0 : footerHeight + 20; // footer vertical padding
+            const requestedFooterHeight = footerHeight == 0 ? 0 : footerHeight + 15; // footer vertical padding
             const requestedContentHeight = contentHeight == 0 ? 0 : contentHeight + 20; // content vertical padding
             let marginTop = listOrder === 0 ? 0 : __1.headerAreaHeight;
             cardLayoutWrapper.style.marginTop = `${marginTop + 10}px`;
@@ -124,7 +124,7 @@ const InsideScrollAreaStyle = web_1.ElementStyle.givenDefinition({
 const FooterStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Footer",
     css: `
-    padding: 10px 20px;
+    padding: 5px 20px 10px 20px;
     box-sizing: border-box;
     flex-shrink: 0;
   `,

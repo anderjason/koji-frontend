@@ -17,7 +17,6 @@ class EditableText extends skytree_1.Actor {
     }
     onActivate() {
         const style = styleByDisplayType.get(this.props.displayType);
-        const observableTheme = observable_1.Observable.givenValueOrObservable(this.props.theme);
         let input;
         switch (this.props.displayType) {
             case "title":
@@ -68,14 +67,6 @@ class EditableText extends skytree_1.Actor {
         }, true));
         this.cancelOnDeactivate(this._isInvalid.didChange.subscribe(isInvalid => {
             input.setModifier("isInvalid", isInvalid);
-        }, true));
-        this.cancelOnDeactivate(observableTheme.didChange.subscribe((theme) => {
-            if (theme == null) {
-                return;
-            }
-            if (this.props.displayType === "title") {
-                theme.applyTextStyle(input.element);
-            }
         }, true));
     }
 }

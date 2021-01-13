@@ -13,7 +13,6 @@ class DisplayText extends skytree_1.Actor {
     }
     onActivate() {
         const observableText = observable_1.Observable.givenValueOrObservable(this.props.text);
-        const observableTheme = observable_1.Observable.givenValueOrObservable(this.props.theme || KojiAppearance_1.KojiAppearance.themes.get("kojiBlack"));
         if (styleByDisplayType.has(this.props.displayType)) {
             const style = styleByDisplayType.get(this.props.displayType);
             const div = this.addActor(style.toManagedElement({
@@ -23,14 +22,6 @@ class DisplayText extends skytree_1.Actor {
             div.element.classList.add("kft-text");
             this.cancelOnDeactivate(observableText.didChange.subscribe((text) => {
                 div.element.innerHTML = text || "";
-            }, true));
-            this.cancelOnDeactivate(observableTheme.didChange.subscribe((theme) => {
-                if (theme == null) {
-                    return;
-                }
-                if (this.props.displayType === "title") {
-                    theme.applyTextStyle(div.element);
-                }
             }, true));
             return;
         }

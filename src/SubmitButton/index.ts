@@ -3,7 +3,6 @@ import { Observable, ObservableBase, Receipt } from "@anderjason/observable";
 import { ElementStyle, ManagedElement } from "@anderjason/web";
 import { Actor, ConditionalActivator, MultiBinding } from "skytree";
 import { ThisOrParentElement } from "..";
-import { KojiAppearance, KojiTheme } from "../KojiAppearance";
 import { LoadingIndicator } from "../LoadingIndicator";
 
 export type SubmitButtonMode = "ready" | "busy" | "success" | "disabled";
@@ -13,8 +12,6 @@ export interface SubmitButtonProps {
   onClick: () => void;
   target: ThisOrParentElement<HTMLButtonElement>;
   text: string | ObservableBase<string>;
-
-  theme?: KojiTheme | ObservableBase<KojiTheme>;
 }
 
 const checkSvg = `
@@ -26,14 +23,12 @@ const checkSvg = `
 export class SubmitButton extends Actor<SubmitButtonProps> {
   private _text: ObservableBase<string>;
   private _buttonMode: ObservableBase<SubmitButtonMode>;
-  private _theme: ObservableBase<KojiTheme>;
 
   constructor(props: SubmitButtonProps) {
     super(props);
 
     this._text = Observable.givenValueOrObservable(this.props.text);
     this._buttonMode = Observable.givenValueOrObservable(this.props.buttonMode);
-    this._theme = Observable.givenValueOrObservable(this.props.theme);
   }
 
   onActivate() {
@@ -98,25 +93,13 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
     button.appendChild(completeIcon);
 
     const appearanceBinding = this.addActor(
-      MultiBinding.givenAnyChange([this._theme, this._buttonMode])
+      MultiBinding.givenAnyChange([])
     );
 
     this.cancelOnDeactivate(
-      this._theme.didChange.subscribe((theme) => {
-        if (theme == null) {
-          return;
-        }
-
-        theme.applyBackgroundStyle(button);
-      }, true)
-    );
-
-    this.cancelOnDeactivate(
-      appearanceBinding.didInvalidate.subscribe(() => {
+      this._buttonMode.didChange.subscribe(() => {
         const mode = this._buttonMode.value;
-        const theme =
-          this._theme.value || KojiAppearance.themes.get("kojiBlue");
-
+        
         if (mode == null) {
           return;
         }
@@ -126,12 +109,10 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
           case "ready":
             className = ButtonStyle.toCombinedClassName();
             button.disabled = false;
-            theme.applyBackgroundStyle(button);
             break;
           case "busy":
             className = ButtonStyle.toCombinedClassName("isTextHidden");
             button.disabled = true;
-            theme.applyBackgroundStyle(button);
             break;
           case "success":
             className = ButtonStyle.toCombinedClassName([
@@ -139,7 +120,6 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
               "isSuccess",
             ]);
             button.disabled = true;
-            theme.applyBackgroundStyle(button);
             break;
           case "disabled":
             className = ButtonStyle.toCombinedClassName("isDisabled");

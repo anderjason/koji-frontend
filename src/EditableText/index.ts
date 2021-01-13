@@ -7,7 +7,6 @@ import {
 } from "@anderjason/web";
 import { Actor } from "skytree";
 import { DisplayTextType } from "../DisplayText";
-import { KojiTheme } from "../KojiAppearance";
 
 export interface EditableTextProps {
   displayType: DisplayTextType;
@@ -17,7 +16,6 @@ export interface EditableTextProps {
   isInvalid?: ObservableBase<boolean>;
   maxLength?: number | ObservableBase<number>;
   output?: Observable<string>;
-  theme?: KojiTheme | Observable<KojiTheme>;
 }
 
 export class EditableText extends Actor<EditableTextProps> {
@@ -42,7 +40,6 @@ export class EditableText extends Actor<EditableTextProps> {
 
   onActivate() {
     const style = styleByDisplayType.get(this.props.displayType);
-    const observableTheme = Observable.givenValueOrObservable(this.props.theme);
 
     let input:
       | DynamicStyleElement<HTMLInputElement>
@@ -119,18 +116,6 @@ export class EditableText extends Actor<EditableTextProps> {
     this.cancelOnDeactivate(
       this._isInvalid.didChange.subscribe(isInvalid => {
         input.setModifier("isInvalid", isInvalid);
-      }, true)
-    );
-
-    this.cancelOnDeactivate(
-      observableTheme.didChange.subscribe((theme) => {
-        if (theme == null) {
-          return;
-        }
-
-        if (this.props.displayType === "title") {
-          theme.applyTextStyle(input.element);
-        }
       }, true)
     );
   }

@@ -15,6 +15,14 @@
 
 * When accessing VCC data, the path no longer includes "general" automatically. You'll need to include `general` as the first part of each VCC path when accessing values.
 
+### DisplayText
+
+* The `theme` prop has been removed
+
+### SubmitButton
+
+* The `theme` prop has been removed
+
 ### FloatLabelTextArea, FloatLabelTextInput, IntegerInput, and MoneyInput
 
 * The `placeholder` prop has been renamed to `placeholderLabel`
