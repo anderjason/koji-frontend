@@ -6,8 +6,11 @@ const __1 = require("../..");
 class ToggleAccessory extends skytree_1.Actor {
     onActivate() {
         this.addActor(new __1.ToggleButton({
-            parentElement: this.props.parentElement,
-            output: this.props.isActive
+            target: {
+                type: "parentElement",
+                parentElement: this.props.parentElement,
+            },
+            isActive: this.props.isActive
         }));
     }
 }

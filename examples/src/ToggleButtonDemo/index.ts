@@ -25,8 +25,11 @@ export class ToggleButtonDemo extends DemoActor<void> {
 
     this.addActor(
       new ToggleButton({
-        parentElement: card.element,
-        output: Observable.givenValue<boolean>(true)
+        target: {
+          type: "parentElement",
+          parentElement: card.element
+        },
+        isActive: Observable.givenValue<boolean>(true)
       })
     );
   }

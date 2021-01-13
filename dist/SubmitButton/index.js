@@ -38,10 +38,10 @@ class SubmitButton extends skytree_1.Actor {
             }
             this.props.onClick();
         };
+        button.type = "button";
         button.classList.add(ButtonStyle.toCombinedClassName());
         button.classList.add("kft-control");
         button.addEventListener("click", onClick);
-        button.type = "button";
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             button.removeEventListener("click", onClick);
         }));

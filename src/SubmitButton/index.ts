@@ -58,10 +58,10 @@ export class SubmitButton extends Actor<SubmitButtonProps> {
       this.props.onClick();
     };
 
+    button.type = "button";
     button.classList.add(ButtonStyle.toCombinedClassName());
     button.classList.add("kft-control");
     button.addEventListener("click", onClick);
-    button.type = "button";
 
     this.cancelOnDeactivate(
       new Receipt(() => {

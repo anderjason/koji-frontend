@@ -1,10 +1,11 @@
-import { Observable } from "@anderjason/observable";
-import { ElementStyle } from "@anderjason/web";
+import { Observable, Receipt } from "@anderjason/observable";
+import { ElementStyle, ManagedElement } from "@anderjason/web";
 import { Actor } from "skytree";
+import { ThisOrParentElement } from "..";
 
 export interface ToggleButtonProps {
-  parentElement: HTMLElement;
-  output: Observable<boolean>;
+  target: ThisOrParentElement<HTMLButtonElement>;
+  isActive: Observable<boolean>;
 }
 
 const switchSvg = `
@@ -26,33 +27,49 @@ const switchSvg = `
 
 export class ToggleButton extends Actor<ToggleButtonProps> {
   onActivate() {
-    const button = this.addActor(
-      ButtonStyle.toManagedElement({
-        tagName: "button",
-        parentElement: this.props.parentElement,
+    let button: HTMLButtonElement;
+
+    switch (this.props.target.type) {
+      case "thisElement":
+        button = this.props.target.element;
+        break;
+      case "parentElement":
+        button = this.addActor(
+          ManagedElement.givenDefinition({
+            tagName: "button",
+            parentElement: this.props.target.parentElement,
+          })
+        ).element;
+        break;
+      default:
+        throw new Error("An element is required (this or parent)");
+    }
+
+    button.type = "button";
+    button.innerHTML = switchSvg;
+    button.addEventListener("click", this.onClick);
+
+    this.cancelOnDeactivate(
+      new Receipt(() => {
+        button.removeEventListener("click", this.onClick);
       })
     );
 
-    button.element.type = "button";
-    button.element.innerHTML = switchSvg;
-
     this.cancelOnDeactivate(
-      button.addManagedEventListener("click", (e) => {
-        e.stopPropagation();
-        
-        this.onClick();
-      })
-    );
-
-    this.cancelOnDeactivate(
-      this.props.output.didChange.subscribe((isActive) => {
-        button.setModifier("isActive", isActive == true);
+      this.props.isActive.didChange.subscribe((isActive) => {
+        if (isActive == true) {
+          button.className = ButtonStyle.toCombinedClassName("isActive");
+        } else {
+          button.className = ButtonStyle.toCombinedClassName();
+        }
       }, true)
     );
   }
 
-  private onClick(): void {
-    this.props.output.setValue(!this.props.output.value);
+  private onClick(e: any): void {
+    e?.stopPropagation();
+    
+    this.props.isActive.setValue(!this.props.isActive.value);
   }
 }
 

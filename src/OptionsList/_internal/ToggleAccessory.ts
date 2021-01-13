@@ -11,8 +11,11 @@ export class ToggleAccessory extends Actor<ToggleAccessoryProps> {
   onActivate() {
     this.addActor(
       new ToggleButton({
-        parentElement: this.props.parentElement,
-        output: this.props.isActive
+        target: {
+          type: "parentElement",
+          parentElement: this.props.parentElement,
+        },
+        isActive: this.props.isActive
       })
     )
   }
