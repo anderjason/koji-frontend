@@ -66,7 +66,7 @@ export class ToggleButton extends Actor<ToggleButtonProps> {
     );
   }
 
-  private onClick(e: any): void {
+  private onClick = (e: any): void => {
     e?.stopPropagation();
     
     this.props.isActive.setValue(!this.props.isActive.value);

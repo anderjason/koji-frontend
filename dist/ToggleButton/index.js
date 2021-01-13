@@ -21,6 +21,13 @@ const switchSvg = `
   </svg>
 `;
 class ToggleButton extends skytree_1.Actor {
+    constructor() {
+        super(...arguments);
+        this.onClick = (e) => {
+            e === null || e === void 0 ? void 0 : e.stopPropagation();
+            this.props.isActive.setValue(!this.props.isActive.value);
+        };
+    }
     onActivate() {
         let button;
         switch (this.props.target.type) {
@@ -50,10 +57,6 @@ class ToggleButton extends skytree_1.Actor {
                 button.className = ButtonStyle.toCombinedClassName();
             }
         }, true));
-    }
-    onClick(e) {
-        e === null || e === void 0 ? void 0 : e.stopPropagation();
-        this.props.isActive.setValue(!this.props.isActive.value);
     }
 }
 exports.ToggleButton = ToggleButton;
