@@ -1,21 +1,21 @@
 import { ObservableArray } from "@anderjason/observable";
-import { ManagedElement } from "@anderjason/web";
+import { ElementStyle } from "@anderjason/web";
 import { Actor, ArrayActivator } from "skytree";
 import { KojiAppearance } from "..";
 import { LineItem, LineItemAccessoryData } from "./_internal/LineItem";
 
-export interface OptionsSummaryItemData {
+export interface OptionsListItemData {
   label: string;
   accessoryData: LineItemAccessoryData;
 }
 
-export interface OptionsSummaryProps {
+export interface OptionsListProps {
   parentElement: HTMLElement;
-  items: ObservableArray<OptionsSummaryItemData>;
+  items: ObservableArray<OptionsListItemData>;
 }
 
-export class OptionsSummary extends Actor<OptionsSummaryProps> {
-  constructor(props: OptionsSummaryProps) {
+export class OptionsList extends Actor<OptionsListProps> {
+  constructor(props: OptionsListProps) {
     super(props);
 
     KojiAppearance.preloadFonts();
@@ -23,7 +23,7 @@ export class OptionsSummary extends Actor<OptionsSummaryProps> {
 
   onActivate() {
     const wrapper = this.addActor(
-      ManagedElement.givenDefinition({
+      WrapperStyle.toManagedElement({
         tagName: "div",
         parentElement: this.props.parentElement,
       })
@@ -45,3 +45,10 @@ export class OptionsSummary extends Actor<OptionsSummaryProps> {
     );
   }
 }
+
+const WrapperStyle = ElementStyle.givenDefinition({
+  elementDescription: "Wrapper",
+  css: `
+    margin: -10px -20px -10px 0;
+  `
+});

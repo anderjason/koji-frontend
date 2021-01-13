@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OptionsSummary = void 0;
+exports.OptionsList = void 0;
 const web_1 = require("@anderjason/web");
 const skytree_1 = require("skytree");
 const __1 = require("..");
 const LineItem_1 = require("./_internal/LineItem");
-class OptionsSummary extends skytree_1.Actor {
+class OptionsList extends skytree_1.Actor {
     constructor(props) {
         super(props);
         __1.KojiAppearance.preloadFonts();
     }
     onActivate() {
-        const wrapper = this.addActor(web_1.ManagedElement.givenDefinition({
+        const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
@@ -29,5 +29,11 @@ class OptionsSummary extends skytree_1.Actor {
         }));
     }
 }
-exports.OptionsSummary = OptionsSummary;
+exports.OptionsList = OptionsList;
+const WrapperStyle = web_1.ElementStyle.givenDefinition({
+    elementDescription: "Wrapper",
+    css: `
+    margin: -10px -20px -10px 0;
+  `
+});
 //# sourceMappingURL=index.js.map

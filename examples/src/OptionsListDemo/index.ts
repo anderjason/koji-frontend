@@ -1,10 +1,10 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable, ObservableArray } from "@anderjason/observable";
-import { AlignBottom, OptionsSummary } from "../../../src";
+import { AlignBottom, OptionsList } from "../../../src";
 import { Card } from "../../../src/Card";
-import { OptionsSummaryItemData } from "../../../src/OptionsSummary";
+import { OptionsListItemData } from "../../../src/OptionsList";
 
-export class OptionsSummaryDemo extends DemoActor<void> {
+export class OptionsListDemo extends DemoActor<void> {
   onActivate() {
     const alignBottom = this.addActor(
       new AlignBottom({
@@ -27,38 +27,33 @@ export class OptionsSummaryDemo extends DemoActor<void> {
 
     // this.addActor(
     //   new FloatLabelTextarea({
-    //     parentElement: card.baseElement,
+    //     parentElement: card.element,
+    //     placeholderLabel: "Description",
     //     value: Observable.ofEmpty<string>(),
     //     displayTextGivenValue: v => v,
     //     valueGivenDisplayText: v => v
     //   })
     // );
 
+    const price = Observable.givenValue<string>("free");
+
     this.addActor(
-      new OptionsSummary({
+      new OptionsList({
         parentElement: card.element,
-        items: ObservableArray.givenValues<OptionsSummaryItemData>([
+        items: ObservableArray.givenValues<OptionsListItemData>([
           {
             label: "Who can post?",
             accessoryData: {
-              type: "text",
+              type: "detail",
               text: Observable.givenValue("Everyone"),
               onClick: () => {}
             },
           },
           {
-            label: "Who can view?",
+            label: "Advanced options",
             accessoryData: {
-              type: "text",
-              text: Observable.givenValue("Everyone"),
-              onClick: () => {}
-            },
-          },
-          {
-            label: "Post types",
-            accessoryData: {
-              type: "text",
-              text: Observable.givenValue("Everyone"),
+              type: "detail",
+              text: Observable.ofEmpty(),
               onClick: () => {}
             },
           },
@@ -69,6 +64,22 @@ export class OptionsSummaryDemo extends DemoActor<void> {
               isActive: Observable.givenValue<boolean>(false)
             },
           },
+          {
+            label: "Free",
+            accessoryData: {
+              type: "radio",
+              key: "free",
+              selectedKey: price
+            },
+          },
+          {
+            label: "Premium",
+            accessoryData: {
+              type: "radio",
+              key: "premium",
+              selectedKey: price
+            },
+          },
         ])
       })
     );
@@ -77,7 +88,7 @@ export class OptionsSummaryDemo extends DemoActor<void> {
     //   new SubmitButton({
     //     target: {
     //       type: "parentElement",
-    //       parentElement: card.baseFooterElement
+    //       parentElement: card.footerElement
     //     },
     //     text: "Purchase",
     //     buttonMode: "disabled",

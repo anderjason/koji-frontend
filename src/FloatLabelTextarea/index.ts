@@ -194,9 +194,19 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
       })
     );
 
+    const hasValueBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        inputBinding.isEmpty,
+        this._persistentLabel
+      ])
+    );
+
     this.cancelOnDeactivate(
-      inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-        textarea.setModifier("hasValue", !isEmpty);
+      hasValueBinding.didInvalidate.subscribe(() => {
+        const isEmpty = inputBinding.isEmpty.value;
+        const persistentLabel = this._persistentLabel.value;
+
+        textarea.setModifier("hasValue", isEmpty == false && !StringUtil.stringIsEmpty(persistentLabel));
         label.setModifier("hasValue", !isEmpty);
       }, true)
     );

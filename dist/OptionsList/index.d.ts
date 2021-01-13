@@ -1,15 +1,15 @@
 import { ObservableArray } from "@anderjason/observable";
 import { Actor } from "skytree";
 import { LineItemAccessoryData } from "./_internal/LineItem";
-export interface OptionsSummaryItemData {
+export interface OptionsListItemData {
     label: string;
     accessoryData: LineItemAccessoryData;
 }
-export interface OptionsSummaryProps {
+export interface OptionsListProps {
     parentElement: HTMLElement;
-    items: ObservableArray<OptionsSummaryItemData>;
+    items: ObservableArray<OptionsListItemData>;
 }
-export declare class OptionsSummary extends Actor<OptionsSummaryProps> {
-    constructor(props: OptionsSummaryProps);
+export declare class OptionsList extends Actor<OptionsListProps> {
+    constructor(props: OptionsListProps);
     onActivate(): void;
 }

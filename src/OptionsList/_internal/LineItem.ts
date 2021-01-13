@@ -1,13 +1,15 @@
 import { Actor } from "skytree";
 import { ElementStyle } from "@anderjason/web";
 import { Observable, ObservableBase } from "@anderjason/observable";
-import { TextAccessory } from "./TextAccessory";
+import { DetailAccessory } from "./DetailAccessory";
 import { ToggleAccessory } from "./ToggleAccessory";
+import { RadioAccessory } from "./RadioAccessory";
 
-export interface TextAccessoryData {
-  type: "text";
-  text: ObservableBase<string>;
+export interface DetailAccessoryData {
+  type: "detail";
   onClick: () => void;
+
+  text?: ObservableBase<string>;
 }
 
 export interface ToggleAccessoryData {
@@ -15,7 +17,13 @@ export interface ToggleAccessoryData {
   isActive: Observable<boolean>;
 }
 
-export type LineItemAccessoryData = TextAccessoryData | ToggleAccessoryData;
+export interface RadioAccessoryData {
+  type: "radio";
+  key: string;
+  selectedKey: Observable<string>;
+}
+
+export type LineItemAccessoryData = DetailAccessoryData | ToggleAccessoryData | RadioAccessoryData;
 
 export interface LineItemProps {
   parentElement: HTMLElement;
@@ -32,7 +40,7 @@ export class LineItem extends Actor<LineItemProps> {
       })
     );
 
-    const label = this.addActor(
+    this.addActor(
       LabelStyle.toManagedElement({
         tagName: "div",
         parentElement: wrapper.element,
@@ -43,10 +51,10 @@ export class LineItem extends Actor<LineItemProps> {
     const { accessoryData } = this.props;
     
     switch (accessoryData.type) {
-      case "text":
-        this.addActor(new TextAccessory({
+      case "detail":
+        this.addActor(new DetailAccessory({
           parentElement: wrapper.element,
-          label: accessoryData.text,
+          text: accessoryData.text,
         }));
 
         this.cancelOnDeactivate(
@@ -67,6 +75,20 @@ export class LineItem extends Actor<LineItemProps> {
           })
         );
         break;
+      case "radio":
+        this.addActor(new RadioAccessory({
+            parentElement: wrapper.element,
+            key: accessoryData.key,
+            selectedKey: accessoryData.selectedKey
+          }));
+  
+          this.cancelOnDeactivate(
+            wrapper.addManagedEventListener("click", () => {
+              accessoryData.selectedKey.setValue(accessoryData.key);
+            })
+          );
+          break;
+  
       default:
         break;
     }
@@ -76,13 +98,19 @@ export class LineItem extends Actor<LineItemProps> {
 const WrapperStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
+    align-items: center;
+    border-bottom: 1px solid rgb(236, 236, 236);
+    box-sizing: border-box;
     cursor: pointer;
     display: grid;
     grid-template-columns: 1fr auto;
-    min-height: 36px;
-    margin-bottom: 2px;
+    min-height: 42px;
+    padding-right: 20px;
     width: 100%;
-    align-items: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
   `,
 });
 

@@ -110,8 +110,14 @@ class FloatLabelTextarea extends skytree_1.Actor {
             tagName: "label",
             parentElement: borderArea.element,
         }));
-        this.cancelOnDeactivate(inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-            textarea.setModifier("hasValue", !isEmpty);
+        const hasValueBinding = this.addActor(skytree_1.MultiBinding.givenAnyChange([
+            inputBinding.isEmpty,
+            this._persistentLabel
+        ]));
+        this.cancelOnDeactivate(hasValueBinding.didInvalidate.subscribe(() => {
+            const isEmpty = inputBinding.isEmpty.value;
+            const persistentLabel = this._persistentLabel.value;
+            textarea.setModifier("hasValue", isEmpty == false && !util_1.StringUtil.stringIsEmpty(persistentLabel));
             label.setModifier("hasValue", !isEmpty);
         }, true));
         this.cancelOnDeactivate(this._persistentLabel.didChange.subscribe(text => {

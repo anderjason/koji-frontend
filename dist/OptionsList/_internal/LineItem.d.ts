@@ -1,15 +1,20 @@
 import { Actor } from "skytree";
 import { Observable, ObservableBase } from "@anderjason/observable";
-export interface TextAccessoryData {
-    type: "text";
-    text: ObservableBase<string>;
+export interface DetailAccessoryData {
+    type: "detail";
     onClick: () => void;
+    text?: ObservableBase<string>;
 }
 export interface ToggleAccessoryData {
     type: "toggle";
     isActive: Observable<boolean>;
 }
-export declare type LineItemAccessoryData = TextAccessoryData | ToggleAccessoryData;
+export interface RadioAccessoryData {
+    type: "radio";
+    key: string;
+    selectedKey: Observable<string>;
+}
+export declare type LineItemAccessoryData = DetailAccessoryData | ToggleAccessoryData | RadioAccessoryData;
 export interface LineItemProps {
     parentElement: HTMLElement;
     label: string;

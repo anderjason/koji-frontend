@@ -3,25 +3,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LineItem = void 0;
 const skytree_1 = require("skytree");
 const web_1 = require("@anderjason/web");
-const TextAccessory_1 = require("./TextAccessory");
+const DetailAccessory_1 = require("./DetailAccessory");
 const ToggleAccessory_1 = require("./ToggleAccessory");
+const RadioAccessory_1 = require("./RadioAccessory");
 class LineItem extends skytree_1.Actor {
     onActivate() {
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
         }));
-        const label = this.addActor(LabelStyle.toManagedElement({
+        this.addActor(LabelStyle.toManagedElement({
             tagName: "div",
             parentElement: wrapper.element,
             innerHTML: this.props.label,
         }));
         const { accessoryData } = this.props;
         switch (accessoryData.type) {
-            case "text":
-                this.addActor(new TextAccessory_1.TextAccessory({
+            case "detail":
+                this.addActor(new DetailAccessory_1.DetailAccessory({
                     parentElement: wrapper.element,
-                    label: accessoryData.text,
+                    text: accessoryData.text,
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
                     accessoryData.onClick();
@@ -36,6 +37,16 @@ class LineItem extends skytree_1.Actor {
                     accessoryData.isActive.setValue(!accessoryData.isActive.value);
                 }));
                 break;
+            case "radio":
+                this.addActor(new RadioAccessory_1.RadioAccessory({
+                    parentElement: wrapper.element,
+                    key: accessoryData.key,
+                    selectedKey: accessoryData.selectedKey
+                }));
+                this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
+                    accessoryData.selectedKey.setValue(accessoryData.key);
+                }));
+                break;
             default:
                 break;
         }
@@ -45,13 +56,19 @@ exports.LineItem = LineItem;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
     css: `
+    align-items: center;
+    border-bottom: 1px solid rgb(236, 236, 236);
+    box-sizing: border-box;
     cursor: pointer;
     display: grid;
     grid-template-columns: 1fr auto;
-    min-height: 36px;
-    margin-bottom: 2px;
+    min-height: 42px;
+    padding-right: 20px;
     width: 100%;
-    align-items: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
   `,
 });
 const LabelStyle = web_1.ElementStyle.givenDefinition({
