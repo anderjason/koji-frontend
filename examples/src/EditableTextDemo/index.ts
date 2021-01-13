@@ -41,7 +41,7 @@ export class EditableTextDemo extends DemoActor<void> {
 
     this.addActor(
       new EditableText({
-        parentElement: card.baseElement,
+        parentElement: card.element,
         displayType: "title",
         placeholderLabel: "Type a title here",
         isInvalid
@@ -50,7 +50,7 @@ export class EditableTextDemo extends DemoActor<void> {
 
     this.addActor(
       new EditableText({
-        parentElement: card.baseElement,
+        parentElement: card.element,
         displayType: "description",
         placeholderLabel: "Type a description here",
         isInvalid

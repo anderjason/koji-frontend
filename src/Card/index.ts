@@ -75,11 +75,11 @@ export class Card extends Actor<CardProps> {
     this.selectedLayout = ReadOnlyObservable.givenObservable(this._selectedLayout);
   }
 
-  get baseElement(): HTMLElement {
+  get element(): HTMLElement {
     return this._baseLayout.element;
   }
 
-  get baseFooterElement(): HTMLElement {
+  get footerElement(): HTMLElement {
     return this._baseLayout.footerElement;
   }
 

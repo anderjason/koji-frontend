@@ -20,6 +20,8 @@ import { RemixModeButton } from "./RemixModeButton";
 import { RemixTarget } from "./RemixTarget";
 import { SubmitButton } from "./SubmitButton";
 import { ThemeToolbar } from "./ThemeToolbar";
+import { OptionsSummary } from "./OptionsSummary";
+import { ToggleButton } from "./ToggleButton";
 
 export interface ParentElement {
   type: "parentElement";
@@ -48,9 +50,11 @@ export {
   KojiNetworkUtil,
   LoadingIndicator,
   MoneyInput,
+  OptionsSummary,
   PublishButton,
   RemixModeButton,
   RemixTarget,
   SubmitButton,
   ThemeToolbar,
+  ToggleButton
 };

@@ -32,7 +32,7 @@ export class DisplayTextDemo extends DemoActor<void> {
 
     this.addActor(
       new DisplayText({
-        parentElement: card.baseElement,
+        parentElement: card.element,
         displayType: "title",
         text: Observable.givenValue("Unlock our Behind The Scenes Photos"),
       })
@@ -40,7 +40,7 @@ export class DisplayTextDemo extends DemoActor<void> {
 
     this.addActor(
       new DisplayText({
-        parentElement: card.baseElement,
+        parentElement: card.element,
         displayType: "description",
         text: demoText,
       })
@@ -50,7 +50,7 @@ export class DisplayTextDemo extends DemoActor<void> {
       new SubmitButton({
         target: {
           type: "parentElement",
-          parentElement: card.baseFooterElement,
+          parentElement: card.footerElement,
         },
         text: "Buy the thing",
         onClick: () => {},

@@ -42,7 +42,7 @@ export class FloatLabelTextInputDemo extends DemoActor<void> {
 
     this.addActor(
       new FloatLabelTextInput({
-        parentElement: card.baseElement,
+        parentElement: card.element,
         persistentLabel: "Set Title",
         placeholderLabel: "Your title here",
         value,

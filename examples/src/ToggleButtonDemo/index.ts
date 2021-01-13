@@ -1,13 +1,9 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
-import { AlignBottom } from "../../../src";
-import { Card } from "../../../src/Card";
-import { IntegerInput } from "../../../src/IntegerInput";
+import { AlignBottom, Card, ToggleButton } from "../../../src";
 
-export class IntegerInputDemo extends DemoActor<void> {
+export class ToggleButtonDemo extends DemoActor<void> {
   onActivate() {
-    const value = Observable.givenValue(0, Observable.isStrictEqual);
-
     const alignBottom = this.addActor(
       new AlignBottom({
         target: {
@@ -28,11 +24,9 @@ export class IntegerInputDemo extends DemoActor<void> {
     );
 
     this.addActor(
-      new IntegerInput({
+      new ToggleButton({
         parentElement: card.element,
-        placeholderLabel: "Set quantity",
-        persistentLabel: "Quantity",
-        value,
+        output: Observable.givenValue<boolean>(true)
       })
     );
   }

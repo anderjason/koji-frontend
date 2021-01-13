@@ -32,8 +32,8 @@ export declare class Card extends Actor<CardProps> {
     readonly layouts: ReadOnlyObservableArray<CardLayout>;
     readonly selectedLayout: ReadOnlyObservable<CardLayout>;
     constructor(props: CardProps);
-    get baseElement(): HTMLElement;
-    get baseFooterElement(): HTMLElement;
+    get element(): HTMLElement;
+    get footerElement(): HTMLElement;
     get hiddenElement(): HTMLElement;
     onActivate(): void;
     addPage(options?: AddPageOptions): CardLayout;

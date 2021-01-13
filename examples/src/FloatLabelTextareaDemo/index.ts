@@ -44,7 +44,7 @@ export class FloatLabelTextareaDemo extends DemoActor<void> {
 
     this.addActor(
       new FloatLabelTextarea({
-        parentElement: card.baseElement,
+        parentElement: card.element,
         persistentLabel: "Set Title",
         placeholderLabel: "Your title here",
         supportLabel: "Something about this field",

@@ -27,7 +27,7 @@ export class CardDemo extends DemoActor<void> {
         maxHeight: Observable.givenValue(300),
       })
     );
-    card.baseElement.innerHTML = "Empty card";
+    card.element.innerHTML = "Empty card";
 
     let secondPage: CardLayout;
 

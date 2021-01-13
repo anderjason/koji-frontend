@@ -24,10 +24,10 @@ class Card extends skytree_1.Actor {
         this.layouts = observable_1.ReadOnlyObservableArray.givenObservableArray(this._layouts);
         this.selectedLayout = observable_1.ReadOnlyObservable.givenObservable(this._selectedLayout);
     }
-    get baseElement() {
+    get element() {
         return this._baseLayout.element;
     }
-    get baseFooterElement() {
+    get footerElement() {
         return this._baseLayout.footerElement;
     }
     get hiddenElement() {

@@ -6,6 +6,11 @@
 
 ## Breaking changes from v5 to v6
 
+### Card
+
+* The `baseElement` property has been renamed to `element`
+* The `baseFooterElement` property has been renamed to `footerElement`
+
 ### KojiTools
 
 * When accessing VCC data, the path no longer includes "general" automatically. You'll need to include `general` as the first part of each VCC path when accessing values.
