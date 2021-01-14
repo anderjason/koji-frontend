@@ -106,6 +106,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     grid-template-columns: 1fr auto;
     min-height: 42px;
     padding-right: 20px;
+    text-align: left;
     width: 100%;
 
     &:last-child {
