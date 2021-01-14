@@ -34,7 +34,6 @@ export class OptionsList extends Actor<OptionsListProps> {
       new ArrayActivator({
         input: this.props.items,
         fn: (item) => {
-          console.log(item);
           return new LineItem({
             parentElement: wrapper.element,
             label: item.label,

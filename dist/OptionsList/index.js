@@ -19,7 +19,6 @@ class OptionsList extends skytree_1.Actor {
         this.addActor(new skytree_1.ArrayActivator({
             input: this.props.items,
             fn: (item) => {
-                console.log(item);
                 return new LineItem_1.LineItem({
                     parentElement: wrapper.element,
                     label: item.label,
