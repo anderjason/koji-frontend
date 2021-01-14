@@ -176,9 +176,19 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
       })
     );
 
+    const hasValueBinding = this.addActor(
+      MultiBinding.givenAnyChange([
+        inputBinding.isEmpty,
+        this._persistentLabel
+      ])
+    );
+
     this.cancelOnDeactivate(
-      inputBinding.isEmpty.didChange.subscribe((isEmpty) => {
-        this._input.setModifier("hasValue", !isEmpty);
+      hasValueBinding.didInvalidate.subscribe(() => {
+        const isEmpty = inputBinding.isEmpty.value;
+        const persistentLabel = this._persistentLabel.value;
+
+        this._input.setModifier("hasValue", isEmpty == false && !StringUtil.stringIsEmpty(persistentLabel));
         label.setModifier("hasValue", !isEmpty);
       }, true)
     );
