@@ -1,9 +1,10 @@
 import { Actor } from "skytree";
-import { Observable } from "@anderjason/observable";
+import { ObservableDict } from "@anderjason/observable";
 export interface RadioAccessoryProps {
     parentElement: HTMLElement;
-    key: string;
-    selectedKey: Observable<string>;
+    propertyName: string;
+    propertyValue: any;
+    valuesByPropertyName: ObservableDict<any>;
 }
 export declare class RadioAccessory extends Actor<RadioAccessoryProps> {
     onActivate(): void;

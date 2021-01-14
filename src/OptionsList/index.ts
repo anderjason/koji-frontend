@@ -1,44 +1,57 @@
-import { Observable  } from "@anderjason/observable";
+import {
+  Dict,
+  Observable,
+  ObservableArray,
+  ObservableBase,
+  ObservableDict,
+} from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
 import { Actor, ArrayActivator, ExclusiveActivator } from "skytree";
 import { KojiAppearance } from "..";
 import { LineItem } from "./_internal/LineItem";
 
 export interface DetailOptionDefinition {
-  key: string;
   type: "detail";
   label: string;
   onClick: () => void;
-  text?: string;
+
+  summaryText?: string;
 }
 
 export interface ToggleOptionDefinition {
-  key: string;
   type: "toggle";
   label: string;
-  defaultValue: boolean;
-  onChange: (value: boolean) => void;
+  propertyName: string;
 }
 
 export interface RadioOptionDefinition {
-  key: string;
   type: "radio";
   label: string;
-  selectedKey: Observable<string>;
+  propertyName: string;
+  propertyValue: string;
 }
 
-export type OptionDefinition = DetailOptionDefinition | ToggleOptionDefinition | RadioOptionDefinition;
+export type OptionDefinition =
+  | DetailOptionDefinition
+  | ToggleOptionDefinition
+  | RadioOptionDefinition;
 
 export interface OptionsListProps {
   parentElement: HTMLElement;
-  options: Observable<OptionDefinition[]>;
+  definitions: OptionDefinition[] | ObservableBase<OptionDefinition[]>;
+  defaultValues: Dict<any>;
+  onChange: (key: string, value: any) => void;
 }
 
 export class OptionsList extends Actor<OptionsListProps> {
+  private _definitions: ObservableBase<OptionDefinition[]>;
+  
   constructor(props: OptionsListProps) {
     super(props);
 
     KojiAppearance.preloadFonts();
+
+    this._definitions = Observable.givenValueOrObservable(this.props.definitions);
   }
 
   onActivate() {
@@ -50,16 +63,29 @@ export class OptionsList extends Actor<OptionsListProps> {
     );
     wrapper.element.classList.add("kft-control");
 
+    const valuesByPropertyName = ObservableDict.givenValues<any>(
+      this.props.defaultValues || {}
+    );
+
+    this.cancelOnDeactivate(
+      valuesByPropertyName.didChangeSteps.subscribe((steps) => {
+        steps.forEach((step) => {
+          this.props.onChange(step.key, step.newValue);
+        });
+      })
+    );
+
     this.addActor(
       new ExclusiveActivator({
-        input: this.props.options,
-        fn: optionDefinitions => {
+        input: this._definitions,
+        fn: (definitions) => {
           return new ArrayActivator({
-            input: optionDefinitions,
+            input: definitions,
             fn: (optionDefinition) => {
               return new LineItem({
                 parentElement: wrapper.element,
-                optionDefinition
+                optionDefinition,
+                valuesByPropertyName,
               });
             },
           })
@@ -73,5 +99,5 @@ const WrapperStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
     margin: -10px -20px -10px 0;
-  `
+  `,
 });

@@ -15,8 +15,8 @@ class DetailAccessory extends skytree_1.Actor {
             tagName: "div",
             parentElement: wrapper.element,
         }));
-        label.element.innerHTML = this.props.text || "";
-        wrapper.setModifier("hasText", !util_1.StringUtil.stringIsEmpty(this.props.text));
+        label.element.innerHTML = this.props.summaryText || "";
+        wrapper.setModifier("hasText", !util_1.StringUtil.stringIsEmpty(this.props.summaryText));
         const svg = document.createElement("svg");
         wrapper.element.appendChild(svg);
         svg.outerHTML = arrowSvg;

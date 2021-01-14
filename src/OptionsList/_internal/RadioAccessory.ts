@@ -1,30 +1,46 @@
 import { Actor } from "skytree";
-import { Observable } from "@anderjason/observable";
+import { Observable, ObservableDict } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
 
 export interface RadioAccessoryProps {
   parentElement: HTMLElement;
-  key: string;
-  selectedKey: Observable<string>;
+  propertyName: string;
+  propertyValue: any;
+  valuesByPropertyName: ObservableDict<any>;
 }
 
 const checkSvg = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"></path></svg>`;
 
 export class RadioAccessory extends Actor<RadioAccessoryProps> {
   onActivate() {
+    const {
+      propertyName,
+      propertyValue,
+      valuesByPropertyName,
+    } = this.props;
+
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
         tagName: "div",
         parentElement: this.props.parentElement,
-        innerHTML: checkSvg
+        innerHTML: checkSvg,
       })
     );
 
+    const isSelected = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+
+    valuesByPropertyName.didChange.subscribe(() => {
+      isSelected.setValue(
+        valuesByPropertyName.toOptionalValueGivenKey(propertyName) ===
+          propertyValue
+      );
+    }, true);
+
     this.cancelOnDeactivate(
-      this.props.selectedKey.didChange.subscribe(selectedKey => {
-        wrapper.setModifier("isVisible", selectedKey === this.props.key);
+      isSelected.didChange.subscribe((value) => {
+        wrapper.setModifier("isSelected", value);
       }, true)
-    )
+    );
   }
 }
 
@@ -44,8 +60,8 @@ const WrapperStyle = ElementStyle.givenDefinition({
     }
   `,
   modifiers: {
-    isVisible: `
+    isSelected: `
       opacity: 1;
-    `
-  }
+    `,
+  },
 });

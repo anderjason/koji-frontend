@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LineItem = void 0;
-const skytree_1 = require("skytree");
 const web_1 = require("@anderjason/web");
+const skytree_1 = require("skytree");
 const DetailAccessory_1 = require("./DetailAccessory");
-const ToggleAccessory_1 = require("./ToggleAccessory");
 const RadioAccessory_1 = require("./RadioAccessory");
+const ToggleAccessory_1 = require("./ToggleAccessory");
 class LineItem extends skytree_1.Actor {
     onActivate() {
-        const { optionDefinition } = this.props;
+        const { optionDefinition, valuesByPropertyName } = this.props;
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
@@ -22,7 +22,7 @@ class LineItem extends skytree_1.Actor {
             case "detail":
                 this.addActor(new DetailAccessory_1.DetailAccessory({
                     parentElement: wrapper.element,
-                    text: optionDefinition.text,
+                    summaryText: optionDefinition.summaryText,
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
                     optionDefinition.onClick();
@@ -31,21 +31,23 @@ class LineItem extends skytree_1.Actor {
             case "toggle":
                 const toggleAccessory = this.addActor(new ToggleAccessory_1.ToggleAccessory({
                     parentElement: wrapper.element,
-                    defaultValue: optionDefinition.defaultValue,
-                    onChange: optionDefinition.onChange
+                    propertyName: optionDefinition.propertyName,
+                    valuesByPropertyName
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-                    toggleAccessory.forceToggleValue();
+                    const isToggleActive = valuesByPropertyName.toOptionalValueGivenKey(optionDefinition.propertyName) == true;
+                    valuesByPropertyName.setValue(optionDefinition.propertyName, !isToggleActive);
                 }));
                 break;
             case "radio":
                 this.addActor(new RadioAccessory_1.RadioAccessory({
                     parentElement: wrapper.element,
-                    key: optionDefinition.key,
-                    selectedKey: optionDefinition.selectedKey
+                    propertyName: optionDefinition.propertyName,
+                    propertyValue: optionDefinition.propertyValue,
+                    valuesByPropertyName
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-                    optionDefinition.selectedKey.setValue(optionDefinition.key);
+                    valuesByPropertyName.setValue(optionDefinition.propertyName, optionDefinition.propertyValue);
                 }));
                 break;
             default:

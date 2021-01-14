@@ -1,31 +1,31 @@
-import { Observable } from "@anderjason/observable";
+import { Dict, ObservableBase } from "@anderjason/observable";
 import { Actor } from "skytree";
 export interface DetailOptionDefinition {
-    key: string;
     type: "detail";
     label: string;
     onClick: () => void;
-    text?: string;
+    summaryText?: string;
 }
 export interface ToggleOptionDefinition {
-    key: string;
     type: "toggle";
     label: string;
-    defaultValue: boolean;
-    onChange: (value: boolean) => void;
+    propertyName: string;
 }
 export interface RadioOptionDefinition {
-    key: string;
     type: "radio";
     label: string;
-    selectedKey: Observable<string>;
+    propertyName: string;
+    propertyValue: string;
 }
 export declare type OptionDefinition = DetailOptionDefinition | ToggleOptionDefinition | RadioOptionDefinition;
 export interface OptionsListProps {
     parentElement: HTMLElement;
-    options: Observable<OptionDefinition[]>;
+    definitions: OptionDefinition[] | ObservableBase<OptionDefinition[]>;
+    defaultValues: Dict<any>;
+    onChange: (key: string, value: any) => void;
 }
 export declare class OptionsList extends Actor<OptionsListProps> {
+    private _definitions;
     constructor(props: OptionsListProps);
     onActivate(): void;
 }

@@ -1,41 +1,39 @@
 import { Actor } from "skytree";
 import { ToggleButton } from "../..";
-import { Observable } from "@anderjason/observable";
+import { Observable, ObservableDict } from "@anderjason/observable";
 
 export interface ToggleAccessoryProps {
   parentElement: HTMLElement;
-  defaultValue: boolean;
-  onChange: (value: boolean) => void;
+  propertyName: string;
+  valuesByPropertyName: ObservableDict<any>;
 }
 
 export class ToggleAccessory extends Actor<ToggleAccessoryProps> {
-  private _isToggleActive: Observable<boolean>;
-
-  constructor(props: ToggleAccessoryProps) {
-    super(props);
-
-    this._isToggleActive = Observable.givenValue(this.props.defaultValue || false);
-  }
-
-  forceToggleValue(): void {
-    this._isToggleActive.setValue(!this._isToggleActive.value);
-  }
-
   onActivate() {
+    const { propertyName, valuesByPropertyName } = this.props;
+
+    const isToggleActive = Observable.ofEmpty<boolean>(Observable.isStrictEqual);
+
     this.addActor(
       new ToggleButton({
         target: {
           type: "parentElement",
           parentElement: this.props.parentElement,
         },
-        isActive: this._isToggleActive
+        isActive: isToggleActive
       })
     )
 
     this.cancelOnDeactivate(
-      this._isToggleActive.didChange.subscribe(isActive => {
-        this.props.onChange(isActive);
+      isToggleActive.didChange.subscribe(value => {
+        valuesByPropertyName.setValue(propertyName, value);
       })
     );
+
+    this.cancelOnDeactivate(
+      valuesByPropertyName.didChange.subscribe(() => {
+        isToggleActive.setValue(valuesByPropertyName.toOptionalValueGivenKey(propertyName) == true);
+      }, true)
+    )
   }
 }

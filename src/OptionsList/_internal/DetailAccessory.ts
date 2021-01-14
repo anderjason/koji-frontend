@@ -4,8 +4,8 @@ import { StringUtil } from "@anderjason/util";
 
 export interface DetailAccessoryProps {
   parentElement: HTMLElement;
-
-  text?: string;
+  
+  summaryText?: string;
 }
 
 const arrowSvg = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"></path></svg>`;
@@ -26,8 +26,8 @@ export class DetailAccessory extends Actor<DetailAccessoryProps> {
       })
     );
 
-    label.element.innerHTML = this.props.text || "";
-    wrapper.setModifier("hasText", !StringUtil.stringIsEmpty(this.props.text));
+    label.element.innerHTML = this.props.summaryText || "";
+    wrapper.setModifier("hasText", !StringUtil.stringIsEmpty(this.props.summaryText));
 
     const svg = document.createElement("svg");
     wrapper.element.appendChild(svg);

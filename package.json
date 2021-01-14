@@ -33,7 +33,6 @@
   },
   "devDependencies": {
     "@anderjason/example-tools": "git+https://github.com/anderjason/example-tools.git",
-    "@anderjason/skytree-devtools": "git+https://github.com/anderjason/skytree-devtools.git",
     "@types/node": "^14.14.20",
     "html-webpack-plugin": "^4.5.0",
     "ts-loader": "^8.0.9",

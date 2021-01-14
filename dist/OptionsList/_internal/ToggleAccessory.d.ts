@@ -1,12 +1,10 @@
 import { Actor } from "skytree";
+import { ObservableDict } from "@anderjason/observable";
 export interface ToggleAccessoryProps {
     parentElement: HTMLElement;
-    defaultValue: boolean;
-    onChange: (value: boolean) => void;
+    propertyName: string;
+    valuesByPropertyName: ObservableDict<any>;
 }
 export declare class ToggleAccessory extends Actor<ToggleAccessoryProps> {
-    private _isToggleActive;
-    constructor(props: ToggleAccessoryProps);
-    forceToggleValue(): void;
     onActivate(): void;
 }

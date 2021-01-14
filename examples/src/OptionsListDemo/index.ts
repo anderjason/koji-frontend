@@ -1,8 +1,11 @@
 import { DemoActor } from "@anderjason/example-tools";
-import { Observable } from "@anderjason/observable";
+import { ObservableArray } from "@anderjason/observable";
 import { AlignBottom, OptionsList } from "../../../src";
 import { Card } from "../../../src/Card";
-import { OptionDefinition } from "../../../src/OptionsList";
+import {
+  DetailOptionDefinition,
+  OptionDefinition,
+} from "../../../src/OptionsList";
 
 export class OptionsListDemo extends DemoActor<void> {
   onActivate() {
@@ -35,45 +38,46 @@ export class OptionsListDemo extends DemoActor<void> {
     //   })
     // );
 
-    const price = Observable.givenValue<string>("free");
-
     this.addActor(
       new OptionsList({
         parentElement: card.element,
-        options: Observable.givenValue<OptionDefinition[]>([
+        defaultValues: {
+          price: "premium",
+          approve: true,
+        },
+        onChange: (key: string, value: any): void => {
+          console.log(`${key}=${value}`);
+        },
+        definitions: [
           {
-            key: "who",
             label: "Who can post?",
             type: "detail",
-            text: "Everyone",
-            onClick: () => {}
+            summaryText: "Everyone",
+            onClick: () => {},
           },
           {
-            key: "options",
             label: "Advanced options",
             type: "detail",
-            onClick: () => {}
+            onClick: () => {},
           },
           {
-            key: "approve",
             type: "toggle",
             label: "Approve posts before they go live",
-            defaultValue: false,
-            onChange: () => {}
+            propertyName: "approve",
           },
           {
-            key: "free",
             type: "radio",
             label: "Free",
-            selectedKey: price
+            propertyName: "price",
+            propertyValue: "free",
           },
           {
-            key: "premium",
             label: "Premium",
             type: "radio",
-            selectedKey: price
+            propertyName: "price",
+            propertyValue: "premium",
           },
-        ])
+        ],
       })
     );
 

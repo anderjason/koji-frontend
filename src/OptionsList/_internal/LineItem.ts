@@ -1,18 +1,20 @@
-import { Actor } from "skytree";
+import { ObservableDict } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
-import { DetailAccessory } from "./DetailAccessory";
-import { ToggleAccessory } from "./ToggleAccessory";
-import { RadioAccessory } from "./RadioAccessory";
+import { Actor } from "skytree";
 import { OptionDefinition } from "..";
+import { DetailAccessory } from "./DetailAccessory";
+import { RadioAccessory } from "./RadioAccessory";
+import { ToggleAccessory } from "./ToggleAccessory";
 
 export interface LineItemProps {
   parentElement: HTMLElement;
   optionDefinition: OptionDefinition;
+  valuesByPropertyName: ObservableDict<any>;
 }
 
 export class LineItem extends Actor<LineItemProps> {
   onActivate() {
-    const { optionDefinition } = this.props;
+    const { optionDefinition, valuesByPropertyName } = this.props;
 
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
@@ -28,13 +30,15 @@ export class LineItem extends Actor<LineItemProps> {
         innerHTML: optionDefinition.label,
       })
     );
-    
+
     switch (optionDefinition.type) {
       case "detail":
-        this.addActor(new DetailAccessory({
-          parentElement: wrapper.element,
-          text: optionDefinition.text,
-        }));
+        this.addActor(
+          new DetailAccessory({
+            parentElement: wrapper.element,
+            summaryText: optionDefinition.summaryText,
+          })
+        );
 
         this.cancelOnDeactivate(
           wrapper.addManagedEventListener("click", () => {
@@ -43,32 +47,41 @@ export class LineItem extends Actor<LineItemProps> {
         );
         break;
       case "toggle":
-        const toggleAccessory = this.addActor(new ToggleAccessory({
-          parentElement: wrapper.element,
-          defaultValue: optionDefinition.defaultValue,
-          onChange: optionDefinition.onChange
-        }));
+        const toggleAccessory = this.addActor(
+          new ToggleAccessory({
+            parentElement: wrapper.element,
+            propertyName: optionDefinition.propertyName,
+            valuesByPropertyName
+          })
+        );
 
         this.cancelOnDeactivate(
           wrapper.addManagedEventListener("click", () => {
-            toggleAccessory.forceToggleValue();
+            const isToggleActive = valuesByPropertyName.toOptionalValueGivenKey(optionDefinition.propertyName) == true;
+
+            valuesByPropertyName.setValue(optionDefinition.propertyName, !isToggleActive);
           })
         );
         break;
       case "radio":
-        this.addActor(new RadioAccessory({
+        this.addActor(
+          new RadioAccessory({
             parentElement: wrapper.element,
-            key: optionDefinition.key,
-            selectedKey: optionDefinition.selectedKey
-          }));
-  
-          this.cancelOnDeactivate(
-            wrapper.addManagedEventListener("click", () => {
-              optionDefinition.selectedKey.setValue(optionDefinition.key);
-            })
-          );
-          break;
-  
+            propertyName: optionDefinition.propertyName,
+            propertyValue: optionDefinition.propertyValue,
+            valuesByPropertyName
+          })
+        );
+
+        this.cancelOnDeactivate(
+          wrapper.addManagedEventListener("click", () => {
+            valuesByPropertyName.setValue(
+              optionDefinition.propertyName,
+              optionDefinition.propertyValue
+            );
+          })
+        );
+        break;
       default:
         break;
     }
