@@ -1,30 +1,21 @@
 import { Actor } from "skytree";
 import { ElementStyle } from "@anderjason/web";
-import { Observable, ObservableBase } from "@anderjason/observable";
 import { StringUtil } from "@anderjason/util";
 
 export interface DetailAccessoryProps {
   parentElement: HTMLElement;
 
-  text?: ObservableBase<string>;
+  text?: string;
 }
 
 const arrowSvg = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"></path></svg>`;
 
 export class DetailAccessory extends Actor<DetailAccessoryProps> {
-  private _text: ObservableBase<string>;
-
-  constructor(props: DetailAccessoryProps) {
-    super(props);
-
-    this._text = Observable.givenValueOrObservable(this.props.text);
-  }
-
   onActivate() {
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
         tagName: "div",
-        parentElement: this.props.parentElement
+        parentElement: this.props.parentElement,
       })
     );
 
@@ -35,13 +26,9 @@ export class DetailAccessory extends Actor<DetailAccessoryProps> {
       })
     );
 
-    this.cancelOnDeactivate(
-      this._text.didChange.subscribe(str => {
-        label.element.innerHTML = str || "";
-        wrapper.setModifier("hasText", !StringUtil.stringIsEmpty(str));
-      }, true)
-    );
-    
+    label.element.innerHTML = this.props.text || "";
+    wrapper.setModifier("hasText", !StringUtil.stringIsEmpty(this.props.text));
+
     const svg = document.createElement("svg");
     wrapper.element.appendChild(svg);
     svg.outerHTML = arrowSvg;
@@ -83,8 +70,8 @@ const WrapperStyle = ElementStyle.givenDefinition({
         width: 18px;
         height: 18px;
       }
-    `
-  }
+    `,
+  },
 });
 
 const LabelStyle = ElementStyle.givenDefinition({
@@ -97,5 +84,5 @@ const LabelStyle = ElementStyle.givenDefinition({
     letter-spacing: 0.01em;
     line-height: 18px;
     user-select: none;
-  `
+  `,
 });

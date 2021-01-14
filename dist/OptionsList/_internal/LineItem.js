@@ -8,6 +8,7 @@ const ToggleAccessory_1 = require("./ToggleAccessory");
 const RadioAccessory_1 = require("./RadioAccessory");
 class LineItem extends skytree_1.Actor {
     onActivate() {
+        const { optionDefinition } = this.props;
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,
@@ -15,36 +16,36 @@ class LineItem extends skytree_1.Actor {
         this.addActor(LabelStyle.toManagedElement({
             tagName: "div",
             parentElement: wrapper.element,
-            innerHTML: this.props.label,
+            innerHTML: optionDefinition.label,
         }));
-        const { accessoryData } = this.props;
-        switch (accessoryData.type) {
+        switch (optionDefinition.type) {
             case "detail":
                 this.addActor(new DetailAccessory_1.DetailAccessory({
                     parentElement: wrapper.element,
-                    text: accessoryData.text,
+                    text: optionDefinition.text,
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-                    accessoryData.onClick();
+                    optionDefinition.onClick();
                 }));
                 break;
             case "toggle":
-                this.addActor(new ToggleAccessory_1.ToggleAccessory({
+                const toggleAccessory = this.addActor(new ToggleAccessory_1.ToggleAccessory({
                     parentElement: wrapper.element,
-                    isActive: accessoryData.isActive,
+                    defaultValue: optionDefinition.defaultValue,
+                    onChange: optionDefinition.onChange
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-                    accessoryData.isActive.setValue(!accessoryData.isActive.value);
+                    toggleAccessory.forceToggleValue();
                 }));
                 break;
             case "radio":
                 this.addActor(new RadioAccessory_1.RadioAccessory({
                     parentElement: wrapper.element,
-                    key: accessoryData.key,
-                    selectedKey: accessoryData.selectedKey
+                    key: optionDefinition.key,
+                    selectedKey: optionDefinition.selectedKey
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-                    accessoryData.selectedKey.setValue(accessoryData.key);
+                    optionDefinition.selectedKey.setValue(optionDefinition.key);
                 }));
                 break;
             default:

@@ -1,17 +1,37 @@
-import { ObservableArray } from "@anderjason/observable";
+import { Observable  } from "@anderjason/observable";
 import { ElementStyle } from "@anderjason/web";
-import { Actor, ArrayActivator } from "skytree";
+import { Actor, ArrayActivator, ExclusiveActivator } from "skytree";
 import { KojiAppearance } from "..";
-import { LineItem, LineItemAccessoryData } from "./_internal/LineItem";
+import { LineItem } from "./_internal/LineItem";
 
-export interface OptionsListItemData {
+export interface DetailOptionDefinition {
+  key: string;
+  type: "detail";
   label: string;
-  accessoryData: LineItemAccessoryData;
+  onClick: () => void;
+  text?: string;
 }
+
+export interface ToggleOptionDefinition {
+  key: string;
+  type: "toggle";
+  label: string;
+  defaultValue: boolean;
+  onChange: (value: boolean) => void;
+}
+
+export interface RadioOptionDefinition {
+  key: string;
+  type: "radio";
+  label: string;
+  selectedKey: Observable<string>;
+}
+
+export type OptionDefinition = DetailOptionDefinition | ToggleOptionDefinition | RadioOptionDefinition;
 
 export interface OptionsListProps {
   parentElement: HTMLElement;
-  items: ObservableArray<OptionsListItemData>;
+  options: Observable<OptionDefinition[]>;
 }
 
 export class OptionsList extends Actor<OptionsListProps> {
@@ -31,17 +51,21 @@ export class OptionsList extends Actor<OptionsListProps> {
     wrapper.element.classList.add("kft-control");
 
     this.addActor(
-      new ArrayActivator({
-        input: this.props.items,
-        fn: (item) => {
-          return new LineItem({
-            parentElement: wrapper.element,
-            label: item.label,
-            accessoryData: item.accessoryData,
-          });
-        },
+      new ExclusiveActivator({
+        input: this.props.options,
+        fn: optionDefinitions => {
+          return new ArrayActivator({
+            input: optionDefinitions,
+            fn: (optionDefinition) => {
+              return new LineItem({
+                parentElement: wrapper.element,
+                optionDefinition
+              });
+            },
+          })
+        }
       })
-    );
+    )
   }
 }
 

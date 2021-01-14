@@ -1,8 +1,8 @@
 import { DemoActor } from "@anderjason/example-tools";
-import { Observable, ObservableArray } from "@anderjason/observable";
+import { Observable } from "@anderjason/observable";
 import { AlignBottom, OptionsList } from "../../../src";
 import { Card } from "../../../src/Card";
-import { OptionsListItemData } from "../../../src/OptionsList";
+import { OptionDefinition } from "../../../src/OptionsList";
 
 export class OptionsListDemo extends DemoActor<void> {
   onActivate() {
@@ -40,45 +40,38 @@ export class OptionsListDemo extends DemoActor<void> {
     this.addActor(
       new OptionsList({
         parentElement: card.element,
-        items: ObservableArray.givenValues<OptionsListItemData>([
+        options: Observable.givenValue<OptionDefinition[]>([
           {
+            key: "who",
             label: "Who can post?",
-            accessoryData: {
-              type: "detail",
-              text: Observable.givenValue("Everyone"),
-              onClick: () => {}
-            },
+            type: "detail",
+            text: "Everyone",
+            onClick: () => {}
           },
           {
+            key: "options",
             label: "Advanced options",
-            accessoryData: {
-              type: "detail",
-              text: Observable.ofEmpty(),
-              onClick: () => {}
-            },
+            type: "detail",
+            onClick: () => {}
           },
           {
+            key: "approve",
+            type: "toggle",
             label: "Approve posts before they go live",
-            accessoryData: {
-              type: "toggle",
-              isActive: Observable.givenValue<boolean>(false)
-            },
+            defaultValue: false,
+            onChange: () => {}
           },
           {
+            key: "free",
+            type: "radio",
             label: "Free",
-            accessoryData: {
-              type: "radio",
-              key: "free",
-              selectedKey: price
-            },
+            selectedKey: price
           },
           {
+            key: "premium",
             label: "Premium",
-            accessoryData: {
-              type: "radio",
-              key: "premium",
-              selectedKey: price
-            },
+            type: "radio",
+            selectedKey: price
           },
         ])
       })

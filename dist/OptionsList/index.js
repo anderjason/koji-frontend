@@ -16,15 +16,19 @@ class OptionsList extends skytree_1.Actor {
             parentElement: this.props.parentElement,
         }));
         wrapper.element.classList.add("kft-control");
-        this.addActor(new skytree_1.ArrayActivator({
-            input: this.props.items,
-            fn: (item) => {
-                return new LineItem_1.LineItem({
-                    parentElement: wrapper.element,
-                    label: item.label,
-                    accessoryData: item.accessoryData,
+        this.addActor(new skytree_1.ExclusiveActivator({
+            input: this.props.options,
+            fn: optionDefinitions => {
+                return new skytree_1.ArrayActivator({
+                    input: optionDefinitions,
+                    fn: (optionDefinition) => {
+                        return new LineItem_1.LineItem({
+                            parentElement: wrapper.element,
+                            optionDefinition
+                        });
+                    },
                 });
-            },
+            }
         }));
     }
 }
