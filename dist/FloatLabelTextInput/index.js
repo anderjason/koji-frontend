@@ -232,6 +232,8 @@ const NoteStyle = web_1.ElementStyle.givenDefinition({
     color: #0000004C;
     display: none;
     font-size: 14px;
+    font-family: Source Sans Pro;
+    font-weight: 400;
     padding: 5px 1px 0 1px;
     transition: 0.2s ease color;
   `,
