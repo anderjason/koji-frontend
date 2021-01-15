@@ -21,12 +21,13 @@ const switchSvg = `
   </svg>
 `;
 class ToggleButton extends skytree_1.Actor {
-    constructor() {
-        super(...arguments);
+    constructor(props) {
+        super(props);
         this.onClick = (e) => {
             e === null || e === void 0 ? void 0 : e.stopPropagation();
-            this.props.isActive.setValue(!this.props.isActive.value);
+            this.props.isToggleActive.setValue(!this.props.isToggleActive.value);
         };
+        this._isDisabled = observable_1.Observable.givenValueOrObservable(this.props.isDisabled);
     }
     onActivate() {
         let button;
@@ -49,7 +50,10 @@ class ToggleButton extends skytree_1.Actor {
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             button.removeEventListener("click", this.onClick);
         }));
-        this.cancelOnDeactivate(this.props.isActive.didChange.subscribe((isActive) => {
+        this.cancelOnDeactivate(this._isDisabled.didChange.subscribe(isDisabled => {
+            button.disabled = isDisabled !== null && isDisabled !== void 0 ? isDisabled : false;
+        }, true));
+        this.cancelOnDeactivate(this.props.isToggleActive.didChange.subscribe((isActive) => {
             if (isActive == true) {
                 button.className = ButtonStyle.toCombinedClassName("isActive");
             }
@@ -77,6 +81,11 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     transition: 0.3s ease opacity;
     -webkit-tap-highlight-color: transparent;
 
+    &:disabled {
+      opacity: 0.9;
+      cursor: auto;
+    }
+
     svg {    
       margin-left: -4px;
       margin-right: -4px;
@@ -93,6 +102,11 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
   `,
     modifiers: {
         isActive: `
+      &:disabled {
+        opacity: 0.25;
+        cursor: auto;
+      }
+
       svg {
         .ellipse {
           cx: 32.5px;

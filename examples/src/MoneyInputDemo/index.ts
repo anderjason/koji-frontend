@@ -31,26 +31,26 @@ export class MoneyInputDemo extends DemoActor<void> {
       })
     );
 
-    const priceText = Observable.ofEmpty<string>();
+    // const priceText = Observable.ofEmpty<string>();
 
-    this.addActor(
-      new DisplayText({
-        parentElement: card.element,
-        displayType: "description",
-        text: priceText,
-      })
-    );
+    // this.addActor(
+    //   new DisplayText({
+    //     parentElement: card.element,
+    //     displayType: "description",
+    //     text: priceText,
+    //   })
+    // );
 
-    this.cancelOnDeactivate(
-      moneyPrice.didChange.subscribe((price) => {
-        const formattedPrice =
-          price != null
-            ? `The price is ${price.toString("$1.00")}`
-            : "Price is not set";
+    // this.cancelOnDeactivate(
+    //   moneyPrice.didChange.subscribe((price) => {
+    //     const formattedPrice =
+    //       price != null
+    //         ? `The price is ${price.toString("$1.00")}`
+    //         : "Price is not set";
             
-        priceText.setValue(formattedPrice);
-      }, true)
-    );
+    //     priceText.setValue(formattedPrice);
+    //   }, true)
+    // );
 
     this.addActor(
       new MoneyInput({

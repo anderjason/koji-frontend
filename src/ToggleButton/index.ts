@@ -1,11 +1,12 @@
-import { Observable, Receipt } from "@anderjason/observable";
+import { Observable, ObservableBase, Receipt } from "@anderjason/observable";
 import { ElementStyle, ManagedElement } from "@anderjason/web";
 import { Actor } from "skytree";
 import { ThisOrParentElement } from "..";
 
 export interface ToggleButtonProps {
   target: ThisOrParentElement<HTMLButtonElement>;
-  isActive: Observable<boolean>;
+  isToggleActive: Observable<boolean>;
+  isDisabled?: boolean | ObservableBase<boolean>;
 }
 
 const switchSvg = `
@@ -26,6 +27,14 @@ const switchSvg = `
 `;
 
 export class ToggleButton extends Actor<ToggleButtonProps> {
+  private _isDisabled: ObservableBase<boolean>;
+
+  constructor(props: ToggleButtonProps) {
+    super(props);
+
+    this._isDisabled = Observable.givenValueOrObservable(this.props.isDisabled);
+  }
+
   onActivate() {
     let button: HTMLButtonElement;
 
@@ -56,7 +65,13 @@ export class ToggleButton extends Actor<ToggleButtonProps> {
     );
 
     this.cancelOnDeactivate(
-      this.props.isActive.didChange.subscribe((isActive) => {
+      this._isDisabled.didChange.subscribe(isDisabled => {
+        button.disabled = isDisabled ?? false;
+      }, true)
+    );
+
+    this.cancelOnDeactivate(
+      this.props.isToggleActive.didChange.subscribe((isActive) => {
         if (isActive == true) {
           button.className = ButtonStyle.toCombinedClassName("isActive");
         } else {
@@ -69,7 +84,7 @@ export class ToggleButton extends Actor<ToggleButtonProps> {
   private onClick = (e: any): void => {
     e?.stopPropagation();
     
-    this.props.isActive.setValue(!this.props.isActive.value);
+    this.props.isToggleActive.setValue(!this.props.isToggleActive.value);
   }
 }
 
@@ -90,6 +105,11 @@ const ButtonStyle = ElementStyle.givenDefinition({
     transition: 0.3s ease opacity;
     -webkit-tap-highlight-color: transparent;
 
+    &:disabled {
+      opacity: 0.9;
+      cursor: auto;
+    }
+
     svg {    
       margin-left: -4px;
       margin-right: -4px;
@@ -106,6 +126,11 @@ const ButtonStyle = ElementStyle.givenDefinition({
   `,
   modifiers: {
     isActive: `
+      &:disabled {
+        opacity: 0.25;
+        cursor: auto;
+      }
+
       svg {
         .ellipse {
           cx: 32.5px;

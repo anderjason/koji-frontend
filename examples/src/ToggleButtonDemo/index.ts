@@ -29,7 +29,8 @@ export class ToggleButtonDemo extends DemoActor<void> {
           type: "parentElement",
           parentElement: card.element
         },
-        isActive: Observable.givenValue<boolean>(true)
+        isToggleActive: Observable.givenValue<boolean>(false),
+        isDisabled: true
       })
     );
   }

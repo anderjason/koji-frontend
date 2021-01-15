@@ -74,7 +74,7 @@ class CardLayout extends skytree_1.Actor {
             const listOrder = this.listOrder.value;
             const maxHeight = this.props.maxHeight.value;
             const requestedFooterHeight = footerHeight == 0 ? 0 : footerHeight + 15; // footer vertical padding
-            const requestedContentHeight = contentHeight == 0 ? 0 : contentHeight + 20; // content vertical padding
+            const requestedContentHeight = contentHeight == 0 ? 5 : contentHeight + 20; // content vertical padding
             let marginTop = listOrder === 0 ? 0 : __1.headerAreaHeight;
             cardLayoutWrapper.style.marginTop = `${marginTop + 10}px`;
             let visibleContentHeight;

@@ -20,7 +20,7 @@ export class ToggleAccessory extends Actor<ToggleAccessoryProps> {
           type: "parentElement",
           parentElement: this.props.parentElement,
         },
-        isActive: isToggleActive
+        isToggleActive
       })
     )
 

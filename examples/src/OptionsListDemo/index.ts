@@ -41,12 +41,12 @@ export class OptionsListDemo extends DemoActor<void> {
     this.addActor(
       new OptionsList({
         parentElement: card.element,
+        onChange: (key: string, value: any): void => {
+          console.log(`${key}=${value}`);
+        },
         defaultValues: {
           price: "premium",
           approve: true,
-        },
-        onChange: (key: string, value: any): void => {
-          console.log(`${key}=${value}`);
         },
         definitions: [
           {

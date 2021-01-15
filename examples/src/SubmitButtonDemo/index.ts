@@ -34,7 +34,7 @@ export class SubmitButtonDemo extends DemoActor<void> {
       new SubmitButton({
         target: {
           type: "parentElement",
-          parentElement: card.element,
+          parentElement: card.footerElement,
         },
         text: buttonText,
         buttonMode,
