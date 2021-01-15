@@ -33,19 +33,24 @@ class LineItem extends skytree_1.Actor {
                     parentElement: wrapper.element,
                     propertyName: optionDefinition.propertyName,
                     isDisabled: optionDefinition.isDisabled,
-                    valuesByPropertyName
+                    valuesByPropertyName,
                 }));
-                this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
-                    const isToggleActive = valuesByPropertyName.toOptionalValueGivenKey(optionDefinition.propertyName) == true;
-                    valuesByPropertyName.setValue(optionDefinition.propertyName, !isToggleActive);
-                }));
+                if (optionDefinition.isDisabled == true) {
+                    wrapper.setModifier("isDisabled", true);
+                }
+                else {
+                    this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
+                        const isToggleActive = valuesByPropertyName.toOptionalValueGivenKey(optionDefinition.propertyName) == true;
+                        valuesByPropertyName.setValue(optionDefinition.propertyName, !isToggleActive);
+                    }));
+                }
                 break;
             case "radio":
                 this.addActor(new RadioAccessory_1.RadioAccessory({
                     parentElement: wrapper.element,
                     propertyName: optionDefinition.propertyName,
                     propertyValue: optionDefinition.propertyValue,
-                    valuesByPropertyName
+                    valuesByPropertyName,
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {
                     valuesByPropertyName.setValue(optionDefinition.propertyName, optionDefinition.propertyValue);
@@ -75,6 +80,11 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
       border-bottom: none;
     }
   `,
+    modifiers: {
+        isDisabled: `
+      cursor: auto;
+    `,
+    },
 });
 const LabelStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "LineItemLabel",

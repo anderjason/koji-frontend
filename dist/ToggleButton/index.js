@@ -103,7 +103,7 @@ const ButtonStyle = web_1.ElementStyle.givenDefinition({
     modifiers: {
         isActive: `
       &:disabled {
-        opacity: 0.25;
+        opacity: 0.2;
         cursor: auto;
       }
 
