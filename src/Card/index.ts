@@ -33,7 +33,7 @@ export interface AddPageOptions {
   onRemoved?: () => void;
 }
 
-export const headerAreaHeight = 40;
+export const headerAreaHeight = 46;
 export const cardTransitionDuration = Duration.givenSeconds(0.5);
 export const cardHeightAnimateDuration = Duration.givenSeconds(0.6);
 export const cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";

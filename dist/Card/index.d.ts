@@ -15,7 +15,7 @@ export interface AddPageOptions {
     anchorBottom?: boolean | ObservableBase<boolean>;
     onRemoved?: () => void;
 }
-export declare const headerAreaHeight = 40;
+export declare const headerAreaHeight = 46;
 export declare const cardTransitionDuration: Duration;
 export declare const cardHeightAnimateDuration: Duration;
 export declare const cardTransitionEasing = "cubic-bezier(.52,.01,.28,1)";
