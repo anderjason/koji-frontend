@@ -13,7 +13,8 @@ class ToggleAccessory extends skytree_1.Actor {
                 type: "parentElement",
                 parentElement: this.props.parentElement,
             },
-            isToggleActive
+            isToggleActive,
+            isDisabled: this.props.isDisabled
         }));
         this.cancelOnDeactivate(isToggleActive.didChange.subscribe(value => {
             valuesByPropertyName.setValue(propertyName, value);

@@ -6,6 +6,8 @@ export interface ToggleAccessoryProps {
   parentElement: HTMLElement;
   propertyName: string;
   valuesByPropertyName: ObservableDict<any>;
+
+  isDisabled?: boolean;
 }
 
 export class ToggleAccessory extends Actor<ToggleAccessoryProps> {
@@ -20,7 +22,8 @@ export class ToggleAccessory extends Actor<ToggleAccessoryProps> {
           type: "parentElement",
           parentElement: this.props.parentElement,
         },
-        isToggleActive
+        isToggleActive,
+        isDisabled: this.props.isDisabled
       })
     )
 
