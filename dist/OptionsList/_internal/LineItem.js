@@ -32,6 +32,7 @@ class LineItem extends skytree_1.Actor {
                 const toggleAccessory = this.addActor(new ToggleAccessory_1.ToggleAccessory({
                     parentElement: wrapper.element,
                     propertyName: optionDefinition.propertyName,
+                    isDisabled: optionDefinition.isDisabled,
                     valuesByPropertyName
                 }));
                 this.cancelOnDeactivate(wrapper.addManagedEventListener("click", () => {

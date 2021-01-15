@@ -51,6 +51,7 @@ export class LineItem extends Actor<LineItemProps> {
           new ToggleAccessory({
             parentElement: wrapper.element,
             propertyName: optionDefinition.propertyName,
+            isDisabled: optionDefinition.isDisabled,
             valuesByPropertyName
           })
         );

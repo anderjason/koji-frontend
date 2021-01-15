@@ -10,6 +10,7 @@ export interface ToggleOptionDefinition {
     type: "toggle";
     label: string;
     propertyName: string;
+    isDisabled?: boolean;
 }
 export interface RadioOptionDefinition {
     type: "radio";
