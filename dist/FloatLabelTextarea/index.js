@@ -129,6 +129,7 @@ exports.FloatLabelTextarea = FloatLabelTextarea;
 const WrapperStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Wrapper",
     css: `
+    text-align: left;
   `
 });
 const BorderAreaStyle = web_1.ElementStyle.givenDefinition({

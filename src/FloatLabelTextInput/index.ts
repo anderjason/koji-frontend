@@ -204,6 +204,7 @@ export class FloatLabelTextInput<T> extends Actor<FloatLabelTextInputProps<T>> {
 const WrapperStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
+    text-align: left;
   `
 });
 

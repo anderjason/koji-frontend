@@ -222,6 +222,7 @@ export class FloatLabelTextarea<T> extends Actor<FloatLabelTextareaProps<T>> {
 const WrapperStyle = ElementStyle.givenDefinition({
   elementDescription: "Wrapper",
   css: `
+    text-align: left;
   `
 });
 
