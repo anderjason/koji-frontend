@@ -93,6 +93,7 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
     bottom: 0;
     right: 0;
     height: 80px;
+    z-index: 10000;
   `
 });
 const ButtonStyle = web_1.ElementStyle.givenDefinition({

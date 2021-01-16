@@ -136,6 +136,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     bottom: 0;
     right: 0;
     height: 80px;
+    z-index: 10000;
   `
 });
 
