@@ -30,7 +30,51 @@
 
 ## API Reference
 
-### Koji
+### AlignBottom
+
+`TODO`
+
+### Callout
+
+`TODO`
+
+### Card
+
+`TODO`
+
+### ConfirmationPrompt
+
+`TODO`
+
+### DisplayText
+
+`TODO`
+
+### EditableText
+
+`TODO`
+
+### FloatLabelTextarea
+
+`TODO`
+
+### FloatLabelTextInput
+
+`TODO`
+
+### IntegerInput
+
+`TODO`
+
+### KojiAppearance
+
+`TODO`
+
+### KojiNetworkUtil
+
+`TODO`
+
+### KojiTools
 
 `TODO`
 
@@ -44,10 +88,10 @@ To display in the center of the browser window:
 
 ```
 // initialize the loading indicator
-const handle = LoadingIndicator.ofDocument().init();
+const receipt = LoadingIndicator.ofDocument().activate();
 
 // uninitialize when finished
-handle.release();
+receipt.cancel();
 ```
 
 To display as a child of another DOM element:
@@ -57,13 +101,25 @@ To display as a child of another DOM element:
 const parentElement = document.getElementById("some-id");
 
 // initialize the loading indicator
-const handle = LoadingIndicator.givenParent(parentElement).init();
+const receipt = LoadingIndicator.givenParent(parentElement).activate();
 
 // uninitialize when finished
-handle.release();
+receipt.cancel();
 ```
 
-### KojiNetworkUtil
+### MoneyInput
+
+`TODO`
+
+### OptionsList
+
+`TODO`
+
+### PublishButton
+
+`TODO`
+
+### RemixModeButton
 
 `TODO`
 
@@ -76,8 +132,10 @@ Presents an interactive target area on the screen when Koji's instant remix feat
 You can create a remix target by specifying the coordinates of each corner as an array of points.
 
 ```
-import { Observable, Point2 } from "skytree";
-import { RemixTarget } from "skytree-koji";
+import { Observable } from "@anderjason/observable";
+import { Point2 } from "@anderjason/geometry";
+import { RemixTarget } from "@anderjason/koji-frontend-tools";
+import { ValuePath } from "@anderjason/util";
 
 const points = Observable.givenValue([
   // specify at least 3 points here
@@ -87,17 +145,18 @@ const points = Observable.givenValue([
   Point2.givenXY(100, 200),  // bottom left
 ]);
 
-const target = RemixTarget.givenPoints(points, {
-  vccPath: ["general", "imageUrl"]  // specify any VCC path here
+const target = new RemixTarget({
+  points,
+  valuePath: ValuePath.givenParts(["general", "imageUrl"])
 });
 
 // initialize the target
-const handle = target.init();
+const receipt = target.activate();
 
 // Note: The target will only be visible when instant remixing is active
 
 // uninitialize when finished
-handle.release();
+receipt.cancel();
 ```
 
 #### Additional options
@@ -107,17 +166,27 @@ You can also set the color, stroke width, corner radius, and shape expansion (in
 To set these options, include them in the options object passed to either RemixTarget.ofElement() or RemixTarget.ofPoints().
 
 ```
-import { Color } from "skytree";
+import { Color } from "@anderjason/color";
+import { ValuePath } from "@anderjason/util";
 
-const options = {
-  vccPath: ["general", "imageUrl"],   // required property
-  color: Color.ofHex("#FF0000"),      // optional
-  strokeWidth: 5,                     // optional (default = 4)
-  cornerRadius: 20,                   // optional (default = 30)
-  expansion: 10,                      // optional (default = -10)
-}
-
-const target = RemixTarget.givenElement(element, options);
-// or
-const target = RemixTarget.givenPoints(points, options);
+const target = new RemixTarget({
+  color: Color.givenHex("#FF0000"),
+  cornerRadius: 20,
+  expansion: 10,
+  points,
+  strokeWidth: 5,
+  valuePath: ValuePath.givenParts(["general", "imageUrl"]),
+});
 ```
+
+### SubmitButton
+
+`TODO`
+
+### ThemeToolbar
+
+`TODO`
+
+### ToggleButton
+
+`TODO`

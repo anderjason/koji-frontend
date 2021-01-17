@@ -7,15 +7,15 @@ import { Actor } from "skytree";
 import { Polygon } from "./_internal/Polygon";
 export interface RemixTargetDefinition {
     points: Observable<Point2[]>;
-    onClick?: (point: Point2) => void;
-    valuePath?: ValuePath;
-    expansion?: number;
     color?: Color;
     cornerRadius?: number;
-    strokeWidth?: number;
-    parentElement?: HTMLElement;
-    isSelectable?: Observable<boolean>;
+    expansion?: number;
     isEnabled?: Observable<boolean>;
+    isSelectable?: Observable<boolean>;
+    onClick?: (point: Point2) => void;
+    parentElement?: HTMLElement;
+    strokeWidth?: number;
+    valuePath?: ValuePath;
 }
 export declare class RemixTarget extends Actor<RemixTargetDefinition> {
     private static allTargets;

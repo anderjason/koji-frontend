@@ -14,6 +14,12 @@ class PublishButton extends skytree_1.Actor {
         this._mode = observable_1.Observable.givenValueOrObservable(this.props.mode || { type: "ready" });
     }
     onActivate() {
+        if (this.props.mode == null) {
+            throw new Error(`PublishButton 'mode' prop is required`);
+        }
+        if (typeof this.props.mode === "string") {
+            throw new Error(`Expected PublishButton 'mode' to be an object, but got a string '${this.props.mode}'`);
+        }
         const wrapper = this.addActor(WrapperStyle.toManagedElement({
             tagName: "div",
             parentElement: this.props.parentElement,

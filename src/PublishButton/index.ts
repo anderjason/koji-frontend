@@ -38,6 +38,14 @@ export class PublishButton extends Actor<PublishButtonProps> {
   }
 
   onActivate() {
+    if (this.props.mode == null) {
+      throw new Error(`PublishButton 'mode' prop is required`);
+    }
+
+    if (typeof this.props.mode === "string") {
+      throw new Error(`Expected PublishButton 'mode' to be an object, but got a string '${this.props.mode}'`);
+    }
+
     const wrapper = this.addActor(
       WrapperStyle.toManagedElement({
         tagName: "div",
