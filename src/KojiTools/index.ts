@@ -147,8 +147,7 @@ export class KojiTools extends Actor<void> {
         if (externalPath == null) {
           this._selectedPath.setValue(undefined);
         } else {
-          const internalPath = externalPath.slice(1);
-          this._selectedPath.setValue(ValuePath.givenParts(internalPath));
+          this._selectedPath.setValue(ValuePath.givenParts(externalPath));
         }
       });
 
@@ -171,12 +170,8 @@ export class KojiTools extends Actor<void> {
 
     this._selectedPath.didChange.subscribe((path) => {
       if (path != null) {
-        const externalPath = ValuePath.givenParts([
-          ...path.toParts(),
-        ]);
-
         (this._instantRemixing as any).onPresentControl(
-          externalPath.toParts(),
+          path.toParts(),
           { preventNavigation: true }
         );
       } else {

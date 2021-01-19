@@ -111,8 +111,7 @@ class KojiTools extends skytree_1.Actor {
                     this._selectedPath.setValue(undefined);
                 }
                 else {
-                    const internalPath = externalPath.slice(1);
-                    this._selectedPath.setValue(util_1.ValuePath.givenParts(internalPath));
+                    this._selectedPath.setValue(util_1.ValuePath.givenParts(externalPath));
                 }
             });
             this._instantRemixing.ready();
@@ -130,10 +129,7 @@ class KojiTools extends skytree_1.Actor {
         }
         this._selectedPath.didChange.subscribe((path) => {
             if (path != null) {
-                const externalPath = util_1.ValuePath.givenParts([
-                    ...path.toParts(),
-                ]);
-                this._instantRemixing.onPresentControl(externalPath.toParts(), { preventNavigation: true });
+                this._instantRemixing.onPresentControl(path.toParts(), { preventNavigation: true });
             }
             else {
                 this._instantRemixing.onPresentControl(undefined);
