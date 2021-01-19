@@ -17,7 +17,7 @@ class KojiTools extends skytree_1.Actor {
         this.currentMode = observable_1.ReadOnlyObservable.givenObservable(this._currentMode);
         this.sessionMode = observable_1.ReadOnlyObservable.givenObservable(this._sessionMode);
         this.onValueChanged = (path, newValue) => {
-            const valuePath = util_1.ValuePath.givenParts(path.slice(1));
+            const valuePath = util_1.ValuePath.givenParts(path);
             this.willReceiveExternalData.emit(valuePath);
             this._vccData.update(valuePath, newValue);
         };

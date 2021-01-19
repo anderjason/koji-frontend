@@ -181,7 +181,7 @@ export class KojiTools extends Actor<void> {
   }
 
   private onValueChanged = (path: PathPart[], newValue: any): void => {
-    const valuePath = ValuePath.givenParts(path.slice(1));
+    const valuePath = ValuePath.givenParts(path);
 
     this.willReceiveExternalData.emit(valuePath);
 
