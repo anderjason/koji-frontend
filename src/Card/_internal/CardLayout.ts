@@ -6,7 +6,7 @@ import {
   ReadOnlyObservable,
   Receipt,
 } from "@anderjason/observable";
-import { ElementSizeWatcher, ElementStyle, ScrollArea } from "@anderjason/web";
+import { ElementSizeWatcher, ElementStyle, ScreenSize, ScrollArea } from "@anderjason/web";
 import { headerAreaHeight } from "..";
 import { Color } from "@anderjason/color";
 
@@ -114,6 +114,7 @@ export class CardLayout extends Actor<CardLayoutProps> {
         measureInside.output,
         this.listOrder,
         this.props.maxHeight,
+        ScreenSize.instance.availableSize
       ])
     );
 
@@ -147,7 +148,14 @@ export class CardLayout extends Actor<CardLayoutProps> {
             requestedContentHeight
           );
         } else {
-          visibleContentHeight = requestedContentHeight;
+          // 100 pixels to leave room for the Koji button (in view mode), or the publish button (in remix mode)
+          const availableHeight = ScreenSize.instance.availableSize.value.height - 100;
+          const maxContentHeight = availableHeight - marginTop;
+
+          visibleContentHeight = Math.min(
+            maxContentHeight,
+            requestedContentHeight
+          );
         }
 
         this._cardHeight.setValue(marginTop + visibleContentHeight + requestedFooterHeight + 20);

@@ -61,6 +61,7 @@ class CardLayout extends skytree_1.Actor {
             measureInside.output,
             this.listOrder,
             this.props.maxHeight,
+            web_1.ScreenSize.instance.availableSize
         ]));
         this.cancelOnDeactivate(new observable_1.Receipt(() => {
             if (this.props.onRemoved != null) {
@@ -83,7 +84,10 @@ class CardLayout extends skytree_1.Actor {
                 visibleContentHeight = Math.min(maxContentHeight, requestedContentHeight);
             }
             else {
-                visibleContentHeight = requestedContentHeight;
+                // 100 pixels to leave room for the Koji button (in view mode), or the publish button (in remix mode)
+                const availableHeight = web_1.ScreenSize.instance.availableSize.value.height - 100;
+                const maxContentHeight = availableHeight - marginTop;
+                visibleContentHeight = Math.min(maxContentHeight, requestedContentHeight);
             }
             this._cardHeight.setValue(marginTop + visibleContentHeight + requestedFooterHeight + 20);
             outsideScrollArea.style.height = `${visibleContentHeight}px`;
