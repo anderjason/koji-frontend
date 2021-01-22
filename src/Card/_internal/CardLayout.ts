@@ -140,25 +140,27 @@ export class CardLayout extends Actor<CardLayoutProps> {
 
         cardLayoutWrapper.style.marginTop = `${marginTop + 10}px`;
 
-        let visibleContentHeight: number;
+        const totalRequestedHeight = marginTop + requestedContentHeight + requestedFooterHeight + 20;
+
+        let visibleHeight: number;
         if (maxHeight != null) {
-          const maxContentHeight = maxHeight - marginTop;
-          visibleContentHeight = Math.min(
-            maxContentHeight,
-            requestedContentHeight
+          visibleHeight = Math.min(
+            maxHeight,
+            totalRequestedHeight
           );
         } else {
-          // 100 pixels to leave room for the Koji button (in view mode), or the publish button (in remix mode)
-          const availableHeight = ScreenSize.instance.availableSize.value.height - 100;
-          const maxContentHeight = availableHeight - marginTop;
-
-          visibleContentHeight = Math.min(
-            maxContentHeight,
-            requestedContentHeight
+          // 112 pixels to leave room for the Koji button (in view mode), or the publish button (in remix mode)
+          const availableHeight = ScreenSize.instance.availableSize.value.height - 112;
+          
+          visibleHeight = Math.min(
+            availableHeight,
+            totalRequestedHeight
           );
         }
 
-        this._cardHeight.setValue(marginTop + visibleContentHeight + requestedFooterHeight + 20);
+        const visibleContentHeight = visibleHeight - requestedFooterHeight - 20;
+
+        this._cardHeight.setValue(visibleHeight);
         outsideScrollArea.style.height = `${visibleContentHeight}px`;
         cardLayoutWrapper.style.transform = `translateX(${listOrder * 100}%)`;
       }, true)
