@@ -7,6 +7,7 @@ const observable_1 = require("@anderjason/observable");
 const time_1 = require("@anderjason/time");
 const __1 = require("..");
 const color_1 = require("@anderjason/color");
+const util_1 = require("@anderjason/util");
 const svgIcon = `<svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"></path></svg>`;
 class PublishButton extends skytree_1.Actor {
     constructor(props) {
@@ -31,7 +32,10 @@ class PublishButton extends skytree_1.Actor {
         button.element.type = "button";
         this.addActor(new skytree_1.ExclusiveActivator({
             input: this._mode,
-            fn: mode => {
+            fn: (mode, oldMode, currentActor) => {
+                if (util_1.ObjectUtil.objectIsDeepEqual(mode, oldMode)) {
+                    return currentActor;
+                }
                 switch (mode.type) {
                     case "busy":
                         return new __1.LoadingIndicator({
@@ -62,7 +66,10 @@ class PublishButton extends skytree_1.Actor {
         }, true));
         this.addActor(new skytree_1.ExclusiveActivator({
             input: this._mode,
-            fn: (mode) => {
+            fn: (mode, oldMode, currentActor) => {
+                if (util_1.ObjectUtil.objectIsDeepEqual(mode, oldMode)) {
+                    return currentActor;
+                }
                 if (mode.type != "error") {
                     return undefined;
                 }
@@ -154,7 +161,7 @@ const ErrorStyle = web_1.ElementStyle.givenDefinition({
     font-family: Source Sans Pro;
     font-size: 16px;
     font-style: normal;
-    font-weight: bold;
+    font-weight: 600;
     letter-spacing: 0.02em;
     line-height: 20px;
     max-width: calc(100% - 114px);

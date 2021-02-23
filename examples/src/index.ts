@@ -4,9 +4,7 @@ import { AlignBottomDemo } from "./AlignBottomDemo";
 import { CalloutDemo } from "./CalloutDemo";
 import { CardDemo } from "./CardDemo";
 import { CardVisibilityDemo } from "./CardVisibilityDemo";
-import { ConfirmationPromptDemo } from "./ConfirmationPromptDemo";
 import { DisplayTextDemo } from "./DisplayTextDemo";
-import { EditableTextDemo } from "./EditableTextDemo";
 import { FloatLabelTextareaDemo } from "./FloatLabelTextareaDemo";
 import { FloatLabelTextInputDemo } from "./FloatLabelTextInputDemo";
 import { IntegerInputDemo } from "./IntegerInputDemo";
@@ -14,9 +12,7 @@ import { LoadingIndicatorDemo } from "./LoadingIndicatorDemo";
 import { MoneyInputDemo } from "./MoneyInputDemo";
 import { OptionsListDemo } from "./OptionsListDemo";
 import { PublishButtonDemo } from "./PublishButtonDemo";
-import { RemixModeButtonDemo } from "./RemixModeButtonDemo";
 import { SubmitButtonDemo } from "./SubmitButtonDemo";
-import { ThemeToolbarDemo } from "./ThemeToolbarDemo";
 import { ToggleButtonDemo } from "./ToggleButtonDemo";
 
 const definitions = ObservableArray.givenValues<ExampleDefinition>([
@@ -37,16 +33,8 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new CardVisibilityDemo(),
   },
   {
-    title: "Confirmation prompt",
-    actor: new ConfirmationPromptDemo(),
-  },
-  {
     title: "Display text",
     actor: new DisplayTextDemo(),
-  },
-  {
-    title: "Editable text",
-    actor: new EditableTextDemo(),
   },
   {
     title: "Float label textarea",
@@ -77,16 +65,8 @@ const definitions = ObservableArray.givenValues<ExampleDefinition>([
     actor: new PublishButtonDemo(),
   },
   {
-    title: "Remix mode button",
-    actor: new RemixModeButtonDemo(),
-  },
-  {
     title: "Submit button",
     actor: new SubmitButtonDemo(),
-  },
-  {
-    title: "Theme toolbar",
-    actor: new ThemeToolbarDemo(),
   },
   {
     title: "Toggle button",

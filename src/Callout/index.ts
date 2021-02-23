@@ -115,7 +115,7 @@ const WrapperStyle = ElementStyle.givenDefinition({
     flex-direction: column;
     font-family: Source Sans Pro;
     font-style: normal;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 16px;
     line-height: 20px;
     letter-spacing: 0.02em;

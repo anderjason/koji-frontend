@@ -130,7 +130,7 @@ const LabelStyle = ElementStyle.givenDefinition({
     font-family: Source Sans Pro;
     font-size: 17px;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     letter-spacing: 0.02em;
     line-height: 18px;
     user-select: none;

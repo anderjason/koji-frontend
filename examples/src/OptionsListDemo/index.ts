@@ -1,11 +1,6 @@
 import { DemoActor } from "@anderjason/example-tools";
-import { ObservableArray } from "@anderjason/observable";
 import { AlignBottom, OptionsList } from "../../../src";
 import { Card } from "../../../src/Card";
-import {
-  DetailOptionDefinition,
-  OptionDefinition,
-} from "../../../src/OptionsList";
 
 export class OptionsListDemo extends DemoActor<void> {
   onActivate() {

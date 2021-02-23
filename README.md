@@ -4,6 +4,28 @@
 
 `npm install --save @anderjason/koji-frontend-tools`
 
+## Breaking changes from v6 to v7
+
+### Removed KojiTools
+
+* Use the `@withkoji/core` package in your project instead
+
+### Removed ConfirmationPrompt
+
+* Use the `@withkoji/core` package in your project instead
+
+### Removed EditableText
+
+* Use `FloatLabelTextInput` instead
+
+### Removed RemixModeButton
+
+### Removed RemixTarget
+
+### Removed ThemeToolbar
+
+### Removed themes from KojiAppearance
+
 ## Breaking changes from v5 to v6
 
 ### Card
@@ -71,10 +93,6 @@
 `TODO`
 
 ### KojiNetworkUtil
-
-`TODO`
-
-### KojiTools
 
 `TODO`
 

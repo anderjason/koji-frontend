@@ -157,7 +157,7 @@ const ContentStyle = web_1.ElementStyle.givenDefinition({
     css: `
     font-family: Source Sans Pro;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 20px;
     line-height: 25px;
     letter-spacing: 0.02em;

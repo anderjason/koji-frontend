@@ -1,5 +1,4 @@
 import { DemoActor } from "@anderjason/example-tools";
-import { Observable } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
 import { ElementStyle, SequentialChoice } from "@anderjason/web";
 import { Timer } from "skytree";
@@ -22,6 +21,10 @@ export class PublishButtonDemo extends DemoActor<void> {
         },
         {
           type: "busy"
+        },
+        {
+          type: "error",
+          errorText: "Please correct errors before continuing"
         },
         {
           type: "error",

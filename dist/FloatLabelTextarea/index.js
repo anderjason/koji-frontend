@@ -186,7 +186,7 @@ const LabelStyle = web_1.ElementStyle.givenDefinition({
     top: 4px;
     font-family: Source Sans Pro;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.02em;
@@ -210,7 +210,7 @@ const TextareaStyle = web_1.ElementStyle.givenDefinition({
     border: none;
     font-family: Source Sans Pro;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 20px;
     line-height: 25px;
     letter-spacing: 0.02em;

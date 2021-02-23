@@ -4,6 +4,7 @@ import { Observable, ObservableBase } from "@anderjason/observable";
 import { Duration } from "@anderjason/time";
 import { LoadingIndicator } from "..";
 import { Color } from "@anderjason/color";
+import { ObjectUtil } from "@anderjason/util";
 
 export interface PublishButtonReadyMode {
   type: "ready";
@@ -64,7 +65,11 @@ export class PublishButton extends Actor<PublishButtonProps> {
     this.addActor(
       new ExclusiveActivator({
         input: this._mode,
-        fn: mode => {
+        fn: (mode, oldMode, currentActor) => {
+          if (ObjectUtil.objectIsDeepEqual(mode, oldMode)) {
+            return currentActor;
+          }
+
           switch (mode.type) {
             case "busy":
               return new LoadingIndicator({
@@ -101,7 +106,11 @@ export class PublishButton extends Actor<PublishButtonProps> {
     this.addActor(
       new ExclusiveActivator({
         input: this._mode,
-        fn: (mode) => {
+        fn: (mode, oldMode, currentActor) => {
+          if (ObjectUtil.objectIsDeepEqual(mode, oldMode)) {
+            return currentActor;
+          }
+          
           if (mode.type != "error") {
             return undefined;
           }
@@ -201,7 +210,7 @@ const ErrorStyle = ElementStyle.givenDefinition({
     font-family: Source Sans Pro;
     font-size: 16px;
     font-style: normal;
-    font-weight: bold;
+    font-weight: 600;
     letter-spacing: 0.02em;
     line-height: 20px;
     max-width: calc(100% - 114px);
