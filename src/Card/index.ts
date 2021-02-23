@@ -9,6 +9,7 @@ import { Debounce, Duration } from "@anderjason/time";
 import { ArrayUtil } from "@anderjason/util";
 import {
   DynamicStyleElement,
+  ElementSizeWatcher,
   ElementStyle,
   ManagedElement,
 } from "@anderjason/web";
@@ -54,7 +55,7 @@ export class Card extends Actor<CardProps> {
   );
 
   readonly layouts: ReadOnlyObservableArray<CardLayout>;
-    readonly selectedLayout: ReadOnlyObservable<CardLayout>;
+  readonly selectedLayout: ReadOnlyObservable<CardLayout>;
 
   constructor(props: CardProps) {
     super(props);
@@ -69,10 +70,14 @@ export class Card extends Actor<CardProps> {
       Observable.isStrictEqual
     );
 
-    this._anchorBottom = Observable.givenValueOrObservable(this.props.anchorBottom);
+    this._anchorBottom = Observable.givenValueOrObservable(
+      this.props.anchorBottom
+    );
 
     this.layouts = ReadOnlyObservableArray.givenObservableArray(this._layouts);
-    this.selectedLayout = ReadOnlyObservable.givenObservable(this._selectedLayout);
+    this.selectedLayout = ReadOnlyObservable.givenObservable(
+      this._selectedLayout
+    );
   }
 
   get element(): HTMLElement {
@@ -160,7 +165,6 @@ export class Card extends Actor<CardProps> {
           return;
         }
 
-
         layout.deactivate();
       })
     );
@@ -243,7 +247,9 @@ export class Card extends Actor<CardProps> {
           return;
         }
 
-        this._selectedLayout.setValue(ArrayUtil.optionalLastValueGivenArray(layouts));
+        this._selectedLayout.setValue(
+          ArrayUtil.optionalLastValueGivenArray(layouts)
+        );
       }, true)
     );
 
