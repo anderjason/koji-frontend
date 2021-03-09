@@ -1,5 +1,6 @@
 import { DemoActor } from "@anderjason/example-tools";
 import { Observable } from "@anderjason/observable";
+import { ManagedElement } from "@anderjason/web";
 import { AlignBottom, Card, ToggleButton } from "../../../src";
 
 export class ToggleButtonDemo extends DemoActor<void> {
@@ -23,14 +24,29 @@ export class ToggleButtonDemo extends DemoActor<void> {
       })
     );
 
+    const isToggleActive = Observable.givenValue<boolean>(false);
+
     this.addActor(
       new ToggleButton({
         target: {
           type: "parentElement",
           parentElement: card.element
         },
-        isToggleActive: Observable.givenValue<boolean>(false),
+        isToggleActive,
       })
+    );
+
+    const label = this.addActor(
+      ManagedElement.givenDefinition({
+        tagName: "div",
+        parentElement: card.element
+      })
+    );
+
+    this.cancelOnDeactivate(
+      isToggleActive.didChange.subscribe(isActive => {
+        label.element.innerHTML = isActive ? "ON" : "OFF";
+      }, true)
     );
   }
 }
