@@ -184,7 +184,6 @@ const LabelStyle = web_1.ElementStyle.givenDefinition({
     position: absolute;
     left: 12px;
     top: 4px;
-    font-family: Source Sans Pro;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -208,10 +207,10 @@ const TextareaStyle = web_1.ElementStyle.givenDefinition({
     appearance: none;
     background: transparent;
     border: none;
-    font-family: Source Sans Pro;
+    font-family: inherit;
     font-style: normal;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 25px;
     letter-spacing: 0.02em;
     margin-left: 12px;
@@ -260,7 +259,6 @@ const NoteStyle = web_1.ElementStyle.givenDefinition({
     color: #0000004C;
     display: none;
     font-size: 14px;
-    font-family: Source Sans Pro;
     font-weight: 400;
     padding: 5px 1px 0 1px;
     transition: 0.2s ease color;

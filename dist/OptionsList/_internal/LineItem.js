@@ -90,7 +90,6 @@ const LabelStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "LineItemLabel",
     css: `
     color: rgb(45, 47, 48);
-    font-family: Source Sans Pro;
     font-size: 17px;
     font-style: normal;
     font-weight: 400;

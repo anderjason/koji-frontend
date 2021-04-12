@@ -155,7 +155,6 @@ const ButtonStyle = ElementStyle.givenDefinition({
     color: #FFFFFF;
     cursor: pointer;
     display: flex;
-    font-family: Source Sans Pro;
     font-style: normal;
     font-weight: 600;
     font-size: 20px;
