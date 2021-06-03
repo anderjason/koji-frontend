@@ -155,7 +155,6 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
 const ContentStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Content",
     css: `
-    font-family: Source Sans Pro;
     font-style: normal;
     font-weight: 400;
     font-size: 20px;

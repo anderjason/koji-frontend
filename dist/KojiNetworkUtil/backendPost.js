@@ -7,7 +7,6 @@ async function backendPost(relativePath, postData, urlParams) {
     const url = backendUrlGivenPath_1.backendUrlGivenPath(relativePath, urlParams);
     const response = await fetch(url, {
         body: JSON.stringify(postData || {}),
-        credentials: "include",
         headers: {
             "content-type": "application/json",
         },

@@ -225,7 +225,6 @@ const WrapperStyle = ElementStyle.givenDefinition({
 const ContentStyle = ElementStyle.givenDefinition({
   elementDescription: "Content",
   css: `
-    font-family: Source Sans Pro;
     font-style: normal;
     font-weight: 400;
     font-size: 20px;

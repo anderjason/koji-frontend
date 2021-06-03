@@ -207,7 +207,6 @@ const ErrorStyle = ElementStyle.givenDefinition({
     color: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
-    font-family: Source Sans Pro;
     font-size: 16px;
     font-style: normal;
     font-weight: 600;

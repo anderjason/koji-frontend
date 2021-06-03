@@ -58,7 +58,6 @@ const TitleStyle = ElementStyle.givenDefinition({
   css: `
     border: none;
     color: #2D2F30;
-    font-family: PT Sans;
     font-style: normal;
     font-weight: bold;
     font-size: 26px;

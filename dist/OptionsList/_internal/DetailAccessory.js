@@ -64,7 +64,6 @@ const WrapperStyle = web_1.ElementStyle.givenDefinition({
 const LabelStyle = web_1.ElementStyle.givenDefinition({
     elementDescription: "Label",
     css: `
-    font-family: Source Sans Pro;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;

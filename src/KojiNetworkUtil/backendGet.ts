@@ -3,9 +3,7 @@ import { RequestError } from "./RequestError";
 
 export async function backendGet(relativeUrl: string, params?: any) {
   const url = backendUrlGivenPath(relativeUrl, params);
-  const response = await fetch(url, {
-    credentials: "include",
-  });
+  const response = await fetch(url);
 
   if (response.status == 404) {
     throw new RequestError("The requested resource could not be found.");
