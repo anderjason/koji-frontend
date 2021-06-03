@@ -14,7 +14,8 @@
     "build": "npm run clean && tsc",
     "clean": "rm -rf dist && rm -rf test",
     "test": "tsc -p tsconfig.test.json && node test/index.test && rm -rf test",
-    "examples": "webpack-dev-server --config ./examples/webpack.config.js --open"
+    "examples": "webpack-dev-server --config ./examples/webpack.config.js --open",
+    "build:examples": "webpack --config ./examples/webpack.build.js"
   },
   "files": [
     "dist/**/*"
